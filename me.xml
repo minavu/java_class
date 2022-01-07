@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE student PUBLIC "-//Portland State University//DTD CS410J Grade Book//EN" "http://www.cs.pdx.edu/~whitlock/dtds/gradebook.dtd">
+<student enrolled-section="graduate">
+<id>mina8</id>
+<firstName>Mina</firstName>
+<lastName>Vu</lastName>
+<email>mina8@pdx.edu</email>
+<major>CS</major>
+<notes>
+<note>Mina Vu would like to learn Java, how to program with IntelliJ, maven</note>
+<note>Mina Vu has these comments: I'm slow in following demos but find them very helpful.  That is why the recordings are the best thing that's come out of this pandemic zoom schooling experience.</note>
+</notes>
+</student>
