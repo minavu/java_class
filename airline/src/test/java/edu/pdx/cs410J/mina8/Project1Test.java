@@ -26,14 +26,4 @@ class Project1Test {
     }
   }
 
-  @Test
-  void validNumberOfArgs() {
-    Project1.main(new String[]{"test", "test", "test", "test", "test", "test"});
-    assertThat(Project1.argsCount, equalTo(6));
-  }
-
-  @Test
-  void firstArgIsFlightNumber() {
-    Project1.main(new String[]{"test", "test", "test", "test", "test", "test"});
-  }
 }
