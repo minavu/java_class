@@ -23,12 +23,13 @@ class Project1IT extends InvokeMainTestCase {
     String readme = "-readme";
     String airline = "airline";
     String flightNumber = "123";
-    String src = "src";
-    String departDate = "departDate";
-    String departTime = "departTime";
-    String dest = "dest";
-    String arriveDate = "arriveDate";
-    String arriveTime = "arriveTime";
+    String src = "pdx";
+    String departDate = "1/1/2022";
+    String departTime = "7:00";
+    String dest = "nyc";
+    String arriveDate = "01/01/2022";
+    String arriveTime = "22:59";
+    MainMethodResult goodTestCase = invokeMain(print, readme, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
 
     /**
      * Tests that invoking the main method with no arguments issues an error
@@ -37,51 +38,74 @@ class Project1IT extends InvokeMainTestCase {
     void testNoCommandLineArguments() {
         MainMethodResult result = invokeMain();
         assertThat(result.getExitCode(), equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
     @Test
     void correctNumberOfArgumentsProvided() {
-        MainMethodResult result = invokeMain(airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
-        assertThat(result.getTextWrittenToStandardOut(), containsString("8"));
+        assertThat(goodTestCase.getExitCode(), equalTo(0));
     }
 
     @Test
     void fewerNumberOfArgumentsProvided() {
         MainMethodResult result = invokeMain(flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
         assertThat(result.getExitCode(), equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
     @Test
     void greaterNumberOfArgumentsProvided() {
         MainMethodResult result = invokeMain(airline, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
         assertThat(result.getExitCode(), equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
     @Test
     void oneOptionProvided() {
         MainMethodResult result = invokeMain(print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
-        assertThat(result.getTextWrittenToStandardOut(), containsString("1"));
+        assertThat(result.getExitCode(), equalTo(0));
     }
 
     @Test
     void bothOptionProvided() {
         MainMethodResult result = invokeMain(readme, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
-        assertThat(result.getTextWrittenToStandardOut(), containsString("2"));
+        assertThat(result.getExitCode(), equalTo(0));
     }
 
     @Test
     void moreOptionProvided() {
         MainMethodResult result = invokeMain(readme, readme, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
         assertThat(result.getExitCode(), equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), containsString("Too many options rendered."));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
-//    @Test
-//    void flightNumberCanConvertToInteger() {
-//        MainMethodResult result = invokeMain(readme, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
-//
-//    }
+    @Test
+    void flightNumberIsNumber() {
+        assertThat(goodTestCase.getExitCode(), equalTo(0));
+        MainMethodResult result2 = invokeMain(airline, "test", src, departDate, departTime, dest, arriveDate, arriveTime);
+        assertThat(result2.getExitCode(), equalTo(1));
+        assertThat(result2.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
+    }
+
+    @Test
+    void srcAndDestConformToThreeLetterCode() {
+        assertThat(goodTestCase.getExitCode(), equalTo(0));
+        MainMethodResult result2 = invokeMain(airline, flightNumber, "test", departDate, departTime, dest, arriveDate, arriveTime);
+        assertThat(result2.getExitCode(), equalTo(1));
+        assertThat(result2.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
+    }
+
+    @Test
+    void dateAndTimeInCorrectFormat() {
+        assertThat(goodTestCase.getExitCode(), equalTo(0));
+        MainMethodResult result2 = invokeMain(airline, flightNumber, src, "test", "test", dest, arriveDate, arriveTime);
+        assertThat(result2.getExitCode(), equalTo(1));
+        assertThat(result2.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
+    }
+
+    @Test
+    void canCreateFlightObject() {
+        assertThat(goodTestCase.getExitCode(), equalTo(0));
+    }
+
 }

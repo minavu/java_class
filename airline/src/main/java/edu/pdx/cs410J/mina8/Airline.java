@@ -2,10 +2,12 @@ package edu.pdx.cs410J.mina8;
 
 import edu.pdx.cs410J.AbstractAirline;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Airline extends AbstractAirline<Flight> {
   private final String name;
+  private ArrayList<Flight> flights = new ArrayList<Flight>();
 
   public Airline(String name) {
     this.name = name;
@@ -18,11 +20,11 @@ public class Airline extends AbstractAirline<Flight> {
 
   @Override
   public void addFlight(Flight flight) {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    flights.add(flight);
   }
 
   @Override
   public Collection<Flight> getFlights() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return flights;
   }
 }

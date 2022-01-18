@@ -2,29 +2,49 @@ package edu.pdx.cs410J.mina8;
 
 import edu.pdx.cs410J.AbstractFlight;
 
+import java.util.ArrayList;
+
 public class Flight extends AbstractFlight {
+  private String airline = "";
+  private int flightNumber = 0;
+  private String src = "";
+  private String depart = "";
+  private String dest = "";
+  private String arrive = "";
+
+  public Flight() {}
+
+  public Flight(ArrayList<String> argsList) {
+    airline = argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase();
+    flightNumber = Integer.parseInt(argsList.get(1));
+    src = argsList.get(2).toUpperCase();
+    depart = argsList.get(3) + " " + argsList.get(4);
+    dest = argsList.get(5).toUpperCase();
+    arrive = argsList.get(6) + " " + argsList.get(7);
+  }
+
   @Override
   public int getNumber() {
-    return 42;
+    return flightNumber;
   }
 
   @Override
   public String getSource() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return src;
   }
 
   @Override
   public String getDepartureString() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return depart;
   }
 
   @Override
   public String getDestination() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return dest;
   }
 
   @Override
   public String getArrivalString() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return arrive;
   }
 }
