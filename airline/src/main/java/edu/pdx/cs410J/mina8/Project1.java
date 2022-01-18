@@ -1,5 +1,9 @@
 package edu.pdx.cs410J.mina8;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -14,15 +18,42 @@ public class Project1 {
       System.exit(1);
     }
     Airline airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
-    airline.addFlight(new Flight(argsList));
-    System.out.println(airline);
+    Flight flight = new Flight(argsList);
+    airline.addFlight(flight);
+
+    for (String opt : optsList) {
+      switch (opt) {
+        case "-print":
+          System.out.println(flight);
+          break;
+        case "-readme":
+          System.out.println(displayReadmeFile());
+          break;
+        default:
+          System.exit(1);
+      }
+    }
+
     System.exit(0);
+  }
+
+  private static String displayReadmeFile() {
+    try {
+      InputStream readme = Project1.class.getResourceAsStream("README.txt");
+      BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
+      String line = reader.readLine();
+      return line;
+    } catch (NullPointerException e) {
+      return "README.txt not found.";
+    } catch (IOException e) {
+      return "README.txt could not be read.";
+    }
   }
 
   private static boolean checkArgsCountAndCreateOptsAndArgsLists(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) {
     for (String arg : args) {
       if (arg.startsWith("-")) {
-        optsList.add(arg);
+        optsList.add(arg.toLowerCase());
       } else {
         argsList.add(arg);
       }
