@@ -14,6 +14,7 @@ class Project1IT extends InvokeMainTestCase {
 
     /**
      * Invokes the main method of {@link Project1} with the given arguments.
+     * @return          The output of the main method invocation.
      */
     private MainMethodResult invokeMain(String... args) {
         return invokeMain( Project1.class, args );
@@ -41,11 +42,17 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
+    /**
+     * Tests that invoking the main method with the correct number of arguments does not issue an error.
+     */
     @Test
     void correctNumberOfArgumentsProvided() {
         assertThat(goodTestCase.getExitCode(), equalTo(0));
     }
 
+    /**
+     * Tests that invoking the main method with fewer number of arguments issues an error and message.
+     */
     @Test
     void fewerNumberOfArgumentsProvided() {
         MainMethodResult result = invokeMain(flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
@@ -53,6 +60,9 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
+    /**
+     * Tests that invoking the main method with greater number of arguments issues an error and message.
+     */
     @Test
     void greaterNumberOfArgumentsProvided() {
         MainMethodResult result = invokeMain(airline, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
@@ -60,18 +70,27 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
+    /**
+     * Tests that invoking the main method with one option tag issues no error.
+     */
     @Test
     void oneOptionProvided() {
         MainMethodResult result = invokeMain(print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
         assertThat(result.getExitCode(), equalTo(0));
     }
 
+    /**
+     * Tests that invoking the main method with both option tags issues no error.
+     */
     @Test
     void bothOptionProvided() {
         MainMethodResult result = invokeMain(readme, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
         assertThat(result.getExitCode(), equalTo(0));
     }
 
+    /**
+     * Tests that invoking the main method with more options issues an error and message.
+     */
     @Test
     void moreOptionProvided() {
         MainMethodResult result = invokeMain(print, print, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
@@ -79,6 +98,10 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
+    /**
+     * Tests that invoking the main method with a flight number that isn't a number issues an error
+     * and a message.  If the flight number is a number, no error is issued.
+     */
     @Test
     void flightNumberIsNumber() {
         assertThat(goodTestCase.getExitCode(), equalTo(0));
@@ -87,6 +110,9 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result2.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
+    /**
+     * Tests that the arguments for src and dest must be correct when invoking the main method.
+     */
     @Test
     void srcAndDestConformToThreeLetterCode() {
         assertThat(goodTestCase.getExitCode(), equalTo(0));
@@ -95,6 +121,9 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result2.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
 
+    /**
+     * Tests that the date and time arguments are in correct format.
+     */
     @Test
     void dateAndTimeInCorrectFormat() {
         assertThat(goodTestCase.getExitCode(), equalTo(0));
@@ -102,10 +131,4 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result2.getExitCode(), equalTo(1));
         assertThat(result2.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
-
-    @Test
-    void canCreateFlightObject() {
-        assertThat(goodTestCase.getExitCode(), equalTo(0));
-    }
-
 }

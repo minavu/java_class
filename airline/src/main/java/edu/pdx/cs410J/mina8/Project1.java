@@ -34,6 +34,11 @@ public class Project1 {
     System.exit(0);
   }
 
+  /**
+   * This method uses the README.txt resource as an input stream to the buffered reader.
+   * It reads every line in the file into a string variable and prints text to stdout.
+   * Finally, it exits the system with status code 0, unless the file cannot be found or read.
+   */
   private static void displayReadmeFile() {
     try {
       InputStream readme = Project1.class.getResourceAsStream("README.txt");
@@ -43,15 +48,26 @@ public class Project1 {
         line += reader.readLine() + "\n";
       }
       System.out.println(line);
+      System.exit(0);
     } catch (NullPointerException e) {
       System.out.println("README.txt not found.");
+      System.exit(1);
     } catch (IOException e) {
       System.out.println("README.txt could not be read.");
-    } finally {
-      System.exit(0);
+      System.exit(1);
     }
   }
 
+  /**
+   * This method reads a string array of arguments and creates two array lists separating options and arguments.
+   * It first checks for the -readme option in the arguments list.
+   * If present, it calls the displayReadmeFile() method to execute.
+   * It also checks the number of options and arguments to make a return.
+   * @param args      The original list of arguments from the command line.
+   * @param optsList  An empty list to store option tags.
+   * @param argsList  An empty list to store arguments.
+   * @return          A boolean indicating the correct number of options and arguments were given.
+   */
   private static boolean checkArgsCountAndCreateOptsAndArgsLists(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) {
     for (String arg : args) {
       if (arg.toLowerCase().contains("-readme")) {
@@ -69,6 +85,14 @@ public class Project1 {
     return true;
   }
 
+  /**
+   * This method checks the validity of the arguments provided by the user of the program.
+   * The usage specification requires the second argument to be a number,
+   * the third and sixth arguments to be a three-letter code,
+   * and the fourth/fifth and seventh/eighth arguments form valid date/time format.
+   * @param argsList  A list of arguments without any option tags.
+   * @return          A boolean indicating the validity of all arguments.
+   */
   private static boolean checkArgsForValidity(ArrayList<String> argsList) {
     try {
       Integer.parseInt(argsList.get(1));
@@ -89,6 +113,11 @@ public class Project1 {
     return true;
   }
 
+  /**
+   * This method checks a string against a regular expression that conforms to the required date/time format.
+   * @param dateTime  A string to check date/time format.
+   * @return          A boolean indicating the validity of the string.
+   */
   private static boolean validDateTime(String dateTime) {
     String regex = "^(1[0-2]|0[1-9]|[1-9])/(3[01]|[12][0-9]|0[1-9]|[1-9])/[0-9]{4} (0[0-9]|1[0-9]|2[0-3]|[1-9]):([0-5][0-9])$";
     return dateTime.matches(regex);

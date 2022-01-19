@@ -27,32 +27,50 @@ public class FlightTest {
   ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime));
   Flight flight = new Flight(args);
 
+  /**
+   * Tests that method in abstract class returns null.
+   */
   @Test
   void forProject1ItIsOkayIfGetDepartureTimeReturnsNull() {
     Flight flight = new Flight();
     assertThat(flight.getDeparture(), is(nullValue()));
   }
 
+  /**
+   * Tests that flight number given through argument is in the flight number field.
+   */
   @Test
   void flightNumberIsGivenIdNumber() {
     assertThat(flight.getNumber(), equalTo(Integer.parseInt(flightNumber)));
   }
 
+  /**
+   * Tests that the src given through argument is in the src field.
+   */
   @Test
-  void srcIsGiveCode() {
+  void srcIsGivenCode() {
     assertThat(flight.getSource(), containsStringIgnoringCase(src));
   }
 
+  /**
+   * Tests that the dest given through argument is in the dest field.
+   */
   @Test
-  void destIsGiveCode() {
+  void destIsGivenCode() {
     assertThat(flight.getDestination(), containsStringIgnoringCase(dest));
   }
 
+  /**
+   * Tests that the departure date and time is in the depart field.
+   */
   @Test
   void departIncludesDateAndTimeGiven() {
     assertThat(flight.getDepartureString(), containsStringIgnoringCase(departDate + " " + departTime));
   }
 
+  /**
+   * Tests that the arrival date and time is in the arrive field.
+   */
   @Test
   void arriveIncludesDateAndTimeGiven() {
     assertThat(flight.getArrivalString(), containsStringIgnoringCase(arriveDate + " " + arriveTime));

@@ -14,6 +14,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 class Project1Test {
 
+  /**
+   * Tests that the README.txt file is accessible as a resource.
+   * @throws IOException  Thrown if the README.txt file cannot be read.
+   */
   @Test
   void readmeCanBeReadAsResource() throws IOException {
     try (
