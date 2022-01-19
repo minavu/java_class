@@ -26,9 +26,6 @@ public class Project1 {
         case "-print":
           System.out.println(flight);
           break;
-        case "-readme":
-          System.out.println(displayReadmeFile());
-          break;
         default:
           System.exit(1);
       }
@@ -37,25 +34,33 @@ public class Project1 {
     System.exit(0);
   }
 
-  private static String displayReadmeFile() {
+  private static void displayReadmeFile() {
     try {
       InputStream readme = Project1.class.getResourceAsStream("README.txt");
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
-      String line = reader.readLine();
-      return line;
+      String line = new String();
+      while (reader.ready()) {
+        line += reader.readLine() + "\n";
+      }
+      System.out.println(line);
     } catch (NullPointerException e) {
-      return "README.txt not found.";
+      System.out.println("README.txt not found.");
     } catch (IOException e) {
-      return "README.txt could not be read.";
+      System.out.println("README.txt could not be read.");
+    } finally {
+      System.exit(0);
     }
   }
 
   private static boolean checkArgsCountAndCreateOptsAndArgsLists(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) {
     for (String arg : args) {
+      if (arg.toLowerCase().contains("-readme")) {
+        displayReadmeFile();
+      }
       if (arg.startsWith("-")) {
         optsList.add(arg.toLowerCase());
       } else {
-        argsList.add(arg);
+        argsList.add(arg.toLowerCase());
       }
     }
     if (optsList.size() > OPTIONAL_OPTS_COUNT || argsList.size() != REQUIRED_ARGS_COUNT) {

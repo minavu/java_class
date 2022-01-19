@@ -74,7 +74,7 @@ class Project1IT extends InvokeMainTestCase {
 
     @Test
     void moreOptionProvided() {
-        MainMethodResult result = invokeMain(readme, readme, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
+        MainMethodResult result = invokeMain(print, print, print, airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime);
         assertThat(result.getExitCode(), equalTo(1));
         assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect command line arguments."));
     }
