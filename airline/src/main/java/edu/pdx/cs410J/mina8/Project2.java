@@ -5,38 +5,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The main class for the CS410J airline Project
  */
 public class Project2 {
   public static void main(String[] args) {
+    Airline airline = null;
+    Flight flight = null;
     ArrayList<String> optsList = new ArrayList<>();
     ArrayList<String> argsList = new ArrayList<>();
     if (!checkArgsCountAndCreateOptsAndArgsLists(args, optsList, argsList)) {
       System.err.println("Incorrect number of command line arguments. See below for usage guide.\n" + USAGE_GUIDE);
       System.exit(1);
     }
-    Airline airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
-    Flight flight = null;
+    for (String opt : optsList) {
+      if (!ALLOWABLE_OPTIONS.contains(opt)) {
+        System.err.println(opt + " is not a valid option.  See below for usage guide.\n" + USAGE_GUIDE);
+        System.exit(1);
+      }
+    }
     try {
+      airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
       flight = new Flight(argsList);
     } catch (IllegalArgumentException e) {
       System.err.println(e.getMessage() + " See below for usage guide.\n" + USAGE_GUIDE);
       System.exit(1);
     }
     airline.addFlight(flight);
-
-    for (String opt : optsList) {
-      switch (opt) {
-        case "-print":
-          System.out.println(flight);
-          break;
-        default:
-          System.exit(1);
-      }
+    if (optsList.contains("-print")) {
+      System.out.println(flight);
     }
-
     System.exit(0);
   }
 
@@ -95,6 +95,7 @@ public class Project2 {
 
   protected final static int REQUIRED_ARGS_COUNT = 8;
   protected final static int OPTIONAL_OPTS_COUNT = 2;
+  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-README", "-print", "-textFile"));
   protected final static String USAGE_GUIDE =
           "usage: java edu.pdx.cs410J.<login-id>.Project1 [options] <args>\n" +
           "\targs are (in this order):\n" +
