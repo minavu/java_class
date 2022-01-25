@@ -35,6 +35,19 @@ public class Flight extends AbstractFlight {
     arrive = argsList.get(6) + " " + argsList.get(7);
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
   /**
    * This is the accessor method to get the flight number.
    * @return          An integer that represents the flight number.
