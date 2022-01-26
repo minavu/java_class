@@ -53,7 +53,7 @@ class Project2Test {
    */
   @Test
   void optionsExceedingCountWillThrowException() {
-    String[] opts = {"-print", "-print", "-textFile", "-badOption"};
+    String[] opts = {"-print", "-print", "-print", "-print"};
     ArrayList<String> optsList = new ArrayList<>();
     ArrayList<String> argsList = new ArrayList<>();
     Project2.createOptionsAndArgumentsListsFromCommandLineArguments(opts, optsList, argsList);
