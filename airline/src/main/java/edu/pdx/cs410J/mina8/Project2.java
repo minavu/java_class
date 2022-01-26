@@ -12,32 +12,57 @@ import java.util.Arrays;
  */
 public class Project2 {
   public static void main(String[] args) {
-    Airline airline = null;
-    Flight flight = null;
-    ArrayList<String> optsList = new ArrayList<>();
-    ArrayList<String> argsList = new ArrayList<>();
-    if (!checkArgsCountAndCreateOptsAndArgsLists(args, optsList, argsList)) {
-      System.err.println("Incorrect number of command line arguments. See below for usage guide.\n" + USAGE_GUIDE);
-      System.exit(1);
+    try {
+      ArrayList<String> optsList = new ArrayList<>();
+      ArrayList<String> argsList = new ArrayList<>();
+      createOptionsAndArgumentsListsFromCommandLineArguments(args, optsList, argsList);
+      checkOptionsListForCountReadmeAndInvalidOption(optsList);
+      checkArgumentsListForCount(argsList);
+      Airline airline = createAirlineFromArgumentsList(argsList);
+      Flight flight = createFlightFromArgumentsList(argsList);
+      airline.addFlight(flight);
+      if (optsList.contains("-print")) {
+        System.out.println(flight);
+      }
+    } catch (IllegalArgumentException e) {
+      printErrorMessageAndExitSystem(e.getMessage() + USAGE_GUIDE);
+    }
+    System.exit(0);
+  }
+
+  protected static void checkArgumentsListForCount(ArrayList<String> argsList) throws IllegalArgumentException {
+    if (argsList.size() != REQUIRED_ARGS_COUNT) {
+      throw new IllegalArgumentException("Incorrect number of command line arguments.");
+    }
+  }
+
+  protected static Airline createAirlineFromArgumentsList(ArrayList<String> argsList) {
+    Airline airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
+    return airline;
+  }
+
+  protected static Flight createFlightFromArgumentsList(ArrayList<String> argsList) throws IllegalArgumentException {
+    Flight flight = new Flight(argsList);
+    return flight;
+  }
+
+  protected static void checkOptionsListForCountReadmeAndInvalidOption(ArrayList<String> optsList) throws IllegalArgumentException {
+    if (optsList.size() > ALLOWABLE_OPTIONS.size()) {
+      throw new IllegalArgumentException("There are too many options present.");
     }
     for (String opt : optsList) {
       if (!ALLOWABLE_OPTIONS.contains(opt)) {
-        System.err.println(opt + " is not a valid option.  See below for usage guide.\n" + USAGE_GUIDE);
-        System.exit(1);
+        throw new IllegalArgumentException(opt + " is not a valid option.");
+      }
+      if (opt.toLowerCase().contains("-readme")) {
+        displayReadmeFileAndExitSystem();
       }
     }
-    try {
-      airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
-      flight = new Flight(argsList);
-    } catch (IllegalArgumentException e) {
-      System.err.println(e.getMessage() + " See below for usage guide.\n" + USAGE_GUIDE);
-      System.exit(1);
-    }
-    airline.addFlight(flight);
-    if (optsList.contains("-print")) {
-      System.out.println(flight);
-    }
-    System.exit(0);
+  }
+
+  private static void printErrorMessageAndExitSystem(String message) {
+    System.err.println(message);
+    System.exit(1);
   }
 
   /**
@@ -45,7 +70,7 @@ public class Project2 {
    * It reads every line in the file into a string variable and prints text to stdout.
    * Finally, it exits the system with status code 0, unless the file cannot be found or read.
    */
-  private static void displayReadmeFile() {
+  private static void displayReadmeFileAndExitSystem() {
     try {
       InputStream readme = Project2.class.getResourceAsStream("README.txt");
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
@@ -72,32 +97,24 @@ public class Project2 {
    * @param args      The original list of arguments from the command line.
    * @param optsList  An empty list to store option tags.
    * @param argsList  An empty list to store arguments.
-   * @return          A boolean indicating the correct number of options and arguments were given.
    */
-  private static boolean checkArgsCountAndCreateOptsAndArgsLists(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) {
+  protected static void createOptionsAndArgumentsListsFromCommandLineArguments(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) {
     for (String arg : args) {
-      if (arg.toLowerCase().contains("-readme")) {
-        displayReadmeFile();
-      }
       if (arg.startsWith("-")) {
         optsList.add(arg.toLowerCase());
       } else {
         argsList.add(arg.toLowerCase());
       }
     }
-    if (optsList.size() > OPTIONAL_OPTS_COUNT || argsList.size() != REQUIRED_ARGS_COUNT) {
-      return false;
-    }
-    return true;
   }
 
 
   protected final static String DELIMITER = "|";
   protected final static int REQUIRED_ARGS_COUNT = 8;
-  protected final static int OPTIONAL_OPTS_COUNT = 2;
-  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-README", "-print", "-textFile"));
+  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-readme", "-print", "-textFile"));
   protected final static String USAGE_GUIDE =
-          "usage: java edu.pdx.cs410J.<login-id>.Project1 [options] <args>\n" +
+          " See below for usage guide.\n" +
+          "usage: java -jar target/airline-2022.0.0.jar [options] <args>\n" +
           "\targs are (in this order):\n" +
           "\t\tairline\t\t\tThe name of the airline\n" +
           "\t\tflightNumber\tThe flight number\n" +
