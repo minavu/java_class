@@ -173,6 +173,9 @@ public class Project2 {
       if (args[i].startsWith("-")) {
         optsList.add(args[i].toLowerCase());
         if (args[i].contains("-textFile")) {
+          if (args[i + 1].startsWith("-")) {
+            throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
+          }
           try {
             validateTextFileName(args[i + 1]);
           } catch (ArrayIndexOutOfBoundsException e) {
