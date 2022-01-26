@@ -53,7 +53,7 @@ class Project2Test {
    */
   @Test
   void optionsExceedingCountWillThrowException() {
-    String[] opts = {"-readme", "-print", "-textFile", "-badOption"};
+    String[] opts = {"-print", "-print", "-textFile", "-badOption"};
     ArrayList<String> optsList = new ArrayList<>();
     ArrayList<String> argsList = new ArrayList<>();
     Project2.createOptionsAndArgumentsListsFromCommandLineArguments(opts, optsList, argsList);
@@ -89,6 +89,36 @@ class Project2Test {
     ArrayList<String> argsList = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "nyc", "1/1/2022", "11:00"));
     Flight flight = Project2.createFlightFromArgumentsList(argsList);
     assertThat(flight.toString(), containsString(argsList.get(1)));
+  }
+
+  /**
+   * Tests that an airline can be created from file or even if the file does not exist.
+   */
+  @Test
+  void canCreateAirlineFromFileOrEmptyAirlineIfFileDoesNotExist() {
+    String goodFileName = "resources/fileWithValidArgs.txt";
+    String badFileName = "resources/thisFileDoesNotExist";
+    String airlineName = "abc";
+    Airline airline = Project2.createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(goodFileName, airlineName);
+    assertThat(airline.getName(), equalTo(airlineName));
+    airline = Project2.createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(badFileName, airlineName);
+    assertThat(airline.getName(), equalTo(airlineName));
+  }
+
+  /**
+   * Tests that an airline can be written to file or throw exception if the file does not exist.
+   * @throws IOException If a file cannot be found.
+   */
+  @Test
+  void canWriteAirlineToFileOrThrowExceptionOtherwise() throws IOException {
+    String goodFileName = "resources/tempFilesToDelete/goodFileName.txt";
+    String badFileName = "resources/tempFilesToDelet/bad:FileName.txt/";
+    Airline airline = new Airline("Tester Name");
+    Project2.writeAirlineToTextFile(goodFileName, airline);
+    BufferedReader reader = new BufferedReader(new FileReader(goodFileName));
+    String read = reader.readLine();
+    assertThat(read, containsString(airline.getName()));
+    assertThrows(IllegalArgumentException.class, () -> Project2.writeAirlineToTextFile(badFileName, airline));
   }
 
 }

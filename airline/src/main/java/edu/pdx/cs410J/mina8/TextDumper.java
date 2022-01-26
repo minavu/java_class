@@ -52,6 +52,9 @@ public class TextDumper implements AirlineDumper<Airline> {
                       flight.getArrivalString().split(" ")[0] + Project2.DELIMITER +
                       flight.getArrivalString().split(" ")[1])
               );
+      if (flights.isEmpty()) {
+        pw.println(airline.getName());
+      }
 
       pw.flush();
     }

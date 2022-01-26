@@ -13,43 +13,28 @@ import java.util.InputMismatchException;
 public class Project2 {
   public static void main(String[] args) {
     try {
-      Airline airline = null;
+      Airline airline;
       ArrayList<String> optsList = new ArrayList<>();
       ArrayList<String> argsList = new ArrayList<>();
       createOptionsAndArgumentsListsFromCommandLineArguments(args, optsList, argsList);
       checkOptionsListForCountReadmeAndInvalidOption(optsList);
       checkArgumentsListForCount(argsList);
+      String airlineName = argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase();
 
       if (optsList.contains("-textfile")) {
         int indexOfFileName = optsList.indexOf("-textfile") + 1;
-        try {
-          TextParser parser = new TextParser(optsList.get(indexOfFileName));
-          airline = parser.parse(argsList.get(0));
-        } catch (FileNotFoundException | ParserException e) {
-          //nothing to read if file does not exist
-        } finally {
-          if (airline == null) {
-            airline = createAirlineFromArgumentsList(argsList);
-          }
-        }
-        Flight flight = createFlightFromArgumentsList(argsList);
-        airline.addFlight(flight);
-        if (optsList.contains("-print")) {
-          System.out.println(flight);
-        }
-        try {
-          TextDumper dumper = new TextDumper(optsList.get(indexOfFileName));
-          dumper.dump(airline);
-        } catch (IOException e) {
-          printErrorMessageAndExitSystem(e.getMessage());
-        }
+        airline = createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(optsList.get(indexOfFileName), airlineName);
       } else {
         airline = createAirlineFromArgumentsList(argsList);
-        Flight flight = createFlightFromArgumentsList(argsList);
-        airline.addFlight(flight);
-        if (optsList.contains("-print")) {
-          System.out.println(flight);
-        }
+      }
+      Flight flight = createFlightFromArgumentsList(argsList);
+      airline.addFlight(flight);
+      if (optsList.contains("-print")) {
+        System.out.println(flight);
+      }
+      if (optsList.contains("-textfile")) {
+        int indexOfFileName = optsList.indexOf("-textfile") + 1;
+        writeAirlineToTextFile(optsList.get(indexOfFileName), airline);
       }
     } catch (IllegalArgumentException | InputMismatchException e) {
       printErrorMessageAndExitSystem(e.getMessage() + USAGE_GUIDE);
@@ -58,10 +43,41 @@ public class Project2 {
   }
 
   /**
+   * This method writes an Airline to a file.
+   * @param filename A string representing a file to write the airline data.
+   * @param airline An airline with a name and flights.
+   * @throws IllegalArgumentException If the file does not exist.
+   */
+  protected static void writeAirlineToTextFile(String filename, Airline airline) throws IllegalArgumentException {
+    try {
+      TextDumper dumper = new TextDumper(filename);
+      dumper.dump(airline);
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Cannot write Airline to the named text file.");
+    }
+  }
+
+  /**
+   * This method creates an airline from a file or if the file does not exist, will create an empty airline.
+   * @param filename A string representing a file to read airline data.
+   * @param airlineName A string representing an airline to be used in creating empty airline.
+   * @return An airline object.
+   * @throws IllegalArgumentException If any arguments to create flight for airline is ill-formatted.
+   */
+  protected static Airline createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(String filename, String airlineName) throws IllegalArgumentException {
+    try {
+      TextParser parser = new TextParser(filename);
+      return parser.parse(airlineName);
+    } catch (FileNotFoundException | ParserException e) {
+      return new Airline(airlineName);
+    }
+  }
+
+  /**
    * This method checks the number of command line arguments that are not options.
    * There should be data for all required fields to create an Airline and a Flight.
-   * @param argsList -An array list of strings containing data for an Airline and a Flight.
-   * @throws IllegalArgumentException -If the non-option related arguments from the command line do not add up to the required count for an Airline and a Flight.
+   * @param argsList An array list of strings containing data for an Airline and a Flight.
+   * @throws IllegalArgumentException If the non-option related arguments from the command line do not add up to the required count for an Airline and a Flight.
    */
   protected static void checkArgumentsListForCount(ArrayList<String> argsList) throws IllegalArgumentException {
     if (argsList.size() != REQUIRED_ARGS_COUNT) {
@@ -71,8 +87,8 @@ public class Project2 {
 
   /**
    * This method creates an Airline from the parsed command line arguments.
-   * @param argsList -An array list of strings containing data for an Airline and a Flight.
-   * @return -An Airline object
+   * @param argsList An array list of strings containing data for an Airline and a Flight.
+   * @return An Airline object
    */
   protected static Airline createAirlineFromArgumentsList(ArrayList<String> argsList) {
     Airline airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
