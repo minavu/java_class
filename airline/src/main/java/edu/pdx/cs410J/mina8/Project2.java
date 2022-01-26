@@ -92,7 +92,7 @@ public class Project2 {
   }
 
 
-
+  protected final static String DELIMITER = "|";
   protected final static int REQUIRED_ARGS_COUNT = 8;
   protected final static int OPTIONAL_OPTS_COUNT = 2;
   protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-README", "-print", "-textFile"));

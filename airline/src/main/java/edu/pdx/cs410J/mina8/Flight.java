@@ -49,6 +49,9 @@ public class Flight extends AbstractFlight {
    * @throws IllegalArgumentException
    */
   private static void checkArgsForValidity(ArrayList<String> argsList) throws IllegalArgumentException {
+    if (argsList.size() != Project2.REQUIRED_ARGS_COUNT) {
+      throw new IllegalArgumentException("The number of arguments provided is not correct.");
+    }
     try {
       Integer.parseInt(argsList.get(1));
     } catch (NumberFormatException e) {
