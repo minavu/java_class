@@ -22,9 +22,10 @@ public class Flight extends AbstractFlight {
   public Flight() {}
 
   /**
-   * This is the argument constructor for the Flight class and requires an array list of string arguments.
-   * @param argsList  An array list of strings containing arguments from the command line.
-   * @throws IllegalArgumentException
+   * This is a constructor that takes an array list of strings containing the arguments to create a Flight.
+   * It checks each argument for validity before creating the Flight object.
+   * @param argsList -An array list of strings containing arguments from the command line.
+   * @throws IllegalArgumentException -If any of the arguments does not match the required specification.
    */
   public Flight(ArrayList<String> argsList) throws IllegalArgumentException {
     try {
@@ -44,9 +45,8 @@ public class Flight extends AbstractFlight {
    * The usage specification requires the second argument to be a number,
    * the third and sixth arguments to be a three-letter code,
    * and the fourth/fifth and seventh/eighth arguments form valid date/time format.
-   * @param argsList  A list of arguments without any option tags.
-   * @return          A boolean indicating the validity of all arguments.
-   * @throws IllegalArgumentException
+   * @param argsList -A list of arguments without any option tags.
+   * @throws IllegalArgumentException -If any of the arguments does not conform to the required format.
    */
   private static void checkArgsForValidity(ArrayList<String> argsList) throws IllegalArgumentException {
     if (argsList.size() != Project2.REQUIRED_ARGS_COUNT) {
@@ -85,8 +85,8 @@ public class Flight extends AbstractFlight {
 
   /**
    * This method checks a string against a regular expression that conforms to the required date/time format.
-   * @param dateTime  A string to check date/time format.
-   * @return          A boolean indicating the validity of the string.
+   * @param dateTime -A string to check date/time format.
+   * @return -A boolean indicating the validity of the string.
    */
   private static boolean validDateTime(String dateTime) {
     String regex = "^(1[0-2]|0[1-9]|[1-9])/(3[01]|[12][0-9]|0[1-9]|[1-9])/[0-9]{4} (0[0-9]|1[0-9]|2[0-3]|[1-9]):([0-5][0-9])$";
@@ -95,7 +95,7 @@ public class Flight extends AbstractFlight {
 
   /**
    * This is the accessor method to get the flight number.
-   * @return          An integer that represents the flight number.
+   * @return -An integer that represents the flight number.
    */
   @Override
   public int getNumber() {
@@ -104,7 +104,7 @@ public class Flight extends AbstractFlight {
 
   /**
    * This is the accessor method to get the source location of the flight.
-   * @return          A string representing the source location.
+   * @return -A string representing the source location.
    */
   @Override
   public String getSource() {
@@ -113,7 +113,7 @@ public class Flight extends AbstractFlight {
 
   /**
    * This is the accessor method to get the departure date and time of the flight.
-   * @return          A string representing the departure date and time.
+   * @return -A string representing the departure date and time.
    */
   @Override
   public String getDepartureString() {
@@ -122,7 +122,7 @@ public class Flight extends AbstractFlight {
 
   /**
    * This is the accessor method to get the destination of the flight.
-   * @return          A string representing the destination.
+   * @return -A string representing the destination.
    */
   @Override
   public String getDestination() {
@@ -131,7 +131,7 @@ public class Flight extends AbstractFlight {
 
   /**
    * This is the accessor method to get the arrival date and time of a flight.
-   * @return          A string representing the arrival date and time.
+   * @return -A string representing the arrival date and time.
    */
   @Override
   public String getArrivalString() {

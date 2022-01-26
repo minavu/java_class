@@ -19,7 +19,7 @@ class Project2Test {
 
   /**
    * Tests that the README.txt file is accessible as a resource.
-   * @throws IOException  Thrown if the README.txt file cannot be read.
+   * @throws IOException -Thrown if the README.txt file cannot be read.
    */
   @Test
   void readmeCanBeReadAsResource() throws IOException {
@@ -33,8 +33,11 @@ class Project2Test {
     }
   }
 
+  /**
+   * Tests that the options and arguments lists can be created.
+   */
   @Test
-  void optsAndArgsListsAreCreatedFromArguments() throws IOException {
+  void optsAndArgsListsAreCreatedFromArguments() {
     String[] opts = {"-opt1", "-opt2", "-opt3"};
     String[] args = {"arg1", "arg2", "arg3", "arg4", "arg5", "arg6"};
     String[] both = {"-opt1", "-opt2", "-opt3", "arg1", "arg2", "arg3", "arg4", "arg5", "arg6"};
@@ -45,8 +48,11 @@ class Project2Test {
     assertThat(argsList.size(), equalTo(args.length));
   }
 
+  /**
+   * Tests that including too many options will throw an exception.
+   */
   @Test
-  void optionsExceedingCountWillThrowException() throws IOException {
+  void optionsExceedingCountWillThrowException() {
     String[] opts = {"-readme", "-print", "-textFile", "-badOption"};
     ArrayList<String> optsList = new ArrayList<>();
     ArrayList<String> argsList = new ArrayList<>();
@@ -55,6 +61,9 @@ class Project2Test {
     assertThat(exception.getMessage(), containsString("too many options"));
   }
 
+  /**
+   * Tests that including an invalid option will throw an exception.
+   */
   @Test
   void invalidOptionWillThrowException() {
     ArrayList<String> optsList = new ArrayList<>(Arrays.asList("-print", "-badOption"));
@@ -62,6 +71,9 @@ class Project2Test {
     assertThat(exception.getMessage(), containsString("not a valid option"));
   }
 
+  /**
+   * Tests that an Airline can be created and as the name that is given.
+   */
   @Test
   void airlineIsCreatedFromArgumentsList() {
     ArrayList<String> argsList = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "nyc", "1/1/2022", "11:00"));
@@ -69,6 +81,9 @@ class Project2Test {
     assertThat(airline.getName().toLowerCase(), equalTo(argsList.get(0)));
   }
 
+  /**
+   * Tests that a Flight can be created with the given data.
+   */
   @Test
   void flightIsCreatedFromArgumentsList() {
     ArrayList<String> argsList = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "nyc", "1/1/2022", "11:00"));

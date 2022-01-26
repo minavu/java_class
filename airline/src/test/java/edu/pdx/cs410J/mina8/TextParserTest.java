@@ -15,35 +15,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * These are unit tests for the TextParser class.
+ */
 public class TextParserTest {
 
-  @Test
-  @Disabled
-  void validTextFileCanBeParsed() throws ParserException {
-    InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
-    assertThat(resource, notNullValue());
-
-    TextParser parser = new TextParser(new InputStreamReader(resource));
-    Airline airline = parser.parse();
-    assertThat(airline.getName(), equalTo("Test Airline"));
-  }
-
-  @Test
-  @Disabled
-  void invalidTextFileThrowsParserException() {
-    InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
-    assertThat(resource, notNullValue());
-
-    TextParser parser = new TextParser(new InputStreamReader(resource));
-    assertThrows(ParserException.class, parser::parse);
-  }
-
+  /**
+   * Tests that a non-existent file name will throw an exception.
+   */
   @Test
   void nonexistentFileNameThrowsFileNotFoundException() {
     String filename = "notAFile.txt";
     assertThrows(FileNotFoundException.class, () -> new TextParser(filename));
   }
 
+  /**
+   * Tests that an existing file name can be accessed.
+   */
   @Test
   void existingFileNameCanBeAccessed() {
     String filename = "resources/fileWithValidArgs.txt";
@@ -55,6 +43,9 @@ public class TextParserTest {
     assertThat(parser, notNullValue());
   }
 
+  /**
+   * Tests that an existing file that uses the appropriate delimiter can be read.
+   */
   @Test
   void existingFileCanBeReadUsingDelimiter() {
     String filename = "resources/fileWithValidArgs.txt";
@@ -71,6 +62,9 @@ public class TextParserTest {
     assertThat(airline.getName(), equalTo("abc"));
   }
 
+  /**
+   * Tests that a Flight can be created when a file contains valid data.
+   */
   @Test
   void fileWithValidFlightInfoCanCreateANewFlight() {
     String filename = "resources/fileWithValidArgs.txt";
@@ -88,6 +82,9 @@ public class TextParserTest {
     assertThat(flights.get(0).toString(), containsString("Flight 123"));
   }
 
+  /**
+   * Tests that an Airline can be created with multiple flights if present in the file.
+   */
   @Test
   void fileWithMultipleFlightsCanAllBeCreatedAndAddedToAirline() {
     String filename = "resources/fileWithValidArgs.txt";
@@ -105,6 +102,9 @@ public class TextParserTest {
     assertThat(flights.size(), greaterThan(1));
   }
 
+  /**
+   * Tests that a file containing invalid Flight data will throw an exception.
+   */
   @Test
   void fileWithInvalidFlightInfoWillThrowExceptionWhenCreatingFlight() {
     String filename = "resources/fileWithInvalidArgs.txt";
@@ -116,6 +116,10 @@ public class TextParserTest {
     assertThrows(IllegalArgumentException.class, parser::parse);
   }
 
+  /**
+   * Tests that an exception will be thrown when the Airline name in file and of new Flight does not match.
+   * @throws ParserException
+   */
   @Test
   void parsingFileWithAirlineNameDifferentThanNewFlightInfoWillThrowException() throws ParserException {
     String filename = "resources/fileWithInvalidArgs.txt";

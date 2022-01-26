@@ -8,17 +8,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
+/**
+ * This class reads a text file and parses the data to create an Airline with
+ * all associated flights.
+ */
 public class TextParser implements AirlineParser<Airline> {
   private final Reader reader;
 
+  /**
+   * This is a constructor that takes a Reader object.
+   * @param reader -A Reader object containing Airline and Flight data.
+   */
   public TextParser(Reader reader) {
     this.reader = reader;
   }
 
+  /**
+   * This is a constructor that takes a string representing the file path where
+   * the Airline data is stored.
+   * @param filename -A string representing the file path.
+   * @throws FileNotFoundException -If the file path and file name does not exist.
+   */
   public TextParser(String filename) throws FileNotFoundException {
     this.reader = new FileReader(filename);
   }
 
+  /**
+   * This method parses each line in the file to create an Airline and add all the
+   * associated flights. Data stored in file are expected to be separated by the "|" delimiter.
+   * @return -An Airline with all flights as stored in the file.
+   * @throws ParserException -If the source file is malformed.
+   * @throws IllegalArgumentException -If any of the arguments to create the flights is formatted incorrectly.
+   */
   @Override
   public Airline parse() throws ParserException, IllegalArgumentException {
     try (
@@ -48,6 +69,15 @@ public class TextParser implements AirlineParser<Airline> {
     }
   }
 
+  /**
+   * This method first checks that the Airline name of the file matches the Airline name of the flight to be added
+   * before it parses each line in the file to create an Airline and add all the
+   * associated flights. Data stored in file are expected to be separated by the "|" delimiter.
+   * @param matchAirlineName -A string representing the airline of the new flight to be added.
+   * @return -An Airline with all flights as stored in the file.
+   * @throws ParserException -If the source file is malformed.
+   * @throws IllegalArgumentException -If any of the arguments to create the flights is formatted incorrectly.
+   */
   public Airline parse(String matchAirlineName) throws IllegalArgumentException, ParserException {
     try (
             BufferedReader br = new BufferedReader(this.reader)

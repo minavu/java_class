@@ -57,22 +57,45 @@ public class Project2 {
     System.exit(0);
   }
 
+  /**
+   * This method checks the number of command line arguments that are not options.
+   * There should be data for all required fields to create an Airline and a Flight.
+   * @param argsList -An array list of strings containing data for an Airline and a Flight.
+   * @throws IllegalArgumentException -If the non-option related arguments from the command line do not add up to the required count for an Airline and a Flight.
+   */
   protected static void checkArgumentsListForCount(ArrayList<String> argsList) throws IllegalArgumentException {
     if (argsList.size() != REQUIRED_ARGS_COUNT) {
       throw new IllegalArgumentException("Incorrect number of command line arguments.");
     }
   }
 
+  /**
+   * This method creates an Airline from the parsed command line arguments.
+   * @param argsList -An array list of strings containing data for an Airline and a Flight.
+   * @return -An Airline object
+   */
   protected static Airline createAirlineFromArgumentsList(ArrayList<String> argsList) {
     Airline airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
     return airline;
   }
 
+  /**
+   * This method creates a Flight from the parsed command line arguments.
+   * @param argsList -An array list of strings containing data for an Airline and a Flight.
+   * @return -A Flight object.
+   * @throws IllegalArgumentException -If the formatting of the parsed arguments does not conform with the required specification.
+   */
   protected static Flight createFlightFromArgumentsList(ArrayList<String> argsList) throws IllegalArgumentException {
     Flight flight = new Flight(argsList);
     return flight;
   }
 
+  /**
+   * This method checks the options from the user input to ensure there are not too many options called.
+   * It also checks for the README option to display the text file and exit the system.
+   * @param optsList -An array list of strings containing options for the command line.
+   * @throws IllegalArgumentException -If an option listed is not a recognized option by the program or if there are too many options present.
+   */
   protected static void checkOptionsListForCountReadmeAndInvalidOption(ArrayList<String> optsList) throws IllegalArgumentException {
     int optsListLength = optsList.size();
     for (int i = 0; i < optsListLength; ++i) {
@@ -83,11 +106,15 @@ public class Project2 {
         displayReadmeFileAndExitSystem();
       }
     }
-    if (optsList.size() > ALLOWABLE_OPTIONS.size()) {
+    if (optsListLength > ALLOWABLE_OPTIONS.size()) {
       throw new IllegalArgumentException("There are too many options present.");
     }
   }
 
+  /**
+   * This method prints a message to standard error and exits the system with an error code of 1.
+   * @param message -A string containing the message to print to standard error.
+   */
   private static void printErrorMessageAndExitSystem(String message) {
     System.err.println(message);
     System.exit(1);
@@ -119,12 +146,11 @@ public class Project2 {
 
   /**
    * This method reads a string array of arguments and creates two array lists separating options and arguments.
-   * It first checks for the -readme option in the arguments list.
-   * If present, it calls the displayReadmeFile() method to execute.
-   * It also checks the number of options and arguments to make a return.
-   * @param args      The original list of arguments from the command line.
-   * @param optsList  An empty list to store option tags.
-   * @param argsList  An empty list to store arguments.
+   * Some options require a parameter.  If present and valid, that parameter will be added to the options list.
+   * @param args -The original list of arguments from the command line.
+   * @param optsList -An empty array list to store option tags and parameters.
+   * @param argsList -An empty array list to store arguments.
+   * @throws IllegalArgumentException -If a required parameter for an option is not present.
    */
   protected static void createOptionsAndArgumentsListsFromCommandLineArguments(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) throws IllegalArgumentException {
     for (int i = 0; i < args.length; ++i) {
@@ -144,6 +170,11 @@ public class Project2 {
     }
   }
 
+  /**
+   * This method checks the file name parameter for the textFile option and ensures its validity.
+   * @param filename -A string containing the file name.
+   * @throws IllegalArgumentException -If the file name is not valid.
+   */
   protected static void validateTextFileName(String filename) throws IllegalArgumentException {
     File file = new File(filename + ".temp");
     boolean created = false;

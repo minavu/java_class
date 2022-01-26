@@ -16,7 +16,7 @@ public class Airline extends AbstractAirline<Flight> {
 
   /**
    * This is the argument constructor for the class.
-   * @param name    A string to represent the name of the airline.
+   * @param name -A string to represent the name of the airline.
    */
   public Airline(String name) {
     this.name = name;
@@ -24,7 +24,7 @@ public class Airline extends AbstractAirline<Flight> {
 
   /**
    * This is the accessor method to get the name of the airline.
-   * @return        A string representing the name.
+   * @return -A string representing the name.
    */
   @Override
   public String getName() {
@@ -33,7 +33,7 @@ public class Airline extends AbstractAirline<Flight> {
 
   /**
    * This is a mutator method to add a flight to the airline.
-   * @param flight  A Flight to be added to the airline.
+   * @param flight -A Flight to be added to the airline.
    */
   @Override
   public void addFlight(Flight flight) {
@@ -42,7 +42,7 @@ public class Airline extends AbstractAirline<Flight> {
 
   /**
    * This is the accessor method to get the flights in the airline.
-   * @return        A collection of Flights.
+   * @return -A collection of Flights.
    */
   @Override
   public Collection<Flight> getFlights() {
