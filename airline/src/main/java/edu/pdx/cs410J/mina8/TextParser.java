@@ -48,7 +48,7 @@ public class TextParser implements AirlineParser<Airline> {
     }
   }
 
-  public Airline parse(String matchAirlineName) throws ParserException, IllegalArgumentException {
+  public Airline parse(String matchAirlineName) throws IllegalArgumentException, ParserException {
     try (
             BufferedReader br = new BufferedReader(this.reader)
     ) {
@@ -58,8 +58,8 @@ public class TextParser implements AirlineParser<Airline> {
         throw new ParserException("Missing airline name");
       }
       String[] parsedLine = airlineName.split("\\|");
-      if (parsedLine[0] != matchAirlineName) {
-        throw new InputMismatchException("Airline name in text file is not " + matchAirlineName + ".");
+      if (!parsedLine[0].equals(matchAirlineName)) {
+        throw new InputMismatchException("Airline name in text file does not match \"" + matchAirlineName + "\". It is " + parsedLine[0] + ".");
       }
       airline = new Airline(parsedLine[0]);
       Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedLine)));

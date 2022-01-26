@@ -34,7 +34,7 @@ class Project2Test {
   }
 
   @Test
-  void optsAndArgsListsAreCreatedFromArguments() {
+  void optsAndArgsListsAreCreatedFromArguments() throws IOException {
     String[] opts = {"-opt1", "-opt2", "-opt3"};
     String[] args = {"arg1", "arg2", "arg3", "arg4", "arg5", "arg6"};
     String[] both = {"-opt1", "-opt2", "-opt3", "arg1", "arg2", "arg3", "arg4", "arg5", "arg6"};
@@ -46,7 +46,7 @@ class Project2Test {
   }
 
   @Test
-  void optionsExceedingCountWillThrowException() {
+  void optionsExceedingCountWillThrowException() throws IOException {
     String[] opts = {"-readme", "-print", "-textFile", "-badOption"};
     ArrayList<String> optsList = new ArrayList<>();
     ArrayList<String> argsList = new ArrayList<>();

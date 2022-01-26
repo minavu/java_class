@@ -1,11 +1,11 @@
 package edu.pdx.cs410J.mina8;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import edu.pdx.cs410J.ParserException;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 
 /**
  * The main class for the CS410J airline Project
@@ -13,18 +13,45 @@ import java.util.Arrays;
 public class Project2 {
   public static void main(String[] args) {
     try {
+      Airline airline = null;
       ArrayList<String> optsList = new ArrayList<>();
       ArrayList<String> argsList = new ArrayList<>();
       createOptionsAndArgumentsListsFromCommandLineArguments(args, optsList, argsList);
       checkOptionsListForCountReadmeAndInvalidOption(optsList);
       checkArgumentsListForCount(argsList);
-      Airline airline = createAirlineFromArgumentsList(argsList);
-      Flight flight = createFlightFromArgumentsList(argsList);
-      airline.addFlight(flight);
-      if (optsList.contains("-print")) {
-        System.out.println(flight);
+
+      if (optsList.contains("-textfile")) {
+        int indexOfFileName = optsList.indexOf("-textfile") + 1;
+        try {
+          TextParser parser = new TextParser(optsList.get(indexOfFileName));
+          airline = parser.parse(argsList.get(0));
+        } catch (FileNotFoundException | ParserException e) {
+          //nothing to read if file does not exist
+        } finally {
+          if (airline == null) {
+            airline = createAirlineFromArgumentsList(argsList);
+          }
+        }
+        Flight flight = createFlightFromArgumentsList(argsList);
+        airline.addFlight(flight);
+        if (optsList.contains("-print")) {
+          System.out.println(flight);
+        }
+        try {
+          TextDumper dumper = new TextDumper(optsList.get(indexOfFileName));
+          dumper.dump(airline);
+        } catch (IOException e) {
+          printErrorMessageAndExitSystem(e.getMessage());
+        }
+      } else {
+        airline = createAirlineFromArgumentsList(argsList);
+        Flight flight = createFlightFromArgumentsList(argsList);
+        airline.addFlight(flight);
+        if (optsList.contains("-print")) {
+          System.out.println(flight);
+        }
       }
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | InputMismatchException e) {
       printErrorMessageAndExitSystem(e.getMessage() + USAGE_GUIDE);
     }
     System.exit(0);
@@ -47,16 +74,17 @@ public class Project2 {
   }
 
   protected static void checkOptionsListForCountReadmeAndInvalidOption(ArrayList<String> optsList) throws IllegalArgumentException {
-    if (optsList.size() > ALLOWABLE_OPTIONS.size()) {
-      throw new IllegalArgumentException("There are too many options present.");
-    }
-    for (String opt : optsList) {
-      if (!ALLOWABLE_OPTIONS.contains(opt)) {
-        throw new IllegalArgumentException(opt + " is not a valid option.");
+    int optsListLength = optsList.size();
+    for (int i = 0; i < optsListLength; ++i) {
+      if (!ALLOWABLE_OPTIONS.contains(optsList.get(i)) && !optsList.get(i-1).contains("-textfile")) {
+        throw new IllegalArgumentException(optsList.get(i) + " is not a valid option.");
       }
-      if (opt.toLowerCase().contains("-readme")) {
+      if (optsList.get(i).toLowerCase().contains("-readme")) {
         displayReadmeFileAndExitSystem();
       }
+    }
+    if (optsList.size() > ALLOWABLE_OPTIONS.size()) {
+      throw new IllegalArgumentException("There are too many options present.");
     }
   }
 
@@ -98,12 +126,34 @@ public class Project2 {
    * @param optsList  An empty list to store option tags.
    * @param argsList  An empty list to store arguments.
    */
-  protected static void createOptionsAndArgumentsListsFromCommandLineArguments(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) {
-    for (String arg : args) {
-      if (arg.startsWith("-")) {
-        optsList.add(arg.toLowerCase());
+  protected static void createOptionsAndArgumentsListsFromCommandLineArguments(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) throws IllegalArgumentException {
+    for (int i = 0; i < args.length; ++i) {
+      if (args[i].startsWith("-")) {
+        optsList.add(args[i].toLowerCase());
+        if (args[i].contains("-textFile")) {
+          try {
+            validateTextFileName(args[i + 1]);
+          } catch (ArrayIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
+          }
+          optsList.add(args[++i].toLowerCase());
+        }
       } else {
-        argsList.add(arg.toLowerCase());
+        argsList.add(args[i].toLowerCase());
+      }
+    }
+  }
+
+  protected static void validateTextFileName(String filename) throws IllegalArgumentException {
+    File file = new File(filename + ".temp");
+    boolean created = false;
+    try {
+      created = file.createNewFile();
+    } catch (IOException e) {
+      throw new IllegalArgumentException("The file name for the -textFile option is not valid.");
+    } finally {
+      if (created) {
+        file.delete();
       }
     }
   }
@@ -111,7 +161,7 @@ public class Project2 {
 
   protected final static String DELIMITER = "|";
   protected final static int REQUIRED_ARGS_COUNT = 8;
-  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-readme", "-print", "-textFile"));
+  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-readme", "-print", "-textfile"));
   protected final static String USAGE_GUIDE =
           " See below for usage guide.\n" +
           "usage: java -jar target/airline-2022.0.0.jar [options] <args>\n" +
@@ -123,6 +173,7 @@ public class Project2 {
           "\t\tdest\t\t\tThree-letter code of arrival airport\n" +
           "\t\tarrive\t\t\tArrival date and time (24-hour time)\n" +
           "\toptions are (options may appear in any order):\n" +
+          "\t\t-textFile file\tWhere to read/write the airline info\n" +
           "\t\t-print\t\t\tPrints a description of the new flight\n" +
           "\t\t-README\t\t\tPrints a README for this project and exits\n" +
           "\tDate and time should be in the format: mm/dd/yyyy hh:mm";
