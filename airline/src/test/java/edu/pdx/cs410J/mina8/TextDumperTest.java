@@ -23,7 +23,7 @@ public class TextDumperTest {
   @Test
   void nonexistentFileNameWillBeCreatedAsNewFile() throws IOException {
     Date newDate = new Date();
-    String newFileName = "resources/tempFilesToDelete/" + newDate + ".txt";
+    String newFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelete/" + newDate + ".txt";
     assertThat((new File(newFileName)).exists(), equalTo(false));
     TextDumper dumper = new TextDumper(newFileName);
     assertThat((new File(newFileName)).exists(), equalTo(true));
@@ -35,7 +35,7 @@ public class TextDumperTest {
    */
   @Test
   void airlineWithOneFlightIsWrittenToFileWithDelimiter() throws IOException {
-    String readFileName = "resources/fileWithValidArgs.txt";
+    String readFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
     BufferedReader reader = new BufferedReader(new FileReader(readFileName));
     String readAirline = reader.readLine();
     ArrayList<String> args = new ArrayList<>(Arrays.asList(readAirline.split("\\|")));
@@ -43,7 +43,7 @@ public class TextDumperTest {
     Flight flight = new Flight(args);
     airline.addFlight(flight);
 
-    String writeFileName = "resources/tempFilesToDelete/fileWithTestAirline.txt";
+    String writeFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelete/fileWithTestAirline.txt";
     TextDumper dumper = new TextDumper(writeFileName);
     dumper.dump(airline);
 
@@ -57,7 +57,7 @@ public class TextDumperTest {
    */
   @Test
   void airlineWithMultipleFlightsIsWrittenToFileWithDelimiterAndNewline() throws IOException {
-    String readFileName = "resources/fileWithValidArgs.txt";
+    String readFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
     BufferedReader reader = new BufferedReader(new FileReader(readFileName));
     String readAirline1 = reader.readLine();
     ArrayList<String> args1 = new ArrayList<>(Arrays.asList(readAirline1.split("\\|")));
@@ -69,7 +69,7 @@ public class TextDumperTest {
     flight = new Flight(args2);
     airline.addFlight(flight);
 
-    String writeFileName = "resources/tempFilesToDelete/fileWithTestAirline.txt";
+    String writeFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelete/fileWithTestAirline.txt";
     TextDumper dumper = new TextDumper(writeFileName);
     dumper.dump(airline);
 

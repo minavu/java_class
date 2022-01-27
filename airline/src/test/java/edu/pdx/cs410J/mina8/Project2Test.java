@@ -96,8 +96,8 @@ class Project2Test {
    */
   @Test
   void canCreateAirlineFromFileOrEmptyAirlineIfFileDoesNotExist() {
-    String goodFileName = "resources/fileWithValidArgs.txt";
-    String badFileName = "resources/thisFileDoesNotExist";
+    String goodFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
+    String badFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/thisFileDoesNotExist";
     String airlineName = "abc";
     Airline airline = Project2.createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(goodFileName, airlineName);
     assertThat(airline.getName(), equalTo(airlineName));
@@ -111,8 +111,8 @@ class Project2Test {
    */
   @Test
   void canWriteAirlineToFileOrThrowExceptionOtherwise() throws IOException {
-    String goodFileName = "resources/tempFilesToDelete/goodFileName.txt";
-    String badFileName = "resources/tempFilesToDelet/bad:FileName.txt/";
+    String goodFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelete/goodFileName.txt";
+    String badFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelet/bad:FileName.txt/";
     Airline airline = new Airline("Tester Name");
     Project2.writeAirlineToTextFile(goodFileName, airline);
     BufferedReader reader = new BufferedReader(new FileReader(goodFileName));
