@@ -1,0 +1,177 @@
+package edu.pdx.cs410J.mina8;
+
+import edu.pdx.cs410J.ParserException;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+
+public class OptionsHandler {
+    private enum OptionsEnum {
+        README,
+        PRINT,
+        TEXTFILE,
+        PRETTY;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case README:
+                    return "-README";
+                case PRINT:
+                    return "-print";
+                case TEXTFILE:
+                    return "-textFile";
+                case PRETTY:
+                    return "-pretty";
+                default:
+                    throw new IllegalArgumentException("Error in options enum.");
+            }
+        }
+
+        public static OptionsEnum toEnum(String string) {
+            switch (string) {
+                case "-README":
+                    return README;
+                case "-print":
+                    return PRINT;
+                case "-textFile":
+                    return TEXTFILE;
+                case "-pretty":
+                    return PRETTY;
+                default:
+                    throw new IllegalArgumentException("Error in options enum. " + string + " is not an option.");
+            }
+        }
+    }
+
+    EnumMap<OptionsEnum, String> options = new EnumMap<>(OptionsEnum.class);
+
+    public OptionsHandler() {}
+
+    public ArrayList<String> extractAllOptionsAndAssociatedParamsReturnLeftoverArgs(String[] args) {
+        ArrayList<String> argsList = new ArrayList<>();
+        for (int i = 0; i < args.length; ++i) {
+            if (args[i].startsWith("-")) {
+                switch (args[i]) {
+                    case "-README":
+                    case "-print":
+                        options.put(OptionsEnum.toEnum(args[i]), "");
+                        break;
+                    case "-textFile":
+                        try {
+                            if (args[i + 1].startsWith("-")) {
+                                throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
+                            }
+                            validateTextFileName(args[i + 1]);
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
+                        }
+                        options.put(OptionsEnum.toEnum(args[i]), args[++i]);
+                        break;
+                    case "-pretty":
+                        if (args[i + 1].equals("-") || !args[i + 1].matches("-.+")) {
+                            options.put(OptionsEnum.toEnum(args[i]), args[++i]);
+                        } else {
+                            throw new IllegalArgumentException("A file name was not provided to the -pretty option.");
+                        }
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Error from OptionsHandler: " + args[i] + " is not a valid option.");
+                }
+            } else {
+                argsList.add(args[i].toLowerCase());
+            }
+        }
+        return argsList;
+    }
+
+    public void handleOptionREADME() {
+        if (options.containsKey(OptionsEnum.README)) {
+            try {
+                InputStream readme = Project3.class.getResourceAsStream("README.txt");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
+                String line = new String("FROM OPTIONSHANDLER CLASS: ");
+                while (reader.ready()) {
+                    line += reader.readLine() + "\n";
+                }
+                System.out.println(line);
+                System.exit(0);
+            } catch (NullPointerException e) {
+                System.out.println("README.txt not found.");
+                System.exit(1);
+            } catch (IOException e) {
+                System.out.println("README.txt could not be read.");
+                System.exit(1);
+            }
+        }
+    }
+
+    public Airline handleOptionTextFileParse(String airlineName) {
+        if (options.containsKey(OptionsEnum.TEXTFILE)) {
+            String fileName = options.get(OptionsEnum.TEXTFILE);
+            try {
+                TextParser parser = new TextParser(fileName);
+                return parser.parse(airlineName);
+            } catch (FileNotFoundException | ParserException e) {
+                return new Airline(airlineName);
+            }
+        } else {
+            return new Airline(airlineName);
+        }
+    }
+
+    public void handleOptionTextFileDump(Airline airline) {
+        if (options.containsKey(OptionsEnum.TEXTFILE)) {
+            String fileName = options.get(OptionsEnum.TEXTFILE);
+            try {
+                TextDumper dumper = new TextDumper(fileName);
+                dumper.dump(airline);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Cannot write Airline to the named text file.");
+            }
+        }
+    }
+
+    public void handleOptionPrint(Flight newFlight) {
+        if (options.containsKey(OptionsEnum.PRINT)) {
+            System.out.println(newFlight);
+        }
+    }
+
+    public void handleOptionPretty(Airline airline) {
+        if (options.containsKey(OptionsEnum.PRETTY)) {
+            String fileName = options.get(OptionsEnum.PRETTY);
+            if (fileName.equals("-")) {
+                PrettyPrinter prettyPrinter = new PrettyPrinter();
+                prettyPrinter.dump(airline);
+            } else {
+                try {
+                    PrettyPrinter prettyPrinter = new PrettyPrinter(fileName);
+                    prettyPrinter.dump(airline, fileName);
+                } catch (IOException e) {
+                    throw new IllegalArgumentException("Cannot pretty print Airline to the named text file.");
+                }
+            }
+        }
+    }
+
+    /**
+     * This method checks the file name parameter for the textFile option and ensures its validity.
+     * @param filename -A string containing the file name.
+     * @throws IllegalArgumentException -If the file name is not valid.
+     */
+    protected static void validateTextFileName(String filename) throws IllegalArgumentException {
+        File file = new File(filename + ".temp");
+        boolean created = false;
+        try {
+            created = file.createNewFile();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error from OptionsHandler: The file name provided is not valid.");
+        } finally {
+            if (created) {
+                file.delete();
+            }
+        }
+    }
+}

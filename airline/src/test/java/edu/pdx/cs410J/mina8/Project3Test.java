@@ -38,14 +38,6 @@ class Project3Test {
    */
   @Test
   void optsAndArgsListsAreCreatedFromArguments() {
-    String[] opts = {"-opt1", "-opt2", "-opt3"};
-    String[] args = {"arg1", "arg2", "arg3", "arg4", "arg5", "arg6"};
-    String[] both = {"-opt1", "-opt2", "-opt3", "arg1", "arg2", "arg3", "arg4", "arg5", "arg6"};
-    ArrayList<String> optsList = new ArrayList<>();
-    ArrayList<String> argsList = new ArrayList<>();
-    Project3.createOptionsAndArgumentsListsFromCommandLineArguments(both, optsList, argsList);
-    assertThat(optsList.size(), equalTo(opts.length));
-    assertThat(argsList.size(), equalTo(args.length));
   }
 
   /**
@@ -53,12 +45,6 @@ class Project3Test {
    */
   @Test
   void optionsExceedingCountWillThrowException() {
-    String[] opts = {"-print", "-print", "-print", "-print"};
-    ArrayList<String> optsList = new ArrayList<>();
-    ArrayList<String> argsList = new ArrayList<>();
-    Project3.createOptionsAndArgumentsListsFromCommandLineArguments(opts, optsList, argsList);
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Project3.checkOptionsListForCountReadmeAndInvalidOption(optsList));
-    assertThat(exception.getMessage(), containsString("too many options"));
   }
 
   /**
@@ -66,9 +52,6 @@ class Project3Test {
    */
   @Test
   void invalidOptionWillThrowException() {
-    ArrayList<String> optsList = new ArrayList<>(Arrays.asList("-print", "-badOption"));
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Project3.checkOptionsListForCountReadmeAndInvalidOption(optsList));
-    assertThat(exception.getMessage(), containsString("not a valid option"));
   }
 
   /**
@@ -76,9 +59,6 @@ class Project3Test {
    */
   @Test
   void airlineIsCreatedFromArgumentsList() {
-    ArrayList<String> argsList = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "nyc", "1/1/2022", "11:00"));
-    Airline airline = Project3.createAirlineFromArgumentsList(argsList);
-    assertThat(airline.getName().toLowerCase(), equalTo(argsList.get(0)));
   }
 
   /**
@@ -87,7 +67,7 @@ class Project3Test {
   @Test
   void flightIsCreatedFromArgumentsList() {
     ArrayList<String> argsList = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "nyc", "1/1/2022", "11:00"));
-    Flight flight = Project3.createFlightFromArgumentsList(argsList);
+    Flight flight = Project3.createNewFlightFromArgumentsList(argsList);
     assertThat(flight.toString(), containsString(argsList.get(1)));
   }
 
@@ -96,13 +76,6 @@ class Project3Test {
    */
   @Test
   void canCreateAirlineFromFileOrEmptyAirlineIfFileDoesNotExist() {
-    String goodFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
-    String badFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/thisFileDoesNotExist";
-    String airlineName = "abc";
-    Airline airline = Project3.createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(goodFileName, airlineName);
-    assertThat(airline.getName(), equalTo(airlineName));
-    airline = Project3.createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(badFileName, airlineName);
-    assertThat(airline.getName(), equalTo(airlineName));
   }
 
   /**
@@ -111,14 +84,6 @@ class Project3Test {
    */
   @Test
   void canWriteAirlineToFileOrThrowExceptionOtherwise() throws IOException {
-    String goodFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelete/goodFileName.txt";
-    String badFileName = "src/test/resources/edu/pdx/cs410J/mina8/resources/tempFilesToDelet/bad:FileName.txt/";
-    Airline airline = new Airline("Tester Name");
-    Project3.writeAirlineToTextFile(goodFileName, airline);
-    BufferedReader reader = new BufferedReader(new FileReader(goodFileName));
-    String read = reader.readLine();
-    assertThat(read, containsString(airline.getName()));
-    assertThrows(IllegalArgumentException.class, () -> Project3.writeAirlineToTextFile(badFileName, airline));
   }
 
 }

@@ -1,8 +1,5 @@
 package edu.pdx.cs410J.mina8;
 
-import edu.pdx.cs410J.ParserException;
-
-import java.io.*;
 import java.util.*;
 
 /**
@@ -11,76 +8,21 @@ import java.util.*;
 public class Project3 {
   public static void main(String[] args) {
     try {
-      Airline airline;
-      ArrayList<String> optsList = new ArrayList<>();
-      ArrayList<String> argsList = new ArrayList<>();
-      createOptionsAndArgumentsListsFromCommandLineArguments(args, optsList, argsList);
-      checkOptionsListForCountReadmeAndInvalidOption(optsList);
-      checkArgumentsListForCount(argsList);
+      OptionsHandler optionsHandler = new OptionsHandler();
+      ArrayList<String> argsList = optionsHandler.extractAllOptionsAndAssociatedParamsReturnLeftoverArgs(args);
+      optionsHandler.handleOptionREADME();
+      checkThatArgsListIsNotEmpty(argsList);
       String airlineName = argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase();
-
-      if (optsList.contains("-textFile")) {
-        int indexOfFileName = optsList.indexOf("-textFile") + 1;
-        airline = createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(optsList.get(indexOfFileName), airlineName);
-      } else {
-        airline = createAirlineFromArgumentsList(argsList);
-      }
-      Flight flight = createFlightFromArgumentsList(argsList);
-      airline.addFlight(flight);
-      if (optsList.contains("-print")) {
-        System.out.println(flight);
-      }
-      if (optsList.contains("-textFile")) {
-        int indexOfFileName = optsList.indexOf("-textFile") + 1;
-        writeAirlineToTextFile(optsList.get(indexOfFileName), airline);
-      }
-      if (optsList.contains("-pretty")) {
-        int indexOfFileName = optsList.indexOf("-pretty") + 1;
-        if (optsList.get(indexOfFileName).equals("-")) {
-          PrettyPrinter prettyPrinter = new PrettyPrinter();
-          prettyPrinter.dump(airline);
-        } else {
-          PrettyPrinter prettyPrinter = new PrettyPrinter(optsList.get(indexOfFileName));
-          prettyPrinter.dump(airline, optsList.get(indexOfFileName));
-        }
-      }
+      Airline airline = optionsHandler.handleOptionTextFileParse(airlineName);
+      Flight newFlight = createNewFlightFromArgumentsList(argsList);
+      airline.addFlight(newFlight);
+      optionsHandler.handleOptionPrint(newFlight);
+      optionsHandler.handleOptionTextFileDump(airline);
+      optionsHandler.handleOptionPretty(airline);
     } catch (IllegalArgumentException | InputMismatchException e) {
       printErrorMessageAndExitSystem(e.getMessage() + USAGE_GUIDE);
-    } catch (IOException e) {
-
     }
     System.exit(0);
-  }
-
-  /**
-   * This method writes an Airline to a file.
-   * @param filename A string representing a file to write the airline data.
-   * @param airline An airline with a name and flights.
-   * @throws IllegalArgumentException If the file does not exist.
-   */
-  protected static void writeAirlineToTextFile(String filename, Airline airline) throws IllegalArgumentException {
-    try {
-      TextDumper dumper = new TextDumper(filename);
-      dumper.dump(airline);
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Cannot write Airline to the named text file.");
-    }
-  }
-
-  /**
-   * This method creates an airline from a file or if the file does not exist, will create an empty airline.
-   * @param filename A string representing a file to read airline data.
-   * @param airlineName A string representing an airline to be used in creating empty airline.
-   * @return An airline object.
-   * @throws IllegalArgumentException If any arguments to create flight for airline is ill-formatted.
-   */
-  protected static Airline createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(String filename, String airlineName) throws IllegalArgumentException {
-    try {
-      TextParser parser = new TextParser(filename);
-      return parser.parse(airlineName);
-    } catch (FileNotFoundException | ParserException e) {
-      return new Airline(airlineName);
-    }
   }
 
   /**
@@ -89,20 +31,10 @@ public class Project3 {
    * @param argsList An array list of strings containing data for an Airline and a Flight.
    * @throws IllegalArgumentException If the non-option related arguments from the command line do not add up to the required count for an Airline and a Flight.
    */
-  protected static void checkArgumentsListForCount(ArrayList<String> argsList) throws IllegalArgumentException {
-    if (argsList.size() != REQUIRED_ARGS_COUNT) {
-      throw new IllegalArgumentException("Incorrect number of command line arguments.");
+  protected static void checkThatArgsListIsNotEmpty(ArrayList<String> argsList) throws IllegalArgumentException {
+    if (argsList.size() == 0) {
+      throw new IllegalArgumentException("No new flight information was provided through the command line arguments.");
     }
-  }
-
-  /**
-   * This method creates an Airline from the parsed command line arguments.
-   * @param argsList An array list of strings containing data for an Airline and a Flight.
-   * @return An Airline object
-   */
-  protected static Airline createAirlineFromArgumentsList(ArrayList<String> argsList) {
-    Airline airline = new Airline(argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase());
-    return airline;
   }
 
   /**
@@ -111,30 +43,8 @@ public class Project3 {
    * @return -A Flight object.
    * @throws IllegalArgumentException -If the formatting of the parsed arguments does not conform with the required specification.
    */
-  protected static Flight createFlightFromArgumentsList(ArrayList<String> argsList) throws IllegalArgumentException {
-    Flight flight = new Flight(argsList);
-    return flight;
-  }
-
-  /**
-   * This method checks the options from the user input to ensure there are not too many options called.
-   * It also checks for the README option to display the text file and exit the system.
-   * @param optsList -An array list of strings containing options for the command line.
-   * @throws IllegalArgumentException -If an option listed is not a recognized option by the program or if there are too many options present.
-   */
-  protected static void checkOptionsListForCountReadmeAndInvalidOption(ArrayList<String> optsList) throws IllegalArgumentException {
-    int optsListLength = optsList.size();
-    for (int i = 0; i < optsListLength; ++i) {
-      if (!ALLOWABLE_OPTIONS.contains(optsList.get(i)) && !optsList.get(i-1).contains("-textFile") && !optsList.get(i-1).contains("-pretty")) {
-        throw new IllegalArgumentException(optsList.get(i) + " is not a valid option.");
-      }
-      if (optsList.get(i).contains("-README")) {
-        displayReadmeFileAndExitSystem();
-      }
-    }
-    if (optsListLength > ALLOWABLE_OPTIONS.size()) {
-      throw new IllegalArgumentException("There are too many options present.");
-    }
+  protected static Flight createNewFlightFromArgumentsList(ArrayList<String> argsList) throws IllegalArgumentException {
+    return new Flight(argsList);
   }
 
   /**
@@ -146,89 +56,8 @@ public class Project3 {
     System.exit(1);
   }
 
-  /**
-   * This method uses the README.txt resource as an input stream to the buffered reader.
-   * It reads every line in the file into a string variable and prints text to stdout.
-   * Finally, it exits the system with status code 0, unless the file cannot be found or read.
-   */
-  private static void displayReadmeFileAndExitSystem() {
-    try {
-      InputStream readme = Project3.class.getResourceAsStream("README.txt");
-      BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
-      String line = new String();
-      while (reader.ready()) {
-        line += reader.readLine() + "\n";
-      }
-      System.out.println(line);
-      System.exit(0);
-    } catch (NullPointerException e) {
-      System.out.println("README.txt not found.");
-      System.exit(1);
-    } catch (IOException e) {
-      System.out.println("README.txt could not be read.");
-      System.exit(1);
-    }
-  }
-
-  /**
-   * This method reads a string array of arguments and creates two array lists separating options and arguments.
-   * Some options require a parameter.  If present and valid, that parameter will be added to the options list.
-   * @param args -The original list of arguments from the command line.
-   * @param optsList -An empty array list to store option tags and parameters.
-   * @param argsList -An empty array list to store arguments.
-   * @throws IllegalArgumentException -If a required parameter for an option is not present.
-   */
-  protected static void createOptionsAndArgumentsListsFromCommandLineArguments(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) throws IllegalArgumentException {
-    for (int i = 0; i < args.length; ++i) {
-      if (args[i].startsWith("-")) {
-        optsList.add(args[i]);
-        if (args[i].contains("-textFile")) {
-          if (args[i + 1].startsWith("-")) {
-            throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
-          }
-          try {
-            validateTextFileName(args[i + 1]);
-          } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
-          }
-          optsList.add(args[++i]);
-        }
-        if (args[i].contains("-pretty")) {
-          if (args[i + 1].equals("-") || !args[i + 1].matches("-.+")) {
-            optsList.add(args[++i]);
-          } else {
-            throw new IllegalArgumentException("A file name was not provided to the -pretty option.");
-          }
-        }
-      } else {
-        argsList.add(args[i].toLowerCase());
-      }
-    }
-  }
-
-  /**
-   * This method checks the file name parameter for the textFile option and ensures its validity.
-   * @param filename -A string containing the file name.
-   * @throws IllegalArgumentException -If the file name is not valid.
-   */
-  protected static void validateTextFileName(String filename) throws IllegalArgumentException {
-    File file = new File(filename + ".temp");
-    boolean created = false;
-    try {
-      created = file.createNewFile();
-    } catch (IOException e) {
-      throw new IllegalArgumentException("The file name for the -textFile option is not valid.");
-    } finally {
-      if (created) {
-        file.delete();
-      }
-    }
-  }
-
-
   protected final static String DELIMITER = "|";
   protected final static int REQUIRED_ARGS_COUNT = 10;
-  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-README", "-print", "-textFile", "textFilesFile", "-pretty", "prettyFile"));
   protected final static String USAGE_GUIDE =
           " See below for usage guide. Project 3.\n" +
           "usage: java -jar target/airline-2022.0.0.jar [options] <args>\n" +
@@ -240,8 +69,9 @@ public class Project3 {
           "\t\tdest\t\t\tThree-letter code of arrival airport\n" +
           "\t\tarrive\t\t\tArrival date and time (24-hour time)\n" +
           "\toptions are (options may appear in any order):\n" +
+          "\t\t-pretty file\tPretty print the airline’s flights to a text file or standard out (file -)\n" +
           "\t\t-textFile file\tWhere to read/write the airline info\n" +
           "\t\t-print\t\t\tPrints a description of the new flight\n" +
           "\t\t-README\t\t\tPrints a README for this project and exits\n" +
-          "\tDate and time should be in the format: mm/dd/yyyy hh:mm aa";
+          "\tDate and time should be in the format: mm/dd/yyyy hh:mm am/pm";
 }
