@@ -3,9 +3,7 @@ package edu.pdx.cs410J.mina8;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.InputMismatchException;
+import java.util.*;
 
 /**
  * The main class for the CS410J airline Project
@@ -21,8 +19,8 @@ public class Project3 {
       checkArgumentsListForCount(argsList);
       String airlineName = argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase();
 
-      if (optsList.contains("-textfile")) {
-        int indexOfFileName = optsList.indexOf("-textfile") + 1;
+      if (optsList.contains("-textFile")) {
+        int indexOfFileName = optsList.indexOf("-textFile") + 1;
         airline = createAirlineFromTextFileOrNewAirlineIfFileDoesNotExist(optsList.get(indexOfFileName), airlineName);
       } else {
         airline = createAirlineFromArgumentsList(argsList);
@@ -32,12 +30,24 @@ public class Project3 {
       if (optsList.contains("-print")) {
         System.out.println(flight);
       }
-      if (optsList.contains("-textfile")) {
-        int indexOfFileName = optsList.indexOf("-textfile") + 1;
+      if (optsList.contains("-textFile")) {
+        int indexOfFileName = optsList.indexOf("-textFile") + 1;
         writeAirlineToTextFile(optsList.get(indexOfFileName), airline);
+      }
+      if (optsList.contains("-pretty")) {
+        int indexOfFileName = optsList.indexOf("-pretty") + 1;
+        if (optsList.get(indexOfFileName).equals("-")) {
+          PrettyPrinter prettyPrinter = new PrettyPrinter();
+          prettyPrinter.dump(airline);
+        } else {
+          PrettyPrinter prettyPrinter = new PrettyPrinter(optsList.get(indexOfFileName));
+          prettyPrinter.dump(airline, optsList.get(indexOfFileName));
+        }
       }
     } catch (IllegalArgumentException | InputMismatchException e) {
       printErrorMessageAndExitSystem(e.getMessage() + USAGE_GUIDE);
+    } catch (IOException e) {
+
     }
     System.exit(0);
   }
@@ -115,10 +125,10 @@ public class Project3 {
   protected static void checkOptionsListForCountReadmeAndInvalidOption(ArrayList<String> optsList) throws IllegalArgumentException {
     int optsListLength = optsList.size();
     for (int i = 0; i < optsListLength; ++i) {
-      if (!ALLOWABLE_OPTIONS.contains(optsList.get(i)) && !optsList.get(i-1).contains("-textfile")) {
+      if (!ALLOWABLE_OPTIONS.contains(optsList.get(i)) && !optsList.get(i-1).contains("-textFile") && !optsList.get(i-1).contains("-pretty")) {
         throw new IllegalArgumentException(optsList.get(i) + " is not a valid option.");
       }
-      if (optsList.get(i).toLowerCase().contains("-readme")) {
+      if (optsList.get(i).contains("-README")) {
         displayReadmeFileAndExitSystem();
       }
     }
@@ -171,7 +181,7 @@ public class Project3 {
   protected static void createOptionsAndArgumentsListsFromCommandLineArguments(String[] args, ArrayList<String> optsList, ArrayList<String> argsList) throws IllegalArgumentException {
     for (int i = 0; i < args.length; ++i) {
       if (args[i].startsWith("-")) {
-        optsList.add(args[i].toLowerCase());
+        optsList.add(args[i]);
         if (args[i].contains("-textFile")) {
           if (args[i + 1].startsWith("-")) {
             throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
@@ -181,7 +191,14 @@ public class Project3 {
           } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("A file name was not provided to the -textFile option.");
           }
-          optsList.add(args[++i].toLowerCase());
+          optsList.add(args[++i]);
+        }
+        if (args[i].contains("-pretty")) {
+          if (args[i + 1].equals("-") || !args[i + 1].matches("-.+")) {
+            optsList.add(args[++i]);
+          } else {
+            throw new IllegalArgumentException("A file name was not provided to the -pretty option.");
+          }
         }
       } else {
         argsList.add(args[i].toLowerCase());
@@ -210,8 +227,8 @@ public class Project3 {
 
 
   protected final static String DELIMITER = "|";
-  protected final static int REQUIRED_ARGS_COUNT = 8;
-  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-readme", "-print", "-textfile"));
+  protected final static int REQUIRED_ARGS_COUNT = 10;
+  protected final static ArrayList<String> ALLOWABLE_OPTIONS = new ArrayList<>(Arrays.asList("-README", "-print", "-textFile", "textFilesFile", "-pretty", "prettyFile"));
   protected final static String USAGE_GUIDE =
           " See below for usage guide. Project 3.\n" +
           "usage: java -jar target/airline-2022.0.0.jar [options] <args>\n" +
@@ -226,5 +243,5 @@ public class Project3 {
           "\t\t-textFile file\tWhere to read/write the airline info\n" +
           "\t\t-print\t\t\tPrints a description of the new flight\n" +
           "\t\t-README\t\t\tPrints a README for this project and exits\n" +
-          "\tDate and time should be in the format: mm/dd/yyyy hh:mm";
+          "\tDate and time should be in the format: mm/dd/yyyy hh:mm aa";
 }

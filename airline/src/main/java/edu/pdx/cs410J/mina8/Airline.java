@@ -2,8 +2,7 @@ package edu.pdx.cs410J.mina8;
 
 import edu.pdx.cs410J.AbstractAirline;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * This is the Airline class for the CS410P/510 airline project.
@@ -12,7 +11,7 @@ import java.util.Collection;
  */
 public class Airline extends AbstractAirline<Flight> {
   private final String name;
-  private ArrayList<Flight> flights = new ArrayList<Flight>();
+  private final Collection<Flight> flights = new TreeSet<>();
 
   /**
    * This is the argument constructor for the class.

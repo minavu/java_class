@@ -1,23 +1,29 @@
 package edu.pdx.cs410J.mina8;
 
 import edu.pdx.cs410J.AbstractFlight;
+import edu.pdx.cs410J.AirportNames;
 
-import java.util.ArrayList;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the Flight class for the CS410P/510 airline project.
  * It extends the AbstractFlight class from the instructor's package.
  * Member fields contain information about a flight.
  */
-public class Flight extends AbstractFlight {
+public class Flight extends AbstractFlight implements Comparable<Flight> {
   private int flightNumber = 0;
   private String src = "";
-  private String depart = "";
+  private Date depart = null;
   private String dest = "";
-  private String arrive = "";
+  private Date arrive = null;
+  private static final DateFormat dateParser = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+  private static final DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
   /**
    * This is the default constructor for the Flight class and does not take any arguments.
+   * This is necessary for the generic type of classes to work.
    */
   public Flight() {}
 
@@ -29,15 +35,10 @@ public class Flight extends AbstractFlight {
    */
   public Flight(ArrayList<String> argsList) throws IllegalArgumentException {
     try {
-      checkArgsForValidity(argsList);
+      checkArgsForValidityAndAddDataToCorrectFields(argsList);
     } catch (IllegalArgumentException e) {
       throw e;
     }
-    flightNumber = Integer.parseInt(argsList.get(1));
-    src = argsList.get(2).toUpperCase();
-    depart = argsList.get(3) + " " + argsList.get(4);
-    dest = argsList.get(5).toUpperCase();
-    arrive = argsList.get(6) + " " + argsList.get(7);
   }
 
   /**
@@ -48,15 +49,17 @@ public class Flight extends AbstractFlight {
    * @param argsList -A list of arguments without any option tags.
    * @throws IllegalArgumentException -If any of the arguments does not conform to the required format.
    */
-  private static void checkArgsForValidity(ArrayList<String> argsList) throws IllegalArgumentException {
-    if (argsList.size() != Project2.REQUIRED_ARGS_COUNT) {
+  private void checkArgsForValidityAndAddDataToCorrectFields(ArrayList<String> argsList) throws IllegalArgumentException {
+    if (argsList.size() != Project3.REQUIRED_ARGS_COUNT) {
       throw new IllegalArgumentException("The number of arguments provided is not correct.");
     }
+
     try {
-      Integer.parseInt(argsList.get(1));
+      flightNumber = Integer.parseInt(argsList.get(1));
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("The given flight number is not a number.");
     }
+
     if (argsList.get(2).length() != 3) {
       throw new IllegalArgumentException("The source code must be three letters.");
     } else {
@@ -65,11 +68,22 @@ public class Flight extends AbstractFlight {
           throw new IllegalArgumentException("The source code must consist of only letters.");
         }
       }
+      src = argsList.get(2).toUpperCase();
+      if (!AirportNames.getNamesMap().containsKey(src)) {
+        throw new IllegalArgumentException("The source code does not correspond to a known airport.");
+      }
     }
-    if (!validDateTime(argsList.get(3) + " " + argsList.get(4))) {
+
+    try {
+      if (!validDate(argsList.get(3))) {
+        throw new IllegalArgumentException();
+      }
+      depart = dateParser.parse(argsList.get(3) + " " + argsList.get(4) + " " + argsList.get(5));
+    } catch (ParseException | IllegalArgumentException e) {
       throw new IllegalArgumentException("The departure date and time is not in an acceptable format.");
     }
-    if (argsList.get(5).length() != 3) {
+
+    if (argsList.get(6).length() != 3) {
       throw new IllegalArgumentException("The destination code must be three letters.");
     } else {
       for (int i = 0; i < 3; ++i) {
@@ -77,20 +91,33 @@ public class Flight extends AbstractFlight {
           throw new IllegalArgumentException("The destination code must consist of only letters.");
         }
       }
+      dest = argsList.get(6).toUpperCase();
+      if (!AirportNames.getNamesMap().containsKey(dest)) {
+        throw new IllegalArgumentException("The destination code does not correspond to a known airport.");
+      }
     }
-    if (!validDateTime(argsList.get(6) + " " + argsList.get(7))) {
+
+    try {
+      if (!validDate(argsList.get(7))) {
+        throw new IllegalArgumentException();
+      }
+      arrive = dateParser.parse(argsList.get(7) + " " + argsList.get(8) + " " + argsList.get(9));
+    } catch (ParseException | IllegalArgumentException e) {
       throw new IllegalArgumentException("The arrival date and time is not in an acceptable format.");
+    }
+    if (arrive.before(depart)) {
+      throw new IllegalArgumentException("The arrival date and time cannot be before the departure date and time.");
     }
   }
 
   /**
    * This method checks a string against a regular expression that conforms to the required date/time format.
-   * @param dateTime -A string to check date/time format.
+   * @param date -A string to check date/time format.
    * @return -A boolean indicating the validity of the string.
    */
-  private static boolean validDateTime(String dateTime) {
-    String regex = "^(1[0-2]|0[1-9]|[1-9])/(3[01]|[12][0-9]|0[1-9]|[1-9])/[0-9]{4} (0[0-9]|1[0-9]|2[0-3]|[1-9]):([0-5][0-9])$";
-    return dateTime.matches(regex);
+  private static boolean validDate(String date) {
+    String regex = "^(1[0-2]|0[1-9]|[1-9])/(3[01]|[12][0-9]|0[1-9]|[1-9])/[0-9]{4}$";
+    return date.matches(regex);
   }
 
   /**
@@ -111,13 +138,22 @@ public class Flight extends AbstractFlight {
     return src;
   }
 
+  @Override
+  public Date getDeparture() {
+    return depart;
+  }
+
   /**
    * This is the accessor method to get the departure date and time of the flight.
    * @return -A string representing the departure date and time.
    */
   @Override
   public String getDepartureString() {
-    return depart;
+    return dateFormatter.format(depart).replace(",", "");
+  }
+
+  public String getDepartureStringForFile() {
+    return dateParser.format(depart);
   }
 
   /**
@@ -129,12 +165,39 @@ public class Flight extends AbstractFlight {
     return dest;
   }
 
+  @Override
+  public Date getArrival() {
+    return arrive;
+  }
+
   /**
    * This is the accessor method to get the arrival date and time of a flight.
    * @return -A string representing the arrival date and time.
    */
   @Override
   public String getArrivalString() {
-    return arrive;
+    return dateFormatter.format(arrive).replace(",", "");
+  }
+
+  public String getArrivalStringForFile() {
+    return dateParser.format(arrive);
+  }
+
+  @Override
+  public int compareTo(Flight other) {
+    if (this.getSource().compareTo(other.getSource()) == 0) {
+      return this.getDeparture().compareTo(other.getDeparture());
+    }
+    return this.getSource().compareTo(other.getSource());
+  }
+
+  public String getFlightDuration() {
+    long timeDifferenceInMilliseconds = arrive.getTime() - depart.getTime();
+    long days = TimeUnit.MILLISECONDS.toDays(timeDifferenceInMilliseconds);
+    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.DAYS.toMillis(days);
+    long hours = TimeUnit.MILLISECONDS.toHours(timeDifferenceInMilliseconds);
+    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.HOURS.toMillis(hours);
+    long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds);
+    return (days == 0 ? "" : days + " days, ") + (hours == 0 ? "" : hours + " hours, ") + (minutes == 0 ? "" : minutes + " minutes");
   }
 }

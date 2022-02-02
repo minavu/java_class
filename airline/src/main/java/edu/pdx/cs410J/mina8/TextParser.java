@@ -88,10 +88,11 @@ public class TextParser implements AirlineParser<Airline> {
         throw new ParserException("Missing airline name");
       }
       String[] parsedLine = airlineName.split("\\|");
-      if (!parsedLine[0].equals(matchAirlineName)) {
+      String airlineNameInFile = parsedLine[0].substring(0,1).toUpperCase() + parsedLine[0].substring(1).toLowerCase();
+      if (!airlineNameInFile.equals(matchAirlineName)) {
         throw new InputMismatchException("Airline name in text file does not match \"" + matchAirlineName + "\". It is " + parsedLine[0] + ".");
       }
-      airline = new Airline(parsedLine[0]);
+      airline = new Airline(airlineNameInFile);
       Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedLine)));
       airline.addFlight(flight);
 
