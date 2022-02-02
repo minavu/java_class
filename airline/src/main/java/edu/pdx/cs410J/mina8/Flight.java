@@ -193,11 +193,13 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
 
   public String getFlightDuration() {
     long timeDifferenceInMilliseconds = arrive.getTime() - depart.getTime();
-    long days = TimeUnit.MILLISECONDS.toDays(timeDifferenceInMilliseconds);
-    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.DAYS.toMillis(days);
-    long hours = TimeUnit.MILLISECONDS.toHours(timeDifferenceInMilliseconds);
-    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.HOURS.toMillis(hours);
-    long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds);
-    return (days == 0 ? "" : days + " days, ") + (hours == 0 ? "" : hours + " hours, ") + (minutes == 0 ? "" : minutes + " minutes");
+    return TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds) + " min";
+//    long timeDifferenceInMilliseconds = arrive.getTime() - depart.getTime();
+//    long days = TimeUnit.MILLISECONDS.toDays(timeDifferenceInMilliseconds);
+//    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.DAYS.toMillis(days);
+//    long hours = TimeUnit.MILLISECONDS.toHours(timeDifferenceInMilliseconds);
+//    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.HOURS.toMillis(hours);
+//    long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds);
+//    return (days == 0 ? "" : days + " d ") + (hours == 0 ? "" : hours + " h ") + (minutes == 0 ? "" : minutes + " m");
   }
 }
