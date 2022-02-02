@@ -63,7 +63,7 @@ public class TextParser implements AirlineParser<Airline> {
       }
       return airline;
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Error when parsing the file: " + e.getMessage());
     } catch (IOException e) {
       throw new ParserException("While parsing airline text", e);
     }
@@ -103,7 +103,7 @@ public class TextParser implements AirlineParser<Airline> {
       }
       return airline;
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Error when parsing the file: " + e.getMessage());
     } catch (IOException e) {
       throw new ParserException("While parsing airline text", e);
     }
