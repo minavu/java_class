@@ -90,6 +90,15 @@ public class FlightTest {
   }
 
   /**
+   * Tests that an exception is thrown when the source code is not know is incorrect.
+   */
+  @Test
+  void wrong2AirportCodeWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, "nyc", arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
    * Tests that an exception is thrown when the departure date is incorrect.
    */
   @Test
@@ -117,11 +126,29 @@ public class FlightTest {
   }
 
   /**
+   * Tests that an exception is thrown when the source code is incorrect.
+   */
+  @Test
+  void wrong2SourceCodeLengthWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, "pd3", departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
    * Tests that an exception is thrown when the destination code is incorrect.
    */
   @Test
   void wrongDestCodeLengthWillThrowException() {
     ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, "pd", arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
+   * Tests that an exception is thrown when the destination code is incorrect.
+   */
+  @Test
+  void wrong2DestCodeLengthWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, "pd2", arriveDate, arriveTime, arriveAMPM));
     assertThrows(IllegalArgumentException.class, () -> new Flight(args));
   }
 }
