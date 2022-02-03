@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * to {@link System#exit(int)} and the like.
  */
 class Project3Test {
+  ArrayList<String> argsListWithAllArgsSampler = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "am", "hnl", "1/1/2022", "11:00", "pm"));
 
   /**
    * Tests that the README.txt file is accessible as a resource.
@@ -66,9 +67,8 @@ class Project3Test {
    */
   @Test
   void flightIsCreatedFromArgumentsList() {
-    ArrayList<String> argsList = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "nyc", "1/1/2022", "11:00"));
-    Flight flight = Project3.createNewFlightFromArgumentsList(argsList);
-    assertThat(flight.toString(), containsString(argsList.get(1)));
+    Flight flight = new Flight(argsListWithAllArgsSampler);
+    assertThat(flight.toString(), containsString(argsListWithAllArgsSampler.get(1)));
   }
 
   /**

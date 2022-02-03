@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.InputMismatchException;
 
 //import static org.hamcrest.CoreMatchers.*;
@@ -19,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * These are unit tests for the TextParser class.
  */
 public class TextParserTest {
+  String tempFilesToDeleteDir = "src/test/resources/edu/pdx/cs410J/mina8/tempFilesToDelete/";
+  String fileWithValidArgsTxt = "src/test/resources/edu/pdx/cs410J/mina8/fileWithValidArgs.txt";
+  String fileWithInvalidArgsTxt = "src/test/resources/edu/pdx/cs410J/mina8/fileWithInvalidArgs.txt";
 
   /**
    * Tests that a non-existent file name will throw an exception.
@@ -34,10 +38,9 @@ public class TextParserTest {
    */
   @Test
   void existingFileNameCanBeAccessed() {
-    String filename = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
     TextParser parser = null;
     try {
-      parser = new TextParser(filename);
+      parser = new TextParser(fileWithValidArgsTxt);
     } catch (FileNotFoundException e) {
     }
     assertThat(parser, notNullValue());
@@ -48,38 +51,17 @@ public class TextParserTest {
    */
   @Test
   void existingFileCanBeReadUsingDelimiter() {
-    String filename = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
     TextParser parser = null;
     try {
-      parser = new TextParser(filename);
+      parser = new TextParser(fileWithValidArgsTxt);
     } catch (FileNotFoundException e) {
     }
     Airline airline = null;
     try {
-      airline = parser.parse();
-    } catch (ParserException e) {
+      airline = parser.parse("Abc");
+    } catch (ParserException | IllegalArgumentException | InputMismatchException e) {
     }
-    assertThat(airline.getName(), equalTo("abc"));
-  }
-
-  /**
-   * Tests that a Flight can be created when a file contains valid data.
-   */
-  @Test
-  void fileWithValidFlightInfoCanCreateANewFlight() {
-    String filename = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
-    TextParser parser = null;
-    try {
-      parser = new TextParser(filename);
-    } catch (FileNotFoundException e) {
-    }
-    Airline airline = null;
-    try {
-      airline = parser.parse();
-    } catch (ParserException e) {
-    }
-    ArrayList<Flight> flights = (ArrayList<Flight>) airline.getFlights();
-    assertThat(flights.get(0).toString(), containsString("Flight 123"));
+    assertThat(airline.getName(), equalTo("Abc"));
   }
 
   /**
@@ -87,18 +69,17 @@ public class TextParserTest {
    */
   @Test
   void fileWithMultipleFlightsCanAllBeCreatedAndAddedToAirline() {
-    String filename = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithValidArgs.txt";
     TextParser parser = null;
     try {
-      parser = new TextParser(filename);
+      parser = new TextParser(fileWithValidArgsTxt);
     } catch (FileNotFoundException e) {
     }
     Airline airline = null;
     try {
-      airline = parser.parse();
-    } catch (ParserException e) {
+      airline = parser.parse("Abc");
+    } catch (ParserException | IllegalArgumentException | InputMismatchException e) {
     }
-    ArrayList<Flight> flights = (ArrayList<Flight>) airline.getFlights();
+    Collection<Flight> flights = airline.getFlights();
     assertThat(flights.size(), greaterThan(1));
   }
 
@@ -107,10 +88,9 @@ public class TextParserTest {
    */
   @Test
   void fileWithInvalidFlightInfoWillThrowExceptionWhenCreatingFlight() {
-    String filename = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithInvalidArgs.txt";
     TextParser parser = null;
     try {
-      parser = new TextParser(filename);
+      parser = new TextParser(fileWithInvalidArgsTxt);
     } catch (FileNotFoundException e) {
     }
     assertThrows(IllegalArgumentException.class, parser::parse);
@@ -122,7 +102,6 @@ public class TextParserTest {
    */
   @Test
   void parsingFileWithAirlineNameDifferentThanNewFlightInfoWillThrowException() throws ParserException {
-    String filename = "src/test/resources/edu/pdx/cs410J/mina8/resources/fileWithInvalidArgs.txt";
-    assertThrows(InputMismatchException.class, () -> (new TextParser(filename)).parse("notAnAirlineName"));
+    assertThrows(InputMismatchException.class, () -> (new TextParser(fileWithInvalidArgsTxt)).parse("notAnAirlineName"));
   }
 }

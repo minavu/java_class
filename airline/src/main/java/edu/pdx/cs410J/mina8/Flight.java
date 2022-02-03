@@ -138,6 +138,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     return src;
   }
 
+  /**
+   * This method returns the date of departure.
+   * @return A date object of departure.
+   */
   @Override
   public Date getDeparture() {
     return depart;
@@ -152,6 +156,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     return dateFormatter.format(depart).replace(",", "");
   }
 
+  /**
+   * This is method to return the departure date in the correct format to store in file.
+   * @return A string to store in file.
+   */
   public String getDepartureStringForFile() {
     return dateParser.format(depart);
   }
@@ -165,6 +173,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     return dest;
   }
 
+  /**
+   * This is the mehtod to get the arrival date.
+   * @return A date object.
+   */
   @Override
   public Date getArrival() {
     return arrive;
@@ -179,10 +191,19 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     return dateFormatter.format(arrive).replace(",", "");
   }
 
+  /**
+   * This method returns a string of the arrival date in correct format to store.
+   * @return A string representation.
+   */
   public String getArrivalStringForFile() {
     return dateParser.format(arrive);
   }
 
+  /**
+   * This method overrides the Comparable method so that each flight can be ordered naturally by source and departure date/time.
+   * @param other The other flight to compare to.
+   * @return An integer indicating less than, greater than, or equal to of the two flights.
+   */
   @Override
   public int compareTo(Flight other) {
     if (this.getSource().compareTo(other.getSource()) == 0) {
@@ -191,15 +212,12 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     return this.getSource().compareTo(other.getSource());
   }
 
+  /**
+   * This method returns the duration of the flight in minutes only.
+   * @return A string representing the duration of the flight.
+   */
   public String getFlightDuration() {
     long timeDifferenceInMilliseconds = arrive.getTime() - depart.getTime();
     return TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds) + " min";
-//    long timeDifferenceInMilliseconds = arrive.getTime() - depart.getTime();
-//    long days = TimeUnit.MILLISECONDS.toDays(timeDifferenceInMilliseconds);
-//    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.DAYS.toMillis(days);
-//    long hours = TimeUnit.MILLISECONDS.toHours(timeDifferenceInMilliseconds);
-//    timeDifferenceInMilliseconds = timeDifferenceInMilliseconds - TimeUnit.HOURS.toMillis(hours);
-//    long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds);
-//    return (days == 0 ? "" : days + " d ") + (hours == 0 ? "" : hours + " h ") + (minutes == 0 ? "" : minutes + " m");
   }
 }

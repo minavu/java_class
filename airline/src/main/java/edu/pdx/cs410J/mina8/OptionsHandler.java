@@ -6,6 +6,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+/**
+ * This class handles parsing the argument list and executing the options for Project3 class.
+ */
 public class OptionsHandler {
     private enum OptionsEnum {
         README,
@@ -13,22 +16,11 @@ public class OptionsHandler {
         TEXTFILE,
         PRETTY;
 
-        @Override
-        public String toString() {
-            switch (this) {
-                case README:
-                    return "-README";
-                case PRINT:
-                    return "-print";
-                case TEXTFILE:
-                    return "-textFile";
-                case PRETTY:
-                    return "-pretty";
-                default:
-                    throw new IllegalArgumentException("Error in options enum.");
-            }
-        }
-
+        /**
+         * This method takes a string and turns it into an enum constant.
+         * @param string A string to transform into enum.
+         * @return An enum constant.
+         */
         public static OptionsEnum toEnum(String string) {
             switch (string) {
                 case "-README":
@@ -47,8 +39,16 @@ public class OptionsHandler {
 
     EnumMap<OptionsEnum, String> options = new EnumMap<>(OptionsEnum.class);
 
+    /**
+     * This is the default constructor.
+     */
     public OptionsHandler() {}
 
+    /**
+     * This method extracts all options and the associated parameters and returns the rest of the arguments in an array list.
+     * @param args The array of arguments from the command line.
+     * @return The arguments for a new flight without any options.
+     */
     public ArrayList<String> extractAllOptionsAndAssociatedParamsReturnLeftoverArgs(String[] args) {
         ArrayList<String> argsList = new ArrayList<>();
         for (int i = 0; i < args.length; ++i) {
@@ -86,12 +86,15 @@ public class OptionsHandler {
         return argsList;
     }
 
+    /**
+     * This method executes the README option and exits the system.
+     */
     public void handleOptionREADME() {
         if (options.containsKey(OptionsEnum.README)) {
             try {
                 InputStream readme = Project3.class.getResourceAsStream("README.txt");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
-                String line = new String("FROM OPTIONSHANDLER CLASS: ");
+                String line = "";
                 while (reader.ready()) {
                     line += reader.readLine() + "\n";
                 }
@@ -107,6 +110,11 @@ public class OptionsHandler {
         }
     }
 
+    /**
+     * This method executes the textFile option by parsing the file and checking with the airline name.
+     * @param airlineName The airline name of the new flight.
+     * @return An airline created from the file or an empty airline.
+     */
     public Airline handleOptionTextFileParse(String airlineName) {
         if (options.containsKey(OptionsEnum.TEXTFILE)) {
             String fileName = options.get(OptionsEnum.TEXTFILE);
@@ -121,6 +129,10 @@ public class OptionsHandler {
         }
     }
 
+    /**
+     * This method executes the textFile option by dumping the airline into the file.
+     * @param airline The airline with flights to dump.
+     */
     public void handleOptionTextFileDump(Airline airline) {
         if (options.containsKey(OptionsEnum.TEXTFILE)) {
             String fileName = options.get(OptionsEnum.TEXTFILE);
@@ -133,12 +145,20 @@ public class OptionsHandler {
         }
     }
 
+    /**
+     * This method executes the print option to standard output.
+     * @param newFlight The new flight to print.
+     */
     public void handleOptionPrint(Flight newFlight) {
         if (options.containsKey(OptionsEnum.PRINT)) {
             System.out.println(newFlight);
         }
     }
 
+    /**
+     * This method executes the pretty print option by first checking where to print.
+     * @param airline The airline with flights to print.
+     */
     public void handleOptionPretty(Airline airline) {
         if (options.containsKey(OptionsEnum.PRETTY)) {
             String fileName = options.get(OptionsEnum.PRETTY);

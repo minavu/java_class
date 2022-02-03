@@ -78,7 +78,7 @@ public class TextParser implements AirlineParser<Airline> {
    * @throws ParserException -If the source file is malformed.
    * @throws IllegalArgumentException -If any of the arguments to create the flights is formatted incorrectly.
    */
-  public Airline parse(String matchAirlineName) throws IllegalArgumentException, ParserException {
+  public Airline parse(String matchAirlineName) throws IllegalArgumentException, ParserException, InputMismatchException {
     try (
             BufferedReader br = new BufferedReader(this.reader)
     ) {

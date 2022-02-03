@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,19 +22,20 @@ public class FlightTest {
   String src = "pdx";
   String departDate = "1/1/2022";
   String departTime = "7:00";
-  String dest = "nyc";
+  String departAMPM = "AM";
+  String dest = "hnl";
   String arriveDate = "01/01/2022";
-  String arriveTime = "22:59";
-  ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, dest, arriveDate, arriveTime));
-  Flight flight = new Flight(args);
+  String arriveTime = "2:59";
+  String arriveAMPM = "PM";
+  ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
+  Flight flightTester = new Flight(args);
 
   /**
-   * Tests that method in abstract class returns null.
+   * Tests that departure field is a Date object.
    */
   @Test
-  void forProject1ItIsOkayIfGetDepartureTimeReturnsNull() {
-    Flight flight = new Flight();
-    assertThat(flight.getDeparture(), is(nullValue()));
+  void departIsOfDateClass() {
+    assertThat(flightTester.getDeparture(), instanceOf(Date.class));
   }
 
   /**
@@ -41,7 +43,7 @@ public class FlightTest {
    */
   @Test
   void flightNumberIsGivenIdNumber() {
-    assertThat(flight.getNumber(), equalTo(Integer.parseInt(flightNumber)));
+    assertThat(flightTester.getNumber(), equalTo(Integer.parseInt(flightNumber)));
   }
 
   /**
@@ -49,7 +51,7 @@ public class FlightTest {
    */
   @Test
   void srcIsGivenCode() {
-    assertThat(flight.getSource(), containsStringIgnoringCase(src));
+    assertThat(flightTester.getSource(), containsStringIgnoringCase(src));
   }
 
   /**
@@ -57,23 +59,69 @@ public class FlightTest {
    */
   @Test
   void destIsGivenCode() {
-    assertThat(flight.getDestination(), containsStringIgnoringCase(dest));
+    assertThat(flightTester.getDestination(), containsStringIgnoringCase(dest));
   }
 
   /**
-   * Tests that the departure date and time is in the depart field.
+   * Tests that an empty flight can be created.
    */
   @Test
-  void departIncludesDateAndTimeGiven() {
-    assertThat(flight.getDepartureString(), containsStringIgnoringCase(departDate + " " + departTime));
+  void emptyFlightCanBeCreated() {
+    Flight flight = new Flight();
+    assertThat(flight, instanceOf(Flight.class));
   }
 
   /**
-   * Tests that the arrival date and time is in the arrive field.
+   * Tests that an exception is thrown when the flight number is incorrect.
    */
   @Test
-  void arriveIncludesDateAndTimeGiven() {
-    assertThat(flight.getArrivalString(), containsStringIgnoringCase(arriveDate + " " + arriveTime));
+  void flightNumberParsingWillThrowExceptionForNonNumberFlightNumbers() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, "abc", src, departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
   }
 
+  /**
+   * Tests that an exception is thrown when the source code is not know is incorrect.
+   */
+  @Test
+  void wrongAirportCodeWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, "nyc", departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
+   * Tests that an exception is thrown when the departure date is incorrect.
+   */
+  @Test
+  void wrongDepartDateFormatWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, "1/1/22", departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
+   * Tests that an exception is thrown when the arrival date is incorrect.
+   */
+  @Test
+  void wrongArriveDateFormatWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, dest, "1/1/22", arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
+   * Tests that an exception is thrown when the source code is incorrect.
+   */
+  @Test
+  void wrongSourceCodeLengthWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, "pd", departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
+
+  /**
+   * Tests that an exception is thrown when the destination code is incorrect.
+   */
+  @Test
+  void wrongDestCodeLengthWillThrowException() {
+    ArrayList<String> args = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, "pd", arriveDate, arriveTime, arriveAMPM));
+    assertThrows(IllegalArgumentException.class, () -> new Flight(args));
+  }
 }
