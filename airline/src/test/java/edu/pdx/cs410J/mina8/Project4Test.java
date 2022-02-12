@@ -11,11 +11,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * A unit test for code in the <code>Project3</code> class.  This is different
+ * A unit test for code in the <code>Project4</code> class.  This is different
  * from <code>Project3IT</code> which is an integration test (and can handle the calls)
  * to {@link System#exit(int)} and the like.
  */
-class Project3Test {
+class Project4Test {
   ArrayList<String> argsListWithAllArgsSampler = new ArrayList<>(Arrays.asList("abc", "123", "pdx", "1/1/2022", "10:00", "am", "hnl", "1/1/2022", "11:00", "pm"));
 
   /**
@@ -25,7 +25,7 @@ class Project3Test {
   @Test
   void readmeCanBeReadAsResource() throws IOException {
     try (
-      InputStream readme = Project3.class.getResourceAsStream("README.txt")
+      InputStream readme = Project4.class.getResourceAsStream("README.txt")
     ) {
       assertThat(readme, not(nullValue()));
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
- * This class handles parsing the argument list and executing the options for Project3 class.
+ * This class handles parsing the argument list and executing the options for Project4 class.
  */
 public class OptionsHandler {
     private enum OptionsEnum {
@@ -92,7 +92,7 @@ public class OptionsHandler {
     public void handleOptionREADME() {
         if (options.containsKey(OptionsEnum.README)) {
             try {
-                InputStream readme = Project3.class.getResourceAsStream("README.txt");
+                InputStream readme = Project4.class.getResourceAsStream("README.txt");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
                 String line = "";
                 while (reader.ready()) {

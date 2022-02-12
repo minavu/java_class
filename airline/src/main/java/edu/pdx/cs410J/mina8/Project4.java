@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * The main class for the CS410J airline Project
  */
-public class Project3 {
+public class Project4 {
   public static void main(String[] args) {
     try {
       OptionsHandler optionsHandler = new OptionsHandler();
@@ -59,7 +59,7 @@ public class Project3 {
   protected final static String DELIMITER = "|";
   protected final static int REQUIRED_ARGS_COUNT = 10;
   protected final static String USAGE_GUIDE =
-          " See below for usage guide. Project 3.\n" +
+          " See below for usage guide. Project 4.\n" +
           "usage: java -jar target/airline-2022.0.0.jar [options] <args>\n" +
           "\targs are (in this order):\n" +
           "\t\tairline\t\t\tThe name of the airline\n" +

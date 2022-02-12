@@ -50,7 +50,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
    * @throws IllegalArgumentException -If any of the arguments does not conform to the required format.
    */
   private void checkArgsForValidityAndAddDataToCorrectFields(ArrayList<String> argsList) throws IllegalArgumentException {
-    if (argsList.size() != Project3.REQUIRED_ARGS_COUNT) {
+    if (argsList.size() != Project4.REQUIRED_ARGS_COUNT) {
       throw new IllegalArgumentException("The number of arguments provided is not correct.");
     }
 

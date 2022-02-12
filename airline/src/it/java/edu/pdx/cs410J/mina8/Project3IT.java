@@ -9,16 +9,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * An integration test for the {@link Project3} main class.
+ * An integration test for the {@link Project4} main class.
  */
 class Project3IT extends InvokeMainTestCase {
 
     /**
-     * Invokes the main method of {@link Project3} with the given arguments.
+     * Invokes the main method of {@link Project4} with the given arguments.
      * @return -The output of the main method invocation.
      */
     private MainMethodResult invokeMain(String... args) {
-        return invokeMain( Project3.class, args );
+        return invokeMain( Project4.class, args );
     }
 
     String print = "-print";

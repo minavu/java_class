@@ -1,0 +1,59 @@
+Printing all flight information for Abc Airline.
+Flights ordered by departing airport and departure date/time.
+
+CLT -> MIA   Flight  456
+             Depart  Charlotte, NC at 2/2/22 10:00 AM
+             Arrive  Miami, FL at 2/2/22 10:30 AM
+           Duration  30 min
+
+PDX -> HNL   Flight  123
+             Depart  Portland, OR at 1/1/22 10:00 AM
+             Arrive  Honolulu, HI at 1/1/22 6:30 PM
+           Duration  510 min
+
+PDX -> HNL   Flight  999
+             Depart  Portland, OR at 2/1/22 10:11 AM
+             Arrive  Honolulu, HI at 2/2/22 11:00 PM
+           Duration  2209 min
+
+PDX -> HNL   Flight  998
+             Depart  Portland, OR at 2/2/22 10:11 AM
+             Arrive  Honolulu, HI at 2/2/22 11:00 PM
+           Duration  769 min
+
+PDX -> HNL   Flight  997
+             Depart  Portland, OR at 2/3/22 10:11 AM
+             Arrive  Honolulu, HI at 2/4/22 11:00 PM
+           Duration  2209 min
+
+PDX -> HNL   Flight  996
+             Depart  Portland, OR at 2/4/22 10:11 AM
+             Arrive  Honolulu, HI at 2/5/22 11:00 PM
+           Duration  2209 min
+
+PDX -> OKC   Flight  996
+             Depart  Portland, OR at 2/5/22 10:11 AM
+             Arrive  Oklahoma City, OK at 2/5/22 11:00 PM
+           Duration  769 min
+
+PDX -> OKC   Flight  995
+             Depart  Portland, OR at 2/5/22 10:13 AM
+             Arrive  Oklahoma City, OK at 2/5/22 11:00 PM
+           Duration  767 min
+
+PDX -> HNL   Flight  789
+             Depart  Portland, OR at 10/10/22 10:00 AM
+             Arrive  Honolulu, HI at 10/10/22 9:00 PM
+           Duration  660 min
+
+PDX -> HNL   Flight  100
+             Depart  Portland, OR at 10/10/22 12:00 PM
+             Arrive  Honolulu, HI at 10/11/22 2:59 AM
+           Duration  899 min
+
+VPS -> PDX   Flight  112
+             Depart  Fort Walton Beach, FL at 3/3/22 1:23 PM
+             Arrive  Portland, OR at 3/4/22 2:00 PM
+           Duration  1477 min
+
+

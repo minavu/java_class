@@ -8,11 +8,11 @@ import edu.pdx.cs410J.ProjectXmlHelper;
  */
 public class AirlineXmlHelper extends ProjectXmlHelper {
 
-  /** The System ID for the Family Tree DTD */
+  /** The System ID for the Airline DTD */
   protected static final String SYSTEM_ID =
     "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd";
 
-  /** The Public ID for the Family Tree DTD */
+  /** The Public ID for the Airline DTD */
   protected static final String PUBLIC_ID =
     "-//Portland State University//DTD CS410J Airline//EN";
 

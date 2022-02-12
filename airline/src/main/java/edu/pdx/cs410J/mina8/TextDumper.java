@@ -30,7 +30,7 @@ public class TextDumper implements AirlineDumper<Airline> {
 
   /**
    * This method writes the Airline data to a text file along with all associated flights.
-   * A delimiter is used to separate fields and is taken from the Project3 class.
+   * A delimiter is used to separate fields and is taken from the Project4 class.
    * @param airline -An airline object with a name and flights.
    */
   @Override
@@ -40,12 +40,12 @@ public class TextDumper implements AirlineDumper<Airline> {
       ) {
       Collection<Flight> flights = airline.getFlights();
       flights.forEach((flight) ->
-              pw.println(airline.getName() + Project3.DELIMITER +
-                      flight.getNumber() + Project3.DELIMITER +
-                      flight.getSource() + Project3.DELIMITER +
-                      flight.getDepartureStringForFile().replace(" ", Project3.DELIMITER) + Project3.DELIMITER +
-                      flight.getDestination() + Project3.DELIMITER +
-                      flight.getArrivalStringForFile().replace(" ", Project3.DELIMITER))
+              pw.println(airline.getName() + Project4.DELIMITER +
+                      flight.getNumber() + Project4.DELIMITER +
+                      flight.getSource() + Project4.DELIMITER +
+                      flight.getDepartureStringForFile().replace(" ", Project4.DELIMITER) + Project4.DELIMITER +
+                      flight.getDestination() + Project4.DELIMITER +
+                      flight.getArrivalStringForFile().replace(" ", Project4.DELIMITER))
               );
       if (flights.isEmpty()) {
         pw.println(airline.getName());

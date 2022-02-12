@@ -7,37 +7,25 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.pdx.cs410J.mina8</groupId>
-  <artifactId>airline</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>airline-web</artifactId>
+
+  <properties>
+    <jetty.http.port>8080</jetty.http.port>
+  </properties>
+
+  <packaging>war</packaging>
   <version>2022.0.0</version>
-  <name>CS410J Airline Project</name>
-  <description>An Airline application for CS410J at Portland State University</description>
-  <inceptionYear>2000</inceptionYear>
-  <url>http://www.cs.pdx.edu/~whitlock</url>
-  <developers>
-    <developer>
-      <id>YOU</id>
-      <name>Your name here</name>
-      <email>you@youremail.com</email>
-      <url>http://www.cs.pdx.edu/~YOU</url>
-      <organization>PSU Department of Computer Science</organization>
-      <organizationUrl>http://www.cs.pdx.edu</organizationUrl>
-      <roles>
-        <role>Student</role>
-      </roles>
-      <timezone>-7</timezone>
-    </developer>
-  </developers>
+  <name>Airline Web/REST Project</name>
+  <url>http://maven.apache.org</url>
   <dependencies>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>io.github.davidwhitlock.cs410J</groupId>
       <artifactId>projects</artifactId>
+      <version>2022.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.davidwhitlock.cs410J</groupId>
+      <artifactId>examples</artifactId>
       <version>2022.0.0</version>
     </dependency>
     <dependency>
@@ -47,42 +35,15 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+    </dependency>
   </dependencies>
   <build>
+    <finalName>airline</finalName>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven-source-plugin.version}</version>
-        <configuration>
-          <attach>true</attach>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven-jar-plugin.version}</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>edu.pdx.cs410J.mina8.Project4</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven-shade-plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -94,41 +55,95 @@
         <version>${build-helper-maven-plugin.version}</version>
       </plugin>
       <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${jetty-maven-plugin.version}</version>
+        <configuration>
+          <httpConnector>
+            <port>${jetty.http.port}</port>
+          </httpConnector>
+          <stopKey>stop-key</stopKey>
+          <stopPort>9999</stopPort>
+          <webApp>
+            <contextPath>/${project.build.finalName}</contextPath>
+          </webApp>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+        <version>1.6.7</version>
+        <executions>
+          <execution>
+            <id>start-container</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop-container</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <container>
+            <containerId>jetty9x</containerId>
+            <type>embedded</type>
+            <systemProperties>
+              <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+            </systemProperties>
+          </container>
+          <configuration>
+            <properties>
+              <cargo.servlet.port>${jetty.http.port}</cargo.servlet.port>
+            </properties>
+          </configuration>
+          <deployables>
+            <deployable>
+              <location>${project.build.directory}/${project.build.finalName}.${project.packaging}</location>
+              <pingURL>http://localhost:${jetty.http.port}/${project.build.finalName}/index.html</pingURL>
+              <pingTimeout>20000</pingTimeout>
+            </deployable>
+          </deployables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>client</classifier>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathLayoutType>repository</classpathLayoutType>
+              <classpathPrefix>file:///${localRepositoryWithEscapedSpaces}</classpathPrefix>
+              <mainClass>edu.pdx.cs410J.mina8.Project5</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${jacoco-maven-plugin.version}</version>
       </plugin>
     </plugins>
   </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${maven-surefire-report-plugin.version}</version>
-      </plugin>
-       <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-         <artifactId>jdepend-maven-plugin</artifactId>
-         <version>${jdepend-maven-plugin.version}</version>
-       </plugin>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-checkstyle-plugin</artifactId>
-         <version>${maven-checkstyle-plugin.version}</version>
-       </plugin>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-project-info-reports-plugin</artifactId>
-         <version>${maven-project-info-reports-plugin.version}</version>
-       </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-      </plugin>
-    </plugins>
-  </reporting>
   <profiles>
     <profile>
       <id>grader</id>
@@ -190,5 +205,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
