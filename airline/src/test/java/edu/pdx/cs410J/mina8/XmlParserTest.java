@@ -28,6 +28,7 @@ public class XmlParserTest {
     @Test
     void canParseXmlFileToCreateAirline() throws ParserException {
         Airline airline = parser.parse();
-        assertThat(airline.getName(), equalTo("abc"));
+        assertThat(airline.getName(), equalTo("Valid Airlines"));
+        assertThat(airline.getFlights().size(), equalTo(2));
     }
 }

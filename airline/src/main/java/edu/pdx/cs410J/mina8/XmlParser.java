@@ -24,43 +24,57 @@ public class XmlParser implements AirlineParser<Airline> {
 
     @Override
     public Airline parse() throws ParserException {
-        Airline airline = null;
+        Airline airline;
         Document doc = createDOMTree();
 
-        Element air = doc.getDocumentElement();
-        Node name = air.getFirstChild();
+        Node name = doc.getElementsByTagName("name").item(0).getFirstChild();
         airline = new Airline(name.getNodeValue());
 
-        Node flight = name.getNextSibling();
-        while (flight != null) {
-            NodeList args = flight.getChildNodes();
+        NodeList allFlights = doc.getElementsByTagName("flight");
+        for (int i = 0; i < allFlights.getLength(); ++i) {
             ArrayList<String> argsList = new ArrayList<>();
-            for (int i = 0; i < args.getLength(); ++i) {
-                if (args.item(i).getNodeName() == "depart" || args.item(i).getNodeName() == "arrive") {
-                    Node date = args.item(i).getFirstChild();
-                    NamedNodeMap dateAttr = date.getAttributes();
-                    String departDate = dateAttr.item(1).getNodeValue() + "/" + dateAttr.item(0).getNodeValue() + "/" + dateAttr.item(2).getNodeValue();
-                    argsList.add(departDate);
+            argsList.add(name.getNodeValue());
+            NodeList flightChildrenNodes = allFlights.item(i).getChildNodes();
+            for (int j = 0; j < flightChildrenNodes.getLength(); ++j) {
+                Node flightArg = flightChildrenNodes.item(j);
+                switch (flightArg.getNodeName()) {
+                    case "number":
+                    case "src":
+                    case "dest":
+                        argsList.add(flightArg.getFirstChild().getNodeValue());
+                        break;
+                    case "depart":
+                    case "arrive":
+                        NodeList dateTimeChildrenNodes = flightArg.getChildNodes();
+                        String departDate = null;
+                        String departTime = null;
+                        for (int k = 0; k < dateTimeChildrenNodes.getLength(); ++k) {
+                            Node date = dateTimeChildrenNodes.item(1);
+                            NamedNodeMap dateAttr = date.getAttributes();
+                            departDate = dateAttr.item(1).getNodeValue() + "/" + dateAttr.item(0).getNodeValue() + "/" + dateAttr.item(2).getNodeValue();
 
-                    Node time = args.item(i).getLastChild();
-                    NamedNodeMap timeAttr = time.getAttributes();
-                    String departTime = timeAttr.item(0).getNodeValue() + ":" + timeAttr.item(1).getNodeValue();
-                    SimpleDateFormat time24Hour = new SimpleDateFormat("H:mm");
-                    try {
-                        Date timeToChangeFormat = time24Hour.parse(departTime);
-                        departTime = new SimpleDateFormat("K:mm a").format(timeToChangeFormat);
-                    } catch (ParseException e) {
+                            Node time = dateTimeChildrenNodes.item(3);
+                            NamedNodeMap timeAttr = time.getAttributes();
+                            departTime = timeAttr.item(0).getNodeValue() + ":" + timeAttr.item(1).getNodeValue();
+                            SimpleDateFormat time24Hour = new SimpleDateFormat("H:mm");
+                            try {
+                                Date timeToChangeFormat = time24Hour.parse(departTime);
+                                departTime = new SimpleDateFormat("K:mm a").format(timeToChangeFormat);
+                            } catch (ParseException e) {
 
-                    }
-                    argsList.add(departTime);
-                } else {
-                    argsList.add(args.item(i).getNodeValue());
+                            }
+                        }
+                        argsList.add(departDate);
+                        argsList.add(departTime.split(" ")[0]);
+                        argsList.add(departTime.split(" ")[1]);
+
+                        break;
+                    default: break;
                 }
             }
             Flight newFlight = new Flight(argsList);
             airline.addFlight(newFlight);
         }
-
         return airline;
     }
 
