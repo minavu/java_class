@@ -123,6 +123,6 @@ public class TextParserTest {
    */
   @Test
   void parsingFileWithAirlineNameDifferentThanNewFlightInfoWillThrowException() throws ParserException {
-    assertThrows(InputMismatchException.class, () -> (new TextParser(fileWithInvalidArgsTxt)).parse("notAnAirlineName"));
+    assertThrows(InputMismatchException.class, () -> (new TextParser(fileWithValidArgsTxt)).parse("notAnAirlineName"));
   }
 }

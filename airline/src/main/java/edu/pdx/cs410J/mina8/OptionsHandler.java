@@ -14,7 +14,8 @@ public class OptionsHandler {
         README,
         PRINT,
         TEXTFILE,
-        PRETTY;
+        PRETTY,
+        XMLFILE;
 
         /**
          * This method takes a string and turns it into an enum constant.
@@ -31,6 +32,8 @@ public class OptionsHandler {
                     return TEXTFILE;
                 case "-pretty":
                     return PRETTY;
+                case "-xmlFile":
+                    return XMLFILE;
                 default:
                     throw new IllegalArgumentException("Error in options enum. " + string + " is not an option.");
             }
@@ -38,11 +41,6 @@ public class OptionsHandler {
     }
 
     EnumMap<OptionsEnum, String> options = new EnumMap<>(OptionsEnum.class);
-
-    /**
-     * This is the default constructor.
-     */
-    public OptionsHandler() {}
 
     /**
      * This method extracts all options and the associated parameters and returns the rest of the arguments in an array list.
@@ -70,12 +68,26 @@ public class OptionsHandler {
                         options.put(OptionsEnum.toEnum(args[i]), args[++i]);
                         break;
                     case "-pretty":
-                        if (args[i + 1].equals("-") || !args[i + 1].matches("-.+")) {
-                            options.put(OptionsEnum.toEnum(args[i]), args[++i]);
-                        } else {
+                        try {
+                            if (args[i + 1].equals("-") || !args[i + 1].matches("-.+")) {
+                                options.put(OptionsEnum.toEnum(args[i]), args[++i]);
+                            } else {
+                                throw new IllegalArgumentException("A file name was not provided to the -pretty option.");
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {
                             throw new IllegalArgumentException("A file name was not provided to the -pretty option.");
                         }
                         break;
+                    case "-xmlFile":
+                        try {
+                            if (args[i + 1].startsWith("-")) {
+                                throw new IllegalArgumentException("A file name was not provided to the -xmlFile option.");
+                            }
+                            validateTextFileName(args[i + 1]);
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            throw new IllegalArgumentException("A file name was not provided to the -xmlFile option.");
+                        }
+                        options.put(OptionsEnum.toEnum(args[i]), args[++i]);
                     default:
                         throw new IllegalArgumentException("Error from OptionsHandler: " + args[i] + " is not a valid option.");
                 }
@@ -110,12 +122,77 @@ public class OptionsHandler {
         }
     }
 
+    public Airline handleAllBeforeOptions(String airlineName) {
+        if (options.containsKey(OptionsEnum.TEXTFILE) && options.containsKey(OptionsEnum.XMLFILE)) {
+            throw new IllegalArgumentException("Both -textFile and -xmlFile options cannot be selected at the same time.");
+        }
+        if (options.containsKey(OptionsEnum.TEXTFILE)) {
+            return handleOptionTextFileParse(airlineName);
+        }
+        if (options.containsKey(OptionsEnum.XMLFILE)) {
+            return handleOptionXmlFileParse(airlineName);
+        }
+        return new Airline(airlineName);
+    }
+
+    public void handleAllAfterOptions(Airline airline, Flight newFlight) {
+        if (options.containsKey(OptionsEnum.PRINT)) {
+            handleOptionPrint(newFlight);
+        }
+        if (options.containsKey(OptionsEnum.TEXTFILE)) {
+            handleOptionTextFileDump(airline);
+        }
+        if (options.containsKey(OptionsEnum.XMLFILE)) {
+            handleOptionXmlFileDump(airline);
+        }
+        if (options.containsKey(OptionsEnum.PRETTY)) {
+            handleOptionPretty(airline);
+        }
+    }
+
+    public Airline handleOptionXmlFileParse(String airlineName) throws IllegalArgumentException {
+        if (options.containsKey(OptionsEnum.TEXTFILE) && options.containsKey(OptionsEnum.XMLFILE)) {
+            throw new IllegalArgumentException("Both -textFile and -xmlFile options cannot be selected at the same time.");
+        }
+        if (options.containsKey(OptionsEnum.XMLFILE)) {
+            String fileName = options.get(OptionsEnum.XMLFILE);
+            try {
+                File file = new File(fileName);
+                if (!file.exists()) {
+                    throw new IOException();
+                }
+                XmlParser parser = new XmlParser(new FileInputStream(file));
+                return parser.parse();
+            } catch (IOException | ParserException e) {
+                return new Airline(airlineName);
+            }
+        } else {
+            return new Airline(airlineName);
+        }
+    }
+
+    public void handleOptionXmlFileDump(Airline airline) {
+        if (options.containsKey(OptionsEnum.XMLFILE)) {
+            String fileName = options.get(OptionsEnum.XMLFILE);
+            try {
+                XmlDumper dumper = new XmlDumper(new FileWriter(new File(fileName)));
+                dumper.dump(airline);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Cannot write Airline to the named xml file.");
+            }
+        }
+    }
+
     /**
      * This method executes the textFile option by parsing the file and checking with the airline name.
      * @param airlineName The airline name of the new flight.
      * @return An airline created from the file or an empty airline.
+     * @throws IllegalArgumentException If both -textFile and -xmlFile options are present.
      */
-    public Airline handleOptionTextFileParse(String airlineName) {
+    public Airline handleOptionTextFileParse(String airlineName) throws IllegalArgumentException {
+        if (options.containsKey(OptionsEnum.TEXTFILE) && options.containsKey(OptionsEnum.XMLFILE)) {
+            throw new IllegalArgumentException("Both -textFile and -xmlFile options cannot be selected at the same time.");
+        }
         if (options.containsKey(OptionsEnum.TEXTFILE)) {
             String fileName = options.get(OptionsEnum.TEXTFILE);
             try {

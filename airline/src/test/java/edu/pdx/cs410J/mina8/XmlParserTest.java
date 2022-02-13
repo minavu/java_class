@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.InputMismatchException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XmlParserTest {
     InputStream resource = getClass().getResourceAsStream("valid-airline.xml");
@@ -42,5 +44,10 @@ public class XmlParserTest {
         Airline airline = parserForXmlFromTextFile.parse();
         assertThat(airline.getName(), equalTo("Abc"));
         assertThat(airline.getFlights().size(), equalTo(2));
+    }
+
+    @Test
+    void parsingXmlFileWithAirlineNameDifferentThanNewFlightInfoWillThrowException() throws ParserException {
+        assertThrows(InputMismatchException.class, () -> (new XmlParser(resource)).parse("notAnAirlineName"));
     }
 }

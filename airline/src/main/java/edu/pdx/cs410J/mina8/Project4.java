@@ -13,12 +13,10 @@ public class Project4 {
       optionsHandler.handleOptionREADME();
       checkThatArgsListIsNotEmpty(argsList);
       String airlineName = argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase();
-      Airline airline = optionsHandler.handleOptionTextFileParse(airlineName);
+      Airline airline = optionsHandler.handleAllBeforeOptions(airlineName);
       Flight newFlight = createNewFlightFromArgumentsList(argsList);
       airline.addFlight(newFlight);
-      optionsHandler.handleOptionPrint(newFlight);
-      optionsHandler.handleOptionTextFileDump(airline);
-      optionsHandler.handleOptionPretty(airline);
+      optionsHandler.handleAllAfterOptions(airline, newFlight);
     } catch (IllegalArgumentException | InputMismatchException e) {
       printErrorMessageAndExitSystem(e.getMessage() + USAGE_GUIDE);
     }
@@ -69,8 +67,9 @@ public class Project4 {
           "\t\tdest\t\t\tThree-letter code of arrival airport\n" +
           "\t\tarrive\t\t\tArrival date and time (24-hour time)\n" +
           "\toptions are (options may appear in any order):\n" +
-          "\t\t-pretty file\tPretty print the airline’s flights to a text file or standard out (file -)\n" +
+          "\t\t-xmlFile file\tWhere to read/write the airline info\n" +
           "\t\t-textFile file\tWhere to read/write the airline info\n" +
+          "\t\t-pretty file\tPretty print the airline’s flights to a text file or standard out (file -)\n" +
           "\t\t-print\t\t\tPrints a description of the new flight\n" +
           "\t\t-README\t\t\tPrints a README for this project and exits\n" +
           "\tDate and time should be in the format: mm/dd/yyyy hh:mm am/pm";
