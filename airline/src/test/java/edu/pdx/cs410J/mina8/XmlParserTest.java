@@ -43,7 +43,7 @@ public class XmlParserTest {
     void canParseXmlFileFromTextFileToCreateAirline() throws ParserException {
         Airline airline = parserForXmlFromTextFile.parse();
         assertThat(airline.getName(), equalTo("Abc"));
-        assertThat(airline.getFlights().size(), equalTo(2));
+        assertThat(airline.getFlights().size(), equalTo(11));
     }
 
     @Test
