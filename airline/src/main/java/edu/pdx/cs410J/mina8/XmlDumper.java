@@ -15,12 +15,10 @@ import java.net.MalformedURLException;
 import java.util.Calendar;
 
 public class XmlDumper implements AirlineDumper<Airline> {
-    private final AirlineXmlHelper helper;
     private final Writer writer;
     String systemID = "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd";
 
     public XmlDumper(Writer writer) throws IOException {
-        helper = new AirlineXmlHelper();
         this.writer = writer;
     }
 

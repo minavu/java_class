@@ -24,6 +24,25 @@ public class TextParserTest {
   String fileWithValidArgsTxt = "src/test/resources/edu/pdx/cs410J/mina8/fileWithValidArgs.txt";
   String fileWithInvalidArgsTxt = "src/test/resources/edu/pdx/cs410J/mina8/fileWithInvalidArgs.txt";
 
+  @Test
+  void validTextFileCanBeParsed() throws ParserException {
+    InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
+    assertThat(resource, notNullValue());
+
+    TextParser parser = new TextParser(new InputStreamReader(resource));
+    Airline airline = parser.parse();
+    assertThat(airline.getName(), equalTo("Test Airline"));
+  }
+
+  @Test
+  void invalidTextFileThrowsParserException() {
+    InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
+    assertThat(resource, notNullValue());
+
+    TextParser parser = new TextParser(new InputStreamReader(resource));
+    assertThrows(ParserException.class, parser::parse);
+  }
+
   /**
    * Tests that a non-existent file name will throw an exception.
    */
