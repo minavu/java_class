@@ -25,6 +25,7 @@ public class TextParserTest {
   String fileWithInvalidArgsTxt = "src/test/resources/edu/pdx/cs410J/mina8/fileWithInvalidArgs.txt";
 
   @Test
+  @Disabled
   void validTextFileCanBeParsed() throws ParserException {
     InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
     assertThat(resource, notNullValue());
@@ -35,6 +36,7 @@ public class TextParserTest {
   }
 
   @Test
+  @Disabled
   void invalidTextFileThrowsParserException() {
     InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
     assertThat(resource, notNullValue());

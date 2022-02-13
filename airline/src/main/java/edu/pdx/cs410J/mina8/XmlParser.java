@@ -22,8 +22,22 @@ public class XmlParser implements AirlineParser<Airline> {
         this.inputStream = inputStream;
     }
 
+    public Document createDOMTree() {
+        Document doc = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setEntityResolver(helper);
+            doc = builder.parse(inputStream);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+
+        }
+        return doc;
+    }
+
     @Override
-    public Airline parse() throws ParserException {
+    public Airline parse() throws ParserException, IllegalArgumentException {
         Airline airline;
         Document doc = createDOMTree();
 
@@ -69,26 +83,18 @@ public class XmlParser implements AirlineParser<Airline> {
                         argsList.add(departTime.split(" ")[1]);
 
                         break;
-                    default: break;
+                    default:
+                        break;
                 }
             }
-            Flight newFlight = new Flight(argsList);
+            Flight newFlight;
+            try {
+                newFlight = new Flight(argsList);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("XmlParser says: Error when creating new flight: " + e.getMessage());
+            }
             airline.addFlight(newFlight);
         }
         return airline;
-    }
-
-    public Document createDOMTree() {
-        Document doc = null;
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            builder.setEntityResolver(helper);
-            doc = builder.parse(inputStream);
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-
-        }
-        return doc;
     }
 }

@@ -22,6 +22,22 @@ public class XmlDumper implements AirlineDumper<Airline> {
         this.writer = writer;
     }
 
+    public Document createXmlDocument() {
+        Document doc = null;
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            DOMImplementation dom = builder.getDOMImplementation();
+            DocumentType docType = dom.createDocumentType("airline", null, systemID);
+            doc = dom.createDocument(null, "airline", docType);
+        } catch (ParserConfigurationException e) {
+
+        }
+        return doc;
+    }
+
     @Override
     public void dump(Airline airline) throws IOException {
         Document doc = createXmlDocument();
@@ -94,22 +110,6 @@ public class XmlDumper implements AirlineDumper<Airline> {
         } catch (TransformerException e) {
 
         }
-    }
-
-    public Document createXmlDocument() {
-        Document doc = null;
-
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            DOMImplementation dom = builder.getDOMImplementation();
-            DocumentType docType = dom.createDocumentType("airline", null, systemID);
-            doc = dom.createDocument(null, "airline", docType);
-        } catch (ParserConfigurationException e) {
-
-        }
-        return doc;
     }
 
 }

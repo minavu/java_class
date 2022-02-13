@@ -7,13 +7,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class XmlParserTest {
     InputStream resource = getClass().getResourceAsStream("valid-airline.xml");
+    InputStream resourceCreatedFromTextFile = getClass().getResourceAsStream("fileForXmlReading.xml");
     XmlParser parser = new XmlParser(resource);
+    XmlParser parserForXmlFromTextFile = new XmlParser(resourceCreatedFromTextFile);
 
     @Test
     void canCreateXmlParserObject() {
@@ -29,6 +32,15 @@ public class XmlParserTest {
     void canParseXmlFileToCreateAirline() throws ParserException {
         Airline airline = parser.parse();
         assertThat(airline.getName(), equalTo("Valid Airlines"));
+        assertThat(airline.getFlights().size(), equalTo(2));
+        Collection<Flight> flights = airline.getFlights();
+        assertThat(flights.iterator().next().toString(), equalTo("Flight 1437 departs BJX at 9/25/20 5:00 PM arrives CMN at 9/26/20 3:56 AM"));
+    }
+
+    @Test
+    void canParseXmlFileFromTextFileToCreateAirline() throws ParserException {
+        Airline airline = parserForXmlFromTextFile.parse();
+        assertThat(airline.getName(), equalTo("Abc"));
         assertThat(airline.getFlights().size(), equalTo(2));
     }
 }

@@ -63,9 +63,9 @@ public class TextParser implements AirlineParser<Airline> {
       }
       return airline;
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Error when parsing the file: " + e.getMessage());
+      throw new IllegalArgumentException("TextParser says: Error when parsing the file: " + e.getMessage());
     } catch (IOException e) {
-      throw new ParserException("While parsing airline text", e);
+      throw new ParserException("TextParser says: While parsing airline text", e);
     }
   }
 
@@ -85,12 +85,12 @@ public class TextParser implements AirlineParser<Airline> {
       Airline airline = null;
       String airlineName = br.readLine();
       if (airlineName == null) {
-        throw new ParserException("Missing airline name");
+        throw new ParserException("TextParser says: Missing airline name");
       }
       String[] parsedLine = airlineName.split("\\|");
       String airlineNameInFile = parsedLine[0].substring(0,1).toUpperCase() + parsedLine[0].substring(1).toLowerCase();
       if (!airlineNameInFile.equals(matchAirlineName)) {
-        throw new InputMismatchException("Airline name in text file does not match \"" + matchAirlineName + "\". It is " + parsedLine[0] + ".");
+        throw new InputMismatchException("TextParser says: Airline name in text file does not match \"" + matchAirlineName + "\". It is " + parsedLine[0] + ".");
       }
       airline = new Airline(airlineNameInFile);
       Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedLine)));
@@ -104,9 +104,9 @@ public class TextParser implements AirlineParser<Airline> {
       }
       return airline;
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Error when parsing the file: " + e.getMessage());
+      throw new IllegalArgumentException("TextParser says: Error when parsing the file: " + e.getMessage());
     } catch (IOException e) {
-      throw new ParserException("While parsing airline text", e);
+      throw new ParserException("TextParser says: While parsing airline text", e);
     }
   }
 }

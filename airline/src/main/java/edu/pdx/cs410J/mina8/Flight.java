@@ -57,53 +57,53 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     try {
       flightNumber = Integer.parseInt(argsList.get(1));
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("The given flight number is not a number.");
+      throw new IllegalArgumentException("The given flight number is not a number. Given arg is " + argsList.get(1));
     }
 
     if (argsList.get(2).length() != 3) {
-      throw new IllegalArgumentException("The source code must be three letters.");
+      throw new IllegalArgumentException("The source code must be three letters. Given arg is " + argsList.get(2));
     } else {
       for (int i = 0; i < 3; ++i) {
         if (!Character.isLetter(argsList.get(2).charAt(i))) {
-          throw new IllegalArgumentException("The source code must consist of only letters.");
+          throw new IllegalArgumentException("The source code must consist of only letters. Given arg is " + argsList.get(2));
         }
       }
       src = argsList.get(2).toUpperCase();
       if (!AirportNames.getNamesMap().containsKey(src)) {
-        throw new IllegalArgumentException("The source code does not correspond to a known airport.");
+        throw new IllegalArgumentException("The source code does not correspond to a known airport. Given arg is " + argsList.get(2));
       }
     }
 
     try {
       if (!validDate(argsList.get(3))) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("The departure date is not in the correct format. Given date is " + argsList.get(3));
       }
       depart = dateParser.parse(argsList.get(3) + " " + argsList.get(4) + " " + argsList.get(5));
     } catch (ParseException | IllegalArgumentException e) {
-      throw new IllegalArgumentException("The departure date and time is not in an acceptable format.");
+      throw new IllegalArgumentException("The departure date and time is not in an acceptable format. Given date and time is " + depart);
     }
 
     if (argsList.get(6).length() != 3) {
-      throw new IllegalArgumentException("The destination code must be three letters.");
+      throw new IllegalArgumentException("The destination code must be three letters. Given arg is " + argsList.get(6));
     } else {
       for (int i = 0; i < 3; ++i) {
         if (!Character.isLetter(argsList.get(2).charAt(i))) {
-          throw new IllegalArgumentException("The destination code must consist of only letters.");
+          throw new IllegalArgumentException("The destination code must consist of only letters. Given arg is " + argsList.get(6));
         }
       }
       dest = argsList.get(6).toUpperCase();
       if (!AirportNames.getNamesMap().containsKey(dest)) {
-        throw new IllegalArgumentException("The destination code does not correspond to a known airport.");
+        throw new IllegalArgumentException("The destination code does not correspond to a known airport. Given arg is " + argsList.get(6));
       }
     }
 
     try {
       if (!validDate(argsList.get(7))) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("The arrival date is not in the correct format. Given date is " + argsList.get(7));
       }
       arrive = dateParser.parse(argsList.get(7) + " " + argsList.get(8) + " " + argsList.get(9));
     } catch (ParseException | IllegalArgumentException e) {
-      throw new IllegalArgumentException("The arrival date and time is not in an acceptable format.");
+      throw new IllegalArgumentException("The arrival date and time is not in an acceptable format. Given date and time is " + arrive);
     }
     if (arrive.before(depart)) {
       throw new IllegalArgumentException("The arrival date and time cannot be before the departure date and time.");
