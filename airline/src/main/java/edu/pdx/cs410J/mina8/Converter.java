@@ -22,4 +22,9 @@ public class Converter {
         XmlDumper dumper = new XmlDumper(writer);
         dumper.dump(airline);
     }
+
+    public void convert() throws ParserException, IOException {
+        Airline airline = this.parse();
+        this.dump(airline);
+    }
 }

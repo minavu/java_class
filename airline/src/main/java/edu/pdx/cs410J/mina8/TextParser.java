@@ -65,7 +65,7 @@ public class TextParser implements AirlineParser<Airline> {
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("TextParser says: Error when parsing the file: " + e.getMessage());
     } catch (IOException e) {
-      throw new ParserException("TextParser says: While parsing airline text", e);
+      throw new ParserException("TextParser says: IOException found while parsing text file.");
     }
   }
 
@@ -106,7 +106,7 @@ public class TextParser implements AirlineParser<Airline> {
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("TextParser says: Error when parsing the file: " + e.getMessage());
     } catch (IOException e) {
-      throw new ParserException("TextParser says: While parsing airline text", e);
+      throw new ParserException("TextParser says: IOException found while parsing text file.");
     }
   }
 }

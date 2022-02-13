@@ -63,7 +63,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
                 Calendar d_calendar = Calendar.getInstance();
                 d_calendar.setTime(flight.getDeparture());
                 d_date.setAttribute("day", String.valueOf(d_calendar.get(Calendar.DAY_OF_MONTH)));
-                d_date.setAttribute("month", String.valueOf(d_calendar.get(Calendar.MONTH +1)));
+                d_date.setAttribute("month", String.valueOf((d_calendar.get(Calendar.MONTH))+1));
                 d_date.setAttribute("year", String.valueOf(d_calendar.get(Calendar.YEAR)));
                 Element d_time = doc.createElement("time");
                 d_time.setAttribute("hour", String.valueOf(d_calendar.get(Calendar.HOUR_OF_DAY)));
@@ -81,7 +81,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
                 Calendar a_calendar = Calendar.getInstance();
                 a_calendar.setTime(flight.getArrival());
                 a_date.setAttribute("day", String.valueOf(a_calendar.get(Calendar.DAY_OF_MONTH)));
-                a_date.setAttribute("month", String.valueOf(a_calendar.get(Calendar.MONTH +1)));
+                a_date.setAttribute("month", String.valueOf((a_calendar.get(Calendar.MONTH))+1));
                 a_date.setAttribute("year", String.valueOf(a_calendar.get(Calendar.YEAR)));
                 Element a_time = doc.createElement("time");
                 a_time.setAttribute("hour", String.valueOf(a_calendar.get(Calendar.HOUR_OF_DAY)));

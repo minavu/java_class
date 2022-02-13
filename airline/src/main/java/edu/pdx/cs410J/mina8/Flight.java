@@ -80,7 +80,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
       }
       depart = dateParser.parse(argsList.get(3) + " " + argsList.get(4) + " " + argsList.get(5));
     } catch (ParseException | IllegalArgumentException e) {
-      throw new IllegalArgumentException("The departure date and time is not in an acceptable format. Given date and time is " + depart);
+      throw new IllegalArgumentException("The departure date and time is not in an acceptable format. Given date and time is " + argsList);
     }
 
     if (argsList.get(6).length() != 3) {

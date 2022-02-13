@@ -41,7 +41,7 @@ public class ConverterTest {
 
     @Test
     void canWriteAirlineToXmlFile() throws ParserException, IOException {
-//        xmlOutputTestFile.deleteOnExit();
+        xmlOutputTestFile.deleteOnExit();
         Converter converter = new Converter(new InputStreamReader(resource), new FileWriter(xmlOutputTestFile));
         Airline airline = converter.parse();
         converter.dump(airline);
@@ -49,5 +49,21 @@ public class ConverterTest {
         XmlParser parser = new XmlParser(new FileInputStream(xmlOutputTestFile));
         Airline airlineFromDumpedAndParsedXmlFile = parser.parse();
         assertThat(airline.getName(), equalTo(airlineFromDumpedAndParsedXmlFile.getName()));
+        assertThat(airline.getFlights().size(), equalTo(airlineFromDumpedAndParsedXmlFile.getFlights().size()));
+    }
+
+    @Test
+    void canUseOneConvertMethodToCallParseAndDumpActionsAndPerformSameAsTestAbove() throws IOException, ParserException {
+        xmlOutputTestFile.deleteOnExit();
+        Converter converter = new Converter(new InputStreamReader(resource), new FileWriter(xmlOutputTestFile));
+        converter.convert();
+
+        TextParser textParser = new TextParser(new InputStreamReader(getClass().getResourceAsStream(textFile)));
+        Airline airline = textParser.parse();
+
+        XmlParser parser = new XmlParser(new FileInputStream(xmlOutputTestFile));
+        Airline airlineFromDumpedAndParsedXmlFile = parser.parse();
+        assertThat(airline.getName(), equalTo(airlineFromDumpedAndParsedXmlFile.getName()));
+        assertThat(airline.getFlights().size(), equalTo(airlineFromDumpedAndParsedXmlFile.getFlights().size()));
     }
 }
