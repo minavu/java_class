@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,8 +17,8 @@ import java.util.Date;
 import java.util.InputMismatchException;
 
 /**
- * This class parses an xml file to create an airline with associated flights.
- * It checks against a known airline.dtd before parsing.
+ * This class parses a xml file to create an airline with associated flights.
+ * It checks against a known airline.dtd file before parsing.
  */
 public class XmlParser implements AirlineParser<Airline> {
     AirlineXmlHelper helper = new AirlineXmlHelper();
@@ -28,7 +29,13 @@ public class XmlParser implements AirlineParser<Airline> {
         this.inputStream = inputStream;
     }
 
-    public Document createDOMTree() {
+    /**
+     * This method creates a DOM tree from the parsed xml file. While creating the DOM tree,
+     * the builder checks against the airline.dtd file to create a conforming tree.
+     * @return The DOM tree document.
+     * @throws IllegalArgumentException If anything goes wrong while reading and parsing the xml file.
+     */
+    public Document createDOMTree() throws IllegalArgumentException {
         Document document = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -37,12 +44,18 @@ public class XmlParser implements AirlineParser<Airline> {
             builder.setErrorHandler(helper);
             builder.setEntityResolver(helper);
             document = builder.parse(inputStream);
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new IllegalArgumentException("XmlParser says: Something went wrong when reading xml file.");
+        } catch (ParserConfigurationException | SAXException | IOException | IllegalArgumentException e) {
+            throw new IllegalArgumentException("XmlParser says: Something went wrong when reading xml file. " + e.getMessage());
         }
         return document;
     }
 
+    /**
+     * This method parses the DOM tree to create an airline object with any flights associated.
+     * @return An airline created using the DOM tree from the xml file.
+     * @throws ParserException If anything goes wrong while parsing the DOM tree.
+     * @throws IllegalArgumentException If anything goes wrong while creating the airline.
+     */
     @Override
     public Airline parse() throws ParserException, IllegalArgumentException {
         Document doc = createDOMTree();
@@ -54,6 +67,14 @@ public class XmlParser implements AirlineParser<Airline> {
         return airline;
     }
 
+    /**
+     * This method parses the DOM tree to create an airline object with any flights associated.
+     * It will check that the airline from the xml file is the same as the new flight.
+     * @param matchAirlineName The airline of the new flight to match with that in the xml file.
+     * @return An airline object.
+     * @throws ParserException If anything goes wrong while parsing the DOM tree.
+     * @throws IllegalArgumentException If anything goes wrong while creating the airline.
+     */
     public Airline parse(String matchAirlineName) throws ParserException, IllegalArgumentException {
         Document doc = createDOMTree();
         airlineName = doc.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
@@ -67,6 +88,13 @@ public class XmlParser implements AirlineParser<Airline> {
         return airline;
     }
 
+    /**
+     * This method adds all flights associated with the airline as noted in the xml file.
+     * It walks the DOM tree to find the arguments to create a flight.
+     * @param doc The DOM tree document.
+     * @param airline An empty airline.
+     * @return An airline with all its associated flights.
+     */
     public Airline addFlightsToAirline(Document doc, Airline airline) {
         NodeList allFlights = doc.getElementsByTagName("flight");
         for (int i = 0; i < allFlights.getLength(); ++i) {

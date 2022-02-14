@@ -123,7 +123,14 @@ public class OptionsHandler {
         }
     }
 
-    public Airline handleAllBeforeOptions(String airlineName) {
+    /**
+     * This method calls all options that should occur before creating a new flight.
+     * It makes sure that options exclusive of each other will not appear together.
+     * @param airlineName The name of the airline for the new flight.
+     * @return An airline object using the airline name. Could be an empty airline or filled with flights.
+     * @throws IllegalArgumentException If options exclusive of each other were present in the command line.
+     */
+    public Airline handleAllBeforeOptions(String airlineName) throws IllegalArgumentException {
         if (options.containsKey(OptionsEnum.TEXTFILE) && options.containsKey(OptionsEnum.XMLFILE)) {
             throw new IllegalArgumentException("Both -textFile and -xmlFile options cannot be selected at the same time.");
         }
@@ -136,6 +143,11 @@ public class OptionsHandler {
         return new Airline(airlineName);
     }
 
+    /**
+     * This method calls all options that should occur before ending the program.
+     * @param airline The airline object created during the life of the program.
+     * @param newFlight The new flight created from the command line arguments.
+     */
     public void handleAllAfterOptions(Airline airline, Flight newFlight) {
         if (options.containsKey(OptionsEnum.PRINT)) {
             handleOptionPrint(newFlight);
@@ -151,10 +163,14 @@ public class OptionsHandler {
         }
     }
 
+    /**
+     * This method handles the xml file parsing option by first checking that the option was called.
+     * If the option was not called, an empty airline will be created.
+     * @param airlineName The airline name of the new flight to be created.
+     * @return An airline created from an xml file or an empty airline.
+     * @throws IllegalArgumentException If something goes wrong while creating an airline flights.
+     */
     public Airline handleOptionXmlFileParse(String airlineName) throws IllegalArgumentException {
-        if (options.containsKey(OptionsEnum.TEXTFILE) && options.containsKey(OptionsEnum.XMLFILE)) {
-            throw new IllegalArgumentException("Both -textFile and -xmlFile options cannot be selected at the same time.");
-        }
         if (options.containsKey(OptionsEnum.XMLFILE)) {
             String fileName = options.get(OptionsEnum.XMLFILE);
             try {
@@ -172,11 +188,15 @@ public class OptionsHandler {
         }
     }
 
+    /**
+     * This method handles the xml file dump option.
+     * @param airline The airline object to dump to file.
+     */
     public void handleOptionXmlFileDump(Airline airline) {
         if (options.containsKey(OptionsEnum.XMLFILE)) {
             String fileName = options.get(OptionsEnum.XMLFILE);
             try {
-                XmlDumper dumper = new XmlDumper(new FileWriter(new File(fileName)));
+                XmlDumper dumper = new XmlDumper(new FileWriter(fileName));
                 dumper.dump(airline);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Cannot write Airline to the named xml file.");
@@ -191,9 +211,6 @@ public class OptionsHandler {
      * @throws IllegalArgumentException If both -textFile and -xmlFile options are present.
      */
     public Airline handleOptionTextFileParse(String airlineName) throws IllegalArgumentException {
-        if (options.containsKey(OptionsEnum.TEXTFILE) && options.containsKey(OptionsEnum.XMLFILE)) {
-            throw new IllegalArgumentException("Both -textFile and -xmlFile options cannot be selected at the same time.");
-        }
         if (options.containsKey(OptionsEnum.TEXTFILE)) {
             String fileName = options.get(OptionsEnum.TEXTFILE);
             try {

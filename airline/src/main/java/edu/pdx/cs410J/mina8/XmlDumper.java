@@ -14,14 +14,27 @@ import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This class dumps an airline object into an xml file while conforming to the airline.dtd.
+ */
 public class XmlDumper implements AirlineDumper<Airline> {
     private final Writer writer;
     String systemID = "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd";
 
+    /**
+     * This is the constructor for the class.
+     * @param writer The file to write the airline as xml.
+     * @throws IOException If the file to write to cannot be found.
+     */
     public XmlDumper(Writer writer) throws IOException {
         this.writer = writer;
     }
 
+    /**
+     * This method creates an empty DOM tree to fill with the airline object data.
+     * @return An empty DOM tree.
+     * @throws ParserConfigurationException If the document builder cannot be created.
+     */
     public Document createXmlDocument() throws ParserConfigurationException {
         Document doc;
 
@@ -34,6 +47,11 @@ public class XmlDumper implements AirlineDumper<Airline> {
         return doc;
     }
 
+    /**
+     * This method dumps the airline into the empty DOM tree starting from parent and working to children nodes.
+     * @param airline An airline object with flights associated.
+     * @throws IOException If the file to write to cannot be found.
+     */
     @Override
     public void dump(Airline airline) throws IOException {
         try {
@@ -64,7 +82,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
 
                 air.appendChild(flightElement);
             });
-                dumperToWriter(doc);
+                dumpToWriter(doc);
 
 
         } catch (DOMException | ParserConfigurationException | TransformerException e) {
@@ -72,6 +90,14 @@ public class XmlDumper implements AirlineDumper<Airline> {
         }
     }
 
+    /**
+     * This method generates the date and time elements for the depart and arrive parent elements as
+     * described by the airline.dtd.
+     * @param doc The DOM tree document to write to.
+     * @param flightDate The date object containing date of depart or arrive.
+     * @param flight The flight element to add children elements to.
+     * @param elementName The element to create.
+     */
     private void generateDateTimeElement(Document doc, Date flightDate, Element flight, String elementName) {
         Element depart = doc.createElement(elementName);
         Element d_date = doc.createElement("date");
@@ -88,7 +114,12 @@ public class XmlDumper implements AirlineDumper<Airline> {
         flight.appendChild(depart);
     }
 
-    private void dumperToWriter(Node doc) throws TransformerException {
+    /**
+     * This method dumps the created DOM tree into the writer file.
+     * @param doc The DOM tree document
+     * @throws TransformerException If something goes wrong while transforming the DOM tree into xml file.
+     */
+    private void dumpToWriter(Node doc) throws TransformerException {
         Source src = new DOMSource(doc);
         Result res = new StreamResult(writer);
         TransformerFactory xFactory = TransformerFactory.newInstance();

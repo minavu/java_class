@@ -5,6 +5,7 @@ import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.InputMismatchException;
 
@@ -22,13 +23,18 @@ public class XmlParserTest {
     XmlParser parserWithXmlWithInvalidArgsFile = new XmlParser(resourceXmlWithInvalidArgs);
 
     @Test
-    void canCreateXmlParserObject() {
+    void canCreateXmlParserObject() throws IOException {
+        InputStream resourceValidAirlineXml = getClass().getResourceAsStream("valid-airline.xml");
         assertThat(new XmlParser(resourceValidAirlineXml), instanceOf(XmlParser.class));
+        resourceValidAirlineXml.close();
     }
 
     @Test
     void canCreateDOMTreeFromValidXmlFile() throws IOException {
+        InputStream resourceValidAirlineXml = getClass().getResourceAsStream("valid-airline.xml");
+        XmlParser parser = new XmlParser(resourceValidAirlineXml);
         assertThat(parser.createDOMTree(), instanceOf(Document.class));
+        resourceValidAirlineXml.close();
     }
 
     @Test
@@ -43,7 +49,7 @@ public class XmlParserTest {
     @Test
     void parsingXmlFileNotConformingToDTDWillThrowException() throws ParserException {
         XmlParser parserOfBadXmlFile = new XmlParser(resourceInvalidAirlineXml);
-        assertThrows(IllegalArgumentException.class, () -> parserOfBadXmlFile.parse());
+        assertThrows(IllegalArgumentException.class, parserOfBadXmlFile::parse);
     }
 
     @Test
