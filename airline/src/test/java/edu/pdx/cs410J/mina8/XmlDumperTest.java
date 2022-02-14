@@ -3,6 +3,7 @@ package edu.pdx.cs410J.mina8;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.*;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class XmlDumperTest {
     }
 
     @Test
-    void canCreateEmptyXmlDocument() throws IOException {
+    void canCreateEmptyXmlDocument() throws IOException, ParserConfigurationException {
         testFile.deleteOnExit();
         XmlDumper dumper = new XmlDumper(new FileWriter(testFile));
         assertThat(dumper.createXmlDocument(), instanceOf(Document.class));

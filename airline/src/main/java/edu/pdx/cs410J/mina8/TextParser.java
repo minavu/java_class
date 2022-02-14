@@ -42,31 +42,7 @@ public class TextParser implements AirlineParser<Airline> {
    */
   @Override
   public Airline parse() throws ParserException, IllegalArgumentException {
-    try (
-      BufferedReader br = new BufferedReader(this.reader)
-    ) {
-      Airline airline = null;
-      String airlineName = br.readLine();
-      if (airlineName == null) {
-        throw new ParserException("Missing airline name");
-      }
-      String[] parsedLine = airlineName.split("\\|");
-      airline = new Airline(parsedLine[0]);
-      Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedLine)));
-      airline.addFlight(flight);
-
-      while (br.ready()) {
-        airlineName = br.readLine();
-        parsedLine = airlineName.split("\\|");
-        flight = new Flight(new ArrayList<>(Arrays.asList(parsedLine)));
-        airline.addFlight(flight);
-      }
-      return airline;
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("TextParser says: Error when parsing the file: " + e.getMessage());
-    } catch (IOException e) {
-      throw new ParserException("TextParser says: IOException found while parsing text file.");
-    }
+    return parseHelper();
   }
 
   /**
@@ -79,20 +55,24 @@ public class TextParser implements AirlineParser<Airline> {
    * @throws IllegalArgumentException -If any of the arguments to create the flights is formatted incorrectly.
    */
   public Airline parse(String matchAirlineName) throws IllegalArgumentException, ParserException, InputMismatchException {
+    Airline airline = parseHelper();
+    if (!airline.getName().equals(matchAirlineName)) {
+      throw new InputMismatchException("TextParser says: Airline name in text file does not match \"" + matchAirlineName + "\". It is " + airline.getName() + ".");
+    }
+    return airline;
+  }
+
+  public Airline parseHelper() throws ParserException, IllegalArgumentException {
     try (
             BufferedReader br = new BufferedReader(this.reader)
     ) {
       Airline airline = null;
       String airlineName = br.readLine();
       if (airlineName == null) {
-        throw new ParserException("TextParser says: Missing airline name");
+        throw new ParserException("Missing airline name");
       }
       String[] parsedLine = airlineName.split("\\|");
-      String airlineNameInFile = parsedLine[0].substring(0,1).toUpperCase() + parsedLine[0].substring(1).toLowerCase();
-      if (!airlineNameInFile.equals(matchAirlineName)) {
-        throw new InputMismatchException("TextParser says: Airline name in text file does not match \"" + matchAirlineName + "\". It is " + parsedLine[0] + ".");
-      }
-      airline = new Airline(airlineNameInFile);
+      airline = new Airline(parsedLine[0]);
       Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedLine)));
       airline.addFlight(flight);
 

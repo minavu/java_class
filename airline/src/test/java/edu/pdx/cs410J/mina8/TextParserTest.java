@@ -36,7 +36,6 @@ public class TextParserTest {
   }
 
   @Test
-  @Disabled
   void invalidTextFileThrowsParserException() {
     InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
     assertThat(resource, notNullValue());

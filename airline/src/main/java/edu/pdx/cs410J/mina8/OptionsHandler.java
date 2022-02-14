@@ -88,8 +88,9 @@ public class OptionsHandler {
                             throw new IllegalArgumentException("A file name was not provided to the -xmlFile option.");
                         }
                         options.put(OptionsEnum.toEnum(args[i]), args[++i]);
+                        break;
                     default:
-                        throw new IllegalArgumentException("Error from OptionsHandler: " + args[i] + " is not a valid option.");
+                        throw new IllegalArgumentException("OptionsHandler says: Error: " + args[i] + " is not a valid option.");
                 }
             } else {
                 argsList.add(args[i].toLowerCase());
@@ -162,7 +163,7 @@ public class OptionsHandler {
                     throw new IOException();
                 }
                 XmlParser parser = new XmlParser(new FileInputStream(file));
-                return parser.parse();
+                return parser.parse(airlineName);
             } catch (IOException | ParserException e) {
                 return new Airline(airlineName);
             }

@@ -15,50 +15,19 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TextDumperTest {
-  String tempFilesToDeleteDir = "src/test/resources/edu/pdx/cs410J/mina8/tempFilesToDelete/";
-  String fileWithValidArgsTxt = "src/test/resources/edu/pdx/cs410J/mina8/fileWithValidArgs.txt";
-
-  /**
-   * Tests that a given file name that did not exist will be created.
-   * @throws IOException -If the file is not a regular file, cannot be created, or cannot be opened.
-   */
   @Test
   void nonexistentFileNameWillBeCreatedAsNewFile() throws IOException {
-    Date newDate = new Date();
-    String newFileName = tempFilesToDeleteDir + newDate + ".txt";
-    assertThat((new File(newFileName)).exists(), equalTo(false));
-    TextDumper dumper = new TextDumper(newFileName);
-    assertThat((new File(newFileName)).exists(), equalTo(true));
+    File newFile = new File((new Date()).toString() + ".txt");
+    newFile.deleteOnExit();
+    assertThat(newFile.exists(), equalTo(false));
+    TextDumper dumper = new TextDumper(new FileWriter(newFile));
+    assertThat(newFile.exists(), equalTo(true));
   }
 
-  /**
-   * Tests that an Airline with one flight can be written to file.
-   * @throws IOException -If the file is not a regular file, cannot be created, or cannot be opened.
-   */
-  @Test
-  void airlineWithOneFlightIsWrittenToFileWithDelimiter() throws IOException {
-    BufferedReader reader = new BufferedReader(new FileReader(fileWithValidArgsTxt));
-    String readAirline = reader.readLine();
-    ArrayList<String> args = new ArrayList<>(Arrays.asList(readAirline.split("\\|")));
-    Airline airline = new Airline(args.get(0));
-    Flight flight = new Flight(args);
-    airline.addFlight(flight);
-
-    String writeFileName = tempFilesToDeleteDir + "fileWithTestAirline.txt";
-    TextDumper dumper = new TextDumper(writeFileName);
-    dumper.dump(airline);
-
-    BufferedReader readWrittenFile = new BufferedReader(new FileReader(writeFileName));
-    assertThat(readWrittenFile.readLine(), containsString(readAirline));
-  }
-
-  /**
-   * Tests that an Airline with many flights can all be written to file.
-   * @throws IOException -If the file is not a regular file, cannot be created, or cannot be opened.
-   */
   @Test
   void airlineWithMultipleFlightsIsWrittenToFileWithDelimiterAndNewline() throws IOException {
-    BufferedReader reader = new BufferedReader(new FileReader(fileWithValidArgsTxt));
+    InputStream inputStream = this.getClass().getResourceAsStream("fileWithValidArgs.txt");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     String readAirline1 = reader.readLine();
     ArrayList<String> args1 = new ArrayList<>(Arrays.asList(readAirline1.split("\\|")));
     String readAirline2 = reader.readLine();
@@ -69,8 +38,9 @@ public class TextDumperTest {
     flight = new Flight(args2);
     airline.addFlight(flight);
 
-    String writeFileName = tempFilesToDeleteDir + "fileWithTestAirline.txt";
-    TextDumper dumper = new TextDumper(writeFileName);
+    File writeFileName = new File("fileWithTestAirline.txt");
+    writeFileName.deleteOnExit();
+    TextDumper dumper = new TextDumper(new FileWriter(writeFileName));
     dumper.dump(airline);
 
     BufferedReader readWrittenFile = new BufferedReader(new FileReader(writeFileName));

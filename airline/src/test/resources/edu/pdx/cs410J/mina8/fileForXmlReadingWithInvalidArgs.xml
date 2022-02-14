@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE airline SYSTEM "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd">
+<airline>
+    <name>Abc</name>
+    <flight>
+        <number>456</number>
+        <src>CLT</src>
+        <depart>
+            <date day="2" month="22" year="2022"/>
+            <time hour="10" minute="0"/>
+        </depart>
+        <dest>MIA</dest>
+        <arrive>
+            <date day="2" month="2" year="2022"/>
+            <time hour="10" minute="30"/>
+        </arrive>
+    </flight>
+</airline>

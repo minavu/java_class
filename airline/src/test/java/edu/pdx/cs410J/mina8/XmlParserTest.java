@@ -3,10 +3,8 @@ import edu.pdx.cs410J.ParserException;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.InputMismatchException;
 
@@ -15,14 +13,17 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XmlParserTest {
-    InputStream resource = getClass().getResourceAsStream("valid-airline.xml");
+    InputStream resourceValidAirlineXml = getClass().getResourceAsStream("valid-airline.xml");
+    InputStream resourceInvalidAirlineXml = getClass().getResourceAsStream("invalid-airline.xml");
     InputStream resourceCreatedFromTextFile = getClass().getResourceAsStream("fileForXmlReading.xml");
-    XmlParser parser = new XmlParser(resource);
+    InputStream resourceXmlWithInvalidArgs = getClass().getResourceAsStream("fileForXmlReadingWithInvalidArgs.xml");
+    XmlParser parser = new XmlParser(resourceValidAirlineXml);
     XmlParser parserForXmlFromTextFile = new XmlParser(resourceCreatedFromTextFile);
+    XmlParser parserWithXmlWithInvalidArgsFile = new XmlParser(resourceXmlWithInvalidArgs);
 
     @Test
     void canCreateXmlParserObject() {
-        assertThat(new XmlParser(resource), instanceOf(XmlParser.class));
+        assertThat(new XmlParser(resourceValidAirlineXml), instanceOf(XmlParser.class));
     }
 
     @Test
@@ -40,6 +41,12 @@ public class XmlParserTest {
     }
 
     @Test
+    void parsingXmlFileNotConformingToDTDWillThrowException() throws ParserException {
+        XmlParser parserOfBadXmlFile = new XmlParser(resourceInvalidAirlineXml);
+        assertThrows(IllegalArgumentException.class, () -> parserOfBadXmlFile.parse());
+    }
+
+    @Test
     void canParseXmlFileFromTextFileToCreateAirline() throws ParserException {
         Airline airline = parserForXmlFromTextFile.parse();
         assertThat(airline.getName(), equalTo("Abc"));
@@ -48,6 +55,17 @@ public class XmlParserTest {
 
     @Test
     void parsingXmlFileWithAirlineNameDifferentThanNewFlightInfoWillThrowException() throws ParserException {
-        assertThrows(InputMismatchException.class, () -> (new XmlParser(resource)).parse("notAnAirlineName"));
+        assertThrows(InputMismatchException.class, () -> (new XmlParser(resourceValidAirlineXml)).parse("notAnAirlineName"));
+    }
+
+    @Test
+    void parsingXmlFileWithAirlineNameSameAsNewFlightInfoWillReturnAirline() throws ParserException {
+        Airline airline = (new XmlParser(resourceValidAirlineXml)).parse("Valid Airlines");
+        assertThat(airline.getName(), equalTo("Valid Airlines"));
+    }
+
+    @Test
+    void creatingFlightFromXmlFileContainingInvalidArgsWillThrowException() throws ParserException {
+        assertThrows(IllegalArgumentException.class, () -> (new XmlParser(resourceXmlWithInvalidArgs)).parse("Abc"));
     }
 }
