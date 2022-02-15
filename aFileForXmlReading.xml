@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE airline SYSTEM "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd">
+<airline>
+    <name>Abc</name>
+    <flight>
+        <number>996</number>
+        <src>PDX</src>
+        <depart>
+            <date day="4" month="2" year="2022"/>
+            <time hour="10" minute="13"/>
+        </depart>
+        <dest>OKC</dest>
+        <arrive>
+            <date day="5" month="2" year="2022"/>
+            <time hour="23" minute="0"/>
+        </arrive>
+    </flight>
+    <flight>
+        <number>995</number>
+        <src>PDX</src>
+        <depart>
+            <date day="5" month="2" year="2022"/>
+            <time hour="10" minute="13"/>
+        </depart>
+        <dest>OKC</dest>
+        <arrive>
+            <date day="5" month="2" year="2022"/>
+            <time hour="23" minute="0"/>
+        </arrive>
+    </flight>
+</airline>

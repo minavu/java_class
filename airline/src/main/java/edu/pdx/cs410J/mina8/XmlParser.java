@@ -3,6 +3,7 @@ package edu.pdx.cs410J.mina8;
 import edu.pdx.cs410J.AirlineParser;
 import edu.pdx.cs410J.ParserException;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -22,11 +23,11 @@ import java.util.InputMismatchException;
  */
 public class XmlParser implements AirlineParser<Airline> {
     AirlineXmlHelper helper = new AirlineXmlHelper();
-    private final InputStream inputStream;
+    private final Reader reader;
     private String airlineName;
 
-    public XmlParser(InputStream inputStream) {
-        this.inputStream = inputStream;
+    public XmlParser(Reader reader) {
+        this.reader = reader;
     }
 
     /**
@@ -43,7 +44,7 @@ public class XmlParser implements AirlineParser<Airline> {
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setErrorHandler(helper);
             builder.setEntityResolver(helper);
-            document = builder.parse(inputStream);
+            document = builder.parse(new InputSource(reader));
         } catch (ParserConfigurationException | SAXException | IOException | IllegalArgumentException e) {
             throw new IllegalArgumentException("XmlParser says: Something went wrong when reading xml file. " + e.getMessage());
         }

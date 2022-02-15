@@ -18,21 +18,18 @@ public class XmlParserTest {
     InputStream resourceInvalidAirlineXml = getClass().getResourceAsStream("invalid-airline.xml");
     InputStream resourceCreatedFromTextFile = getClass().getResourceAsStream("fileForXmlReading.xml");
     InputStream resourceXmlWithInvalidArgs = getClass().getResourceAsStream("fileForXmlReadingWithInvalidArgs.xml");
-    XmlParser parser = new XmlParser(resourceValidAirlineXml);
-    XmlParser parserForXmlFromTextFile = new XmlParser(resourceCreatedFromTextFile);
-    XmlParser parserWithXmlWithInvalidArgsFile = new XmlParser(resourceXmlWithInvalidArgs);
+    XmlParser parser = new XmlParser(new InputStreamReader(resourceValidAirlineXml));
+    XmlParser parserForXmlFromTextFile = new XmlParser(new InputStreamReader(resourceCreatedFromTextFile));
 
     @Test
     void canCreateXmlParserObject() throws IOException {
-        InputStream resourceValidAirlineXml = getClass().getResourceAsStream("valid-airline.xml");
-        assertThat(new XmlParser(resourceValidAirlineXml), instanceOf(XmlParser.class));
+        assertThat(new XmlParser(new InputStreamReader(resourceValidAirlineXml)), instanceOf(XmlParser.class));
         resourceValidAirlineXml.close();
     }
 
     @Test
     void canCreateDOMTreeFromValidXmlFile() throws IOException {
-        InputStream resourceValidAirlineXml = getClass().getResourceAsStream("valid-airline.xml");
-        XmlParser parser = new XmlParser(resourceValidAirlineXml);
+        XmlParser parser = new XmlParser(new InputStreamReader(resourceValidAirlineXml));
         assertThat(parser.createDOMTree(), instanceOf(Document.class));
         resourceValidAirlineXml.close();
     }
@@ -48,7 +45,7 @@ public class XmlParserTest {
 
     @Test
     void parsingXmlFileNotConformingToDTDWillThrowException() throws ParserException {
-        XmlParser parserOfBadXmlFile = new XmlParser(resourceInvalidAirlineXml);
+        XmlParser parserOfBadXmlFile = new XmlParser(new InputStreamReader(resourceInvalidAirlineXml));
         assertThrows(IllegalArgumentException.class, parserOfBadXmlFile::parse);
     }
 
@@ -61,17 +58,17 @@ public class XmlParserTest {
 
     @Test
     void parsingXmlFileWithAirlineNameDifferentThanNewFlightInfoWillThrowException() throws ParserException {
-        assertThrows(InputMismatchException.class, () -> (new XmlParser(resourceValidAirlineXml)).parse("notAnAirlineName"));
+        assertThrows(InputMismatchException.class, () -> (new XmlParser(new InputStreamReader(resourceValidAirlineXml))).parse("notAnAirlineName"));
     }
 
     @Test
     void parsingXmlFileWithAirlineNameSameAsNewFlightInfoWillReturnAirline() throws ParserException {
-        Airline airline = (new XmlParser(resourceValidAirlineXml)).parse("Valid Airlines");
+        Airline airline = (new XmlParser(new InputStreamReader(resourceValidAirlineXml))).parse("Valid Airlines");
         assertThat(airline.getName(), equalTo("Valid Airlines"));
     }
 
     @Test
     void creatingFlightFromXmlFileContainingInvalidArgsWillThrowException() throws ParserException {
-        assertThrows(IllegalArgumentException.class, () -> (new XmlParser(resourceXmlWithInvalidArgs)).parse("Abc"));
+        assertThrows(IllegalArgumentException.class, () -> (new XmlParser(new InputStreamReader(resourceXmlWithInvalidArgs))).parse("Abc"));
     }
 }

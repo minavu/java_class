@@ -46,7 +46,7 @@ public class ConverterTest {
         Airline airline = converter.parse();
         converter.dump(airline);
 
-        XmlParser parser = new XmlParser(new FileInputStream(xmlOutputTestFile));
+        XmlParser parser = new XmlParser(new FileReader(xmlOutputTestFile));
         Airline airlineFromDumpedAndParsedXmlFile = parser.parse();
         assertThat(airline.getName(), equalTo(airlineFromDumpedAndParsedXmlFile.getName()));
         assertThat(airline.getFlights().size(), equalTo(airlineFromDumpedAndParsedXmlFile.getFlights().size()));
@@ -61,7 +61,7 @@ public class ConverterTest {
         TextParser textParser = new TextParser(new InputStreamReader(getClass().getResourceAsStream(textFile)));
         Airline airline = textParser.parse();
 
-        XmlParser parser = new XmlParser(new FileInputStream(xmlOutputTestFile));
+        XmlParser parser = new XmlParser(new FileReader(xmlOutputTestFile));
         Airline airlineFromDumpedAndParsedXmlFile = parser.parse();
         assertThat(airline.getName(), equalTo(airlineFromDumpedAndParsedXmlFile.getName()));
         assertThat(airline.getFlights().size(), equalTo(airlineFromDumpedAndParsedXmlFile.getFlights().size()));

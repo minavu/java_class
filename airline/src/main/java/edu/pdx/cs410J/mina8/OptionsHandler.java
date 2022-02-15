@@ -178,7 +178,7 @@ public class OptionsHandler {
                 if (!file.exists()) {
                     throw new IOException();
                 }
-                XmlParser parser = new XmlParser(new FileInputStream(file));
+                XmlParser parser = new XmlParser(new FileReader(file));
                 return parser.parse(airlineName);
             } catch (IOException | ParserException e) {
                 return new Airline(airlineName);
