@@ -93,7 +93,7 @@ public class OptionsHandler {
                         throw new IllegalArgumentException("OptionsHandler says: Error: " + args[i] + " is not a valid option.");
                 }
             } else {
-                argsList.add(args[i].toLowerCase());
+                argsList.add(args[i]);
             }
         }
         return argsList;

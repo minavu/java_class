@@ -3,7 +3,6 @@ package edu.pdx.cs410J.mina8;
 import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 

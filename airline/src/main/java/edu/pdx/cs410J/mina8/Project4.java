@@ -12,9 +12,9 @@ public class Project4 {
       ArrayList<String> argsList = optionsHandler.extractAllOptionsAndAssociatedParamsReturnLeftoverArgs(args);
       optionsHandler.handleOptionREADME();
       checkThatArgsListIsNotEmpty(argsList);
-      String airlineName = argsList.get(0).substring(0,1).toUpperCase() + argsList.get(0).substring(1).toLowerCase();
+      String airlineName = argsList.get(0);
       Airline airline = optionsHandler.handleAllBeforeOptions(airlineName);
-      Flight newFlight = createNewFlightFromArgumentsList(argsList);
+      Flight newFlight = new Flight(argsList);
       airline.addFlight(newFlight);
       optionsHandler.handleAllAfterOptions(airline, newFlight);
     } catch (IllegalArgumentException | InputMismatchException e) {
@@ -33,16 +33,6 @@ public class Project4 {
     if (argsList.size() == 0) {
       throw new IllegalArgumentException("No new flight information was provided through the command line arguments.");
     }
-  }
-
-  /**
-   * This method creates a Flight from the parsed command line arguments.
-   * @param argsList -An array list of strings containing data for an Airline and a Flight.
-   * @return -A Flight object.
-   * @throws IllegalArgumentException -If the formatting of the parsed arguments does not conform with the required specification.
-   */
-  protected static Flight createNewFlightFromArgumentsList(ArrayList<String> argsList) throws IllegalArgumentException {
-    return new Flight(argsList);
   }
 
   /**

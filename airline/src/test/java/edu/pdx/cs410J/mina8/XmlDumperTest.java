@@ -12,7 +12,6 @@ import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XmlDumperTest {
     File testFile = new File("test.xml");
