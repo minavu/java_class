@@ -7,8 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This servlet ultimately provides a REST API for working with an
@@ -17,10 +16,11 @@ import java.util.Map;
  * and their definitions.
  */
 public class AirlineServlet extends HttpServlet {
-  static final String WORD_PARAMETER = "word";
-  static final String DEFINITION_PARAMETER = "definition";
+//  static final String WORD_PARAMETER = "word";
+//  static final String DEFINITION_PARAMETER = "definition";
+//  private final Map<String, String> dictionary = new HashMap<>();
 
-  private final Map<String, String> dictionary = new HashMap<>();
+  private final Collection<Airline> hub = new TreeSet<>();
 
   /**
    * Handles an HTTP GET request from a client by writing the definition of the
@@ -33,13 +33,22 @@ public class AirlineServlet extends HttpServlet {
   {
       response.setContentType( "text/plain" );
 
-      String word = getParameter( WORD_PARAMETER, request );
-      if (word != null) {
-          writeDefinition(word, response);
+      String airlineName = request.getParameter("airline");
+      Airline airline = new Airline(airlineName);
 
+      if (!hub.contains(airline)) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
       } else {
-          writeAllDictionaryEntries(response);
+          response.setStatus(HttpServletResponse.SC_OK);
       }
+
+//      String word = getParameter( WORD_PARAMETER, request );
+//      if (word != null) {
+//          writeDefinition(word, response);
+//
+//      } else {
+//          writeAllDictionaryEntries(response);
+//      }
   }
 
   /**
@@ -52,25 +61,50 @@ public class AirlineServlet extends HttpServlet {
   {
       response.setContentType( "text/plain" );
 
-      String word = getParameter(WORD_PARAMETER, request );
-      if (word == null) {
-          missingRequiredParameter(response, WORD_PARAMETER);
-          return;
+      String airline = request.getParameter("airline");
+      String flightNumber = request.getParameter("flightNumber");
+      String src = request.getParameter("src");
+      String departDate = request.getParameter("departDate");
+      String departTime = request.getParameter("departTime");
+      String departAMPM = request.getParameter("departAMPM");
+      String dest = request.getParameter("dest");
+      String arriveDate = request.getParameter("arriveDate");
+      String arriveTime = request.getParameter("arriveTime");
+      String arriveAMPM = request.getParameter("arriveAMPM");
+
+      PrintWriter printWriter;
+      try {
+          Airline newAirline = new Airline(airline);
+          Flight newFlight = new Flight(new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM)));
+          newAirline.addFlight(newFlight);
+          hub.add(newAirline);
+
+          printWriter = response.getWriter();
+          printWriter.println("Good");
+          printWriter.flush();
+          response.setStatus(HttpServletResponse.SC_OK);
+      } catch (IllegalArgumentException e) {
+          response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
       }
-
-      String definition = getParameter(DEFINITION_PARAMETER, request );
-      if ( definition == null) {
-          missingRequiredParameter( response, DEFINITION_PARAMETER );
-          return;
-      }
-
-      this.dictionary.put(word, definition);
-
-      PrintWriter pw = response.getWriter();
-      pw.println(Messages.definedWordAs(word, definition));
-      pw.flush();
-
-      response.setStatus( HttpServletResponse.SC_OK);
+//      String word = getParameter(WORD_PARAMETER, request );
+//      if (word == null) {
+//          missingRequiredParameter(response, WORD_PARAMETER);
+//          return;
+//      }
+//
+//      String definition = getParameter(DEFINITION_PARAMETER, request );
+//      if ( definition == null) {
+//          missingRequiredParameter( response, DEFINITION_PARAMETER );
+//          return;
+//      }
+//
+//      this.dictionary.put(word, definition);
+//
+//      PrintWriter pw = response.getWriter();
+//      pw.println(Messages.definedWordAs(word, definition));
+//      pw.flush();
+//
+//      response.setStatus( HttpServletResponse.SC_OK);
   }
 
   /**
@@ -80,15 +114,15 @@ public class AirlineServlet extends HttpServlet {
    */
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      response.setContentType("text/plain");
-
-      this.dictionary.clear();
-
-      PrintWriter pw = response.getWriter();
-      pw.println(Messages.allDictionaryEntriesDeleted());
-      pw.flush();
-
-      response.setStatus(HttpServletResponse.SC_OK);
+//      response.setContentType("text/plain");
+//
+//      this.dictionary.clear();
+//
+//      PrintWriter pw = response.getWriter();
+//      pw.println(Messages.allDictionaryEntriesDeleted());
+//      pw.flush();
+//
+//      response.setStatus(HttpServletResponse.SC_OK);
 
   }
 
@@ -97,48 +131,48 @@ public class AirlineServlet extends HttpServlet {
    *
    * The text of the error message is created by {@link Messages#missingRequiredParameter(String)}
    */
-  private void missingRequiredParameter( HttpServletResponse response, String parameterName )
-      throws IOException
-  {
-      String message = Messages.missingRequiredParameter(parameterName);
-      response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
-  }
+//  private void missingRequiredParameter( HttpServletResponse response, String parameterName )
+//      throws IOException
+//  {
+//      String message = Messages.missingRequiredParameter(parameterName);
+//      response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+//  }
 
   /**
    * Writes the definition of the given word to the HTTP response.
    *
    * The text of the message is formatted with {@link TextDumper}
    */
-  private void writeDefinition(String word, HttpServletResponse response) throws IOException {
-    String definition = this.dictionary.get(word);
-
-    if (definition == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-
-    } else {
-      PrintWriter pw = response.getWriter();
-
-      Map<String, String> wordDefinition = Map.of(word, definition);
-      TextDumper dumper = new TextDumper(pw);
-      dumper.dump(wordDefinition);
-
-      response.setStatus(HttpServletResponse.SC_OK);
-    }
-  }
+//  private void writeDefinition(String word, HttpServletResponse response) throws IOException {
+//    String definition = this.dictionary.get(word);
+//
+//    if (definition == null) {
+//      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//
+//    } else {
+//      PrintWriter pw = response.getWriter();
+//
+//      Map<String, String> wordDefinition = Map.of(word, definition);
+//      TextDumper dumper = new TextDumper(pw);
+//      dumper.dump(wordDefinition);
+//
+//      response.setStatus(HttpServletResponse.SC_OK);
+//    }
+//  }
 
   /**
    * Writes all of the dictionary entries to the HTTP response.
    *
    * The text of the message is formatted with {@link TextDumper}
    */
-  private void writeAllDictionaryEntries(HttpServletResponse response ) throws IOException
-  {
-      PrintWriter pw = response.getWriter();
-      TextDumper dumper = new TextDumper(pw);
-      dumper.dump(dictionary);
-
-      response.setStatus( HttpServletResponse.SC_OK );
-  }
+//  private void writeAllDictionaryEntries(HttpServletResponse response ) throws IOException
+//  {
+//      PrintWriter pw = response.getWriter();
+//      TextDumper dumper = new TextDumper(pw);
+//      dumper.dump(dictionary);
+//
+//      response.setStatus( HttpServletResponse.SC_OK );
+//  }
 
   /**
    * Returns the value of the HTTP request parameter with the given name.
@@ -146,18 +180,18 @@ public class AirlineServlet extends HttpServlet {
    * @return <code>null</code> if the value of the parameter is
    *         <code>null</code> or is the empty string
    */
-  private String getParameter(String name, HttpServletRequest request) {
-    String value = request.getParameter(name);
-    if (value == null || "".equals(value)) {
-      return null;
+//  private String getParameter(String name, HttpServletRequest request) {
+//    String value = request.getParameter(name);
+//    if (value == null || "".equals(value)) {
+//      return null;
+//
+//    } else {
+//      return value;
+//    }
+//  }
 
-    } else {
-      return value;
-    }
-  }
-
-  @VisibleForTesting
-  String getDefinition(String word) {
-      return this.dictionary.get(word);
-  }
+//  @VisibleForTesting
+//  String getDefinition(String word) {
+//      return this.dictionary.get(word);
+//  }
 }

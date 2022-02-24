@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.mina8;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -8,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -19,8 +22,60 @@ import static org.mockito.Mockito.*;
  * provide mock http requests and responses.
  */
 class AirlineServletTest {
+  AirlineServlet servlet = new AirlineServlet();
+  HttpServletRequest request = mock(HttpServletRequest.class);
+  HttpServletResponse response = mock(HttpServletResponse.class);
+
+  String airline = "airline";
+  String flightNumber = "123";
+  String src = "pdx";
+  String departDate = "1/1/2022";
+  String departTime = "7:00";
+  String departAMPM = "AM";
+  String dest = "hnl";
+  String arriveDate = "01/01/2022";
+  String arriveTime = "2:59";
+  String arriveAMPM = "PM";
+  ArrayList<String> goodArgs = new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAMPM, dest, arriveDate, arriveTime, arriveAMPM));
 
   @Test
+  void doGetOnNonExistingAirlineWillReturnStatusCode404() throws IOException {
+    String airlineName = "Does Not Exist";
+    when(request.getParameter("airline")).thenReturn(airlineName);
+
+    servlet.doGet(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND);
+  }
+
+  @Test
+  void doPostWithValidFlightArgsWillReturnStatusCode200() throws IOException {
+    when(request.getParameter("airline")).thenReturn(airline);
+    when(request.getParameter("flightNumber")).thenReturn(flightNumber);
+    when(request.getParameter("src")).thenReturn(src);
+    when(request.getParameter("departDate")).thenReturn(departDate);
+    when(request.getParameter("departTime")).thenReturn(departTime);
+    when(request.getParameter("departAMPM")).thenReturn(departAMPM);
+    when(request.getParameter("dest")).thenReturn(dest);
+    when(request.getParameter("arriveDate")).thenReturn(arriveDate);
+    when(request.getParameter("arriveTime")).thenReturn(arriveTime);
+    when(request.getParameter("arriveAMPM")).thenReturn(arriveAMPM);
+    PrintWriter pw = mock(PrintWriter.class);
+    when(response.getWriter()).thenReturn(pw);
+
+    servlet.doPost(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+  }
+
+//  @Test
+//  void doGetOnExistingAirlineWillReturnStatusCode200() throws IOException {
+//    String airlineName = "Does Exist";
+//    when(request.getParameter("airline")).thenReturn(airlineName)
+//  }
+
+  @Test
+  @Disabled
   void initiallyServletContainsNoDictionaryEntries() throws IOException {
     AirlineServlet servlet = new AirlineServlet();
 
@@ -38,6 +93,7 @@ class AirlineServletTest {
   }
 
   @Test
+  @Disabled
   void addOneWordToDictionary() throws IOException {
     AirlineServlet servlet = new AirlineServlet();
 
@@ -66,7 +122,7 @@ class AirlineServletTest {
 
     assertThat(statusCode.getValue(), equalTo(HttpServletResponse.SC_OK));
 
-    assertThat(servlet.getDefinition(word), equalTo(definition));
+//    assertThat(servlet.getDefinition(word), equalTo(definition));
   }
 
 }
