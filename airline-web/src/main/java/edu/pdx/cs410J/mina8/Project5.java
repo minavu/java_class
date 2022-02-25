@@ -15,6 +15,12 @@ public class Project5 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
+    /**
+     * This main method grabs the command line arguments and parses between options and new flight
+     * arguments.  Options are handled and new flight data will be sent to the client to send to
+     * the servlet.
+     * @param args
+     */
     public static void main(String[] args) {
         if (args.length == 0) {
             printErrorMessageAndUsageGuideAndExitSystem(MISSING_ARGS);
@@ -48,7 +54,7 @@ public class Project5 {
 
     /**
      * This method prints a message to standard error and exits the system with an error code of 1.
-     * @param message -A string containing the message to print to standard error.
+     * @param message A string containing the message to print to standard error.
      */
     private static void printErrorMessageAndUsageGuideAndExitSystem(String message) {
         String USAGE_GUIDE =

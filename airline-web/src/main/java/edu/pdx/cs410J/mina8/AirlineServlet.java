@@ -9,9 +9,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
+/**
+ * This is the AirlineServlet class that will route the different requests from the client.
+ * Depending on the correctness of the request, the servlet will create a response to send back.
+ */
 public class AirlineServlet extends HttpServlet {
   private final Collection<Airline> hub = new TreeSet<>();
 
+    /**
+     * This is the route that all GET methods will encounter.  Depending on the parameters in
+     * the request, the servlet will either grab all flights or grab a subset of flights in an
+     * existing airline and return to the client.  If the airline does not exist, error code 404
+     * will be sent.
+     * @param request The client request that contains the parameters.
+     * @param response The servlet response that contains the data or an error code.
+     * @throws IOException If there is a connection error.
+     */
   @Override
   protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException
   {
@@ -62,6 +75,15 @@ public class AirlineServlet extends HttpServlet {
       }
   }
 
+    /**
+     * This is the route that all POST method will encounter.  Depending on the parameters,
+     * the servlet will attempt to create a new flight and add to an existing or new airline.
+     * If the parameters do not allow the successful creation of a new flight, servlet will
+     * send error code 412.
+     * @param request The client request that contains the parameters.
+     * @param response The servlet response that contains the data or an error code.
+     * @throws IOException If there is a connection error.
+     */
   @Override
   protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws IOException
   {

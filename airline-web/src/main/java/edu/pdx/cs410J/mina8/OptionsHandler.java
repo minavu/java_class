@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
- * This class handles parsing the argument list and executing the options for Project4 class.
+ * This class handles parsing the argument list and executing the options for Project5 class.
  */
 public class OptionsHandler {
 
@@ -51,7 +51,7 @@ public class OptionsHandler {
     EnumMap<OptionsEnum, String> options = new EnumMap<>(OptionsEnum.class);
 
     /**
-     * This method extracts all options and the associated parameters and returns the rest of the arguments in an array list.
+     * This method extracts all options and the associated parameters and returns the rest of the arguments in an array.
      * @param args The array of arguments from the command line.
      * @return The arguments for a new flight without any options.
      */
@@ -126,6 +126,10 @@ public class OptionsHandler {
         }
     }
 
+    /**
+     * This method checks the host option and for the existence of the port option.
+     * @return The hostname provided.
+     */
     public String handleOptionHost() {
         if (options.containsKey(OptionsEnum.HOST)) {
             if (!options.containsKey(OptionsEnum.PORT)) {
@@ -136,6 +140,10 @@ public class OptionsHandler {
         return null;
     }
 
+    /**
+     * This method checks the port option and for the existence of the host option.
+     * @return The port number provided.
+     */
     public int handleOptionPort() {
         if (options.containsKey(OptionsEnum.PORT)) {
             if (!options.containsKey(OptionsEnum.HOST)) {
@@ -146,6 +154,12 @@ public class OptionsHandler {
         return -1;
     }
 
+    /**
+     * This method executes the search option and exits the program with exit code 0.
+     * @throws ParserException If an error occurred while parsing the xml data from the servlet.
+     * @throws IOException If a connection cannot be established with the servlet.
+     * @throws HttpRequestHelper.RestException If an error occurred while searching.
+     */
     public void handleOptionSearchOtherwiseContinue() throws ParserException, IOException, HttpRequestHelper.RestException {
         if (options.containsKey(OptionsEnum.SEARCH_AIRLINE)) {
             String host = options.get(OptionsEnum.HOST);
@@ -162,7 +176,7 @@ public class OptionsHandler {
     }
 
     /**
-     * This method executes the print option to standard output.
+     * This method executes the print option to standard output and exits.
      * @param newFlight The new flight to print.
      */
     public void handleOptionPrintOtherwiseContinue(String newFlight) {
