@@ -36,7 +36,7 @@ public class AirlineServlet extends HttpServlet {
       Airline airline = new Airline(airlineName);
 
       if (!hub.contains(airline)) {
-          response.sendError(HttpServletResponse.SC_NOT_FOUND);
+          response.sendError(HttpServletResponse.SC_NOT_FOUND, airlineName + " airline does not exist.");
           return;
       }
 
@@ -64,7 +64,7 @@ public class AirlineServlet extends HttpServlet {
               }
           }
           if (curatedAirline.getFlights().size() == 0) {
-              response.sendError(HttpServletResponse.SC_NOT_FOUND);
+              response.sendError(HttpServletResponse.SC_NOT_FOUND, airlineName + " has no flights from " + srcName + " to " + destName + ".");
           } else {
               PrintWriter printWriter = response.getWriter();
               XmlDumper xmlDumper = new XmlDumper(printWriter);

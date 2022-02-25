@@ -46,7 +46,7 @@ public class Project5 {
         } catch (IOException e) {
             printErrorMessageAndUsageGuideAndExitSystem("Error occurred when connecting to server: " + e.getMessage());
         } catch (HttpRequestHelper.RestException e) {
-            printErrorMessageAndUsageGuideAndExitSystem("RestException occurred: " + e.getMessage());
+            printErrorMessageAndUsageGuideAndExitSystem(e.getMessage());
         }
 
         System.exit(0);
