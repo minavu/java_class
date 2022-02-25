@@ -60,31 +60,31 @@ public class Project5 {
         AirlineRestClient client = new AirlineRestClient(hostName, port);
 
         String message;
-        try {
-            if (word == null) {
-                // Print all word/definition pairs
-                Map<String, String> dictionary = client.getAllDictionaryEntries();
-                StringWriter sw = new StringWriter();
-                PrettyPrinter pretty = new PrettyPrinter(sw);
-                pretty.dump(dictionary);
-                message = sw.toString();
+//        try {
+//            if (word == null) {
+//                // Print all word/definition pairs
+//                Map<String, String> dictionary = client.getAllDictionaryEntries();
+//                StringWriter sw = new StringWriter();
+//                PrettyPrinter pretty = new PrettyPrinter(sw);
+//                pretty.dump(dictionary);
+//                message = sw.toString();
+//
+//            } else if (definition == null) {
+//                // Print all dictionary entries
+//                message = PrettyPrinter.formatDictionaryEntry(word, client.getDefinition(word));
+//
+//            } else {
+//                // Post the word/definition pair
+//                client.addDictionaryEntry(word, definition);
+//                message = Messages.definedWordAs(word, definition);
+//            }
 
-            } else if (definition == null) {
-                // Print all dictionary entries
-                message = PrettyPrinter.formatDictionaryEntry(word, client.getDefinition(word));
+//        } catch (IOException | ParserException ex ) {
+//            error("While contacting server: " + ex);
+//            return;
+//        }
 
-            } else {
-                // Post the word/definition pair
-                client.addDictionaryEntry(word, definition);
-                message = Messages.definedWordAs(word, definition);
-            }
-
-        } catch (IOException | ParserException ex ) {
-            error("While contacting server: " + ex);
-            return;
-        }
-
-        System.out.println(message);
+//        System.out.println(message);
 
         System.exit(0);
     }

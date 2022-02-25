@@ -5,6 +5,7 @@ import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -19,57 +20,59 @@ public class AirlineRestClient extends HttpRequestHelper
     private static final String WEB_APP = "airline";
     private static final String SERVLET = "flights";
 
+    private static final String PARAM_AIRLINE = "airline";
+    private static final String PARAM_FLIGHT_NUMBER = "flightNumber";
+    private static final String PARAM_SRC = "src";
+    private static final String PARAM_DEPART_DATE = "departDate";
+    private static final String PARAM_DEPART_TIME = "departTime";
+    private static final String PARAM_DEPART_AMPM = "departAMPM";
+    private static final String PARAM_DEST = "dest";
+    private static final String PARAM_ARRIVE_DATE = "arriveDate";
+    private static final String PARAM_ARRIVE_TIME = "arriveTime";
+    private static final String PARAM_ARRIVE_AMPM = "arriveAMPM";
+    private static final String[] ALL_PARAMS = {PARAM_AIRLINE, PARAM_FLIGHT_NUMBER, PARAM_SRC, PARAM_DEPART_DATE, PARAM_DEPART_TIME, PARAM_DEPART_AMPM, PARAM_DEST, PARAM_ARRIVE_DATE, PARAM_ARRIVE_TIME, PARAM_ARRIVE_AMPM};
+
     private final String url;
 
-
-    /**
-     * Creates a client to the airline REST service running on the given host and port
-     * @param hostName The name of the host
-     * @param port The port
-     */
     public AirlineRestClient( String hostName, int port )
     {
         this.url = String.format( "http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET );
     }
 
-  /**
-   * Returns all dictionary entries from the server
-   */
-  public Map<String, String> getAllDictionaryEntries() throws IOException, ParserException {
-    Response response = get(this.url, Map.of());
-
-    TextParser parser = new TextParser(new StringReader(response.getContent()));
-    return parser.parse();
-  }
-
-  /**
-   * Returns the definition for the given word
-   */
-  public String getDefinition(String word) throws IOException, ParserException {
-    Response response = get(this.url, Map.of("word", word));
-    throwExceptionIfNotOkayHttpStatus(response);
-    String content = response.getContent();
-
-    TextParser parser = new TextParser(new StringReader(content));
-    return parser.parse().get(word);
-  }
-
-  public void addDictionaryEntry(String word, String definition) throws IOException {
-    Response response = post(this.url, Map.of("word", word, "definition", definition));
-    throwExceptionIfNotOkayHttpStatus(response);
-  }
-
-  public void removeAllDictionaryEntries() throws IOException {
-    Response response = delete(this.url, Map.of());
-    throwExceptionIfNotOkayHttpStatus(response);
-  }
-
-  private void throwExceptionIfNotOkayHttpStatus(Response response) {
-    int code = response.getCode();
-    if (code != HTTP_OK) {
-      String message = response.getContent();
-      throw new RestException(code, message);
+    public String addNewFlight(String[] args) throws IOException, RestException {
+        Map<String, String> params = new HashMap<>();
+        for (int i = 0; i < args.length; ++i) {
+            params.put(ALL_PARAMS[i], args[i]);
+        }
+        Response response = post(this.url, params);
+        throwExceptionIfNotOkayHttpStatusOtherwiseContinue(response);
+        return response.getContent();
     }
-  }
+
+    public String queryAirline(String airlineName) throws IOException, ParserException {
+        Response response = get(this.url, Map.of(PARAM_AIRLINE, airlineName));
+        throwExceptionIfNotOkayHttpStatusOtherwiseContinue(response);
+        XmlParser xmlParser = new XmlParser(new StringReader(response.getContent()));
+        Airline airline = xmlParser.parse(airlineName);
+        PrettyPrinter prettyPrinter = new PrettyPrinter();
+        return prettyPrinter.dumpAid(airline).toString();
+    }
+
+    public String queryAirlineSrcDest(String airlineName, String srcName, String destName) throws IOException, ParserException {
+        Response response = get(this.url, Map.of(PARAM_AIRLINE, airlineName, PARAM_SRC, srcName, PARAM_DEST, destName));
+        throwExceptionIfNotOkayHttpStatusOtherwiseContinue(response);
+        XmlParser xmlParser = new XmlParser(new StringReader(response.getContent()));
+        Airline airline = xmlParser.parse(airlineName);
+        PrettyPrinter prettyPrinter = new PrettyPrinter();
+        return prettyPrinter.dumpAid(airline).toString();
+    }
+
+    private void throwExceptionIfNotOkayHttpStatusOtherwiseContinue(Response response) throws RestException {
+        int code = response.getCode();
+        if (code != HTTP_OK) {
+            String message = response.getContent();
+            throw new RestException(code, message);
+        }
+    }
 
 }
