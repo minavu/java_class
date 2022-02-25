@@ -2,15 +2,9 @@ package edu.pdx.cs410J.mina8;
 
 import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,7 +12,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 /**
  * A unit test for the {@link AirlineServlet}.  It uses mockito to
@@ -111,13 +104,13 @@ class AirlineRestClientTest {
     Flight newFlight3 = new Flight(new ArrayList<>(Arrays.asList(goodArgs3)));
     assertThat(newFlightStr3, equalTo(newFlight3.toString()));
 
-    String airlineData = client.queryAirlineSrcDest(airline, src, dest);
+    String airlineData = client.searchAirlineSrcDest(airline, src, dest);
     assertThat(airlineData, containsString("Printing all flight information for " + airline));
 
-    String airlineData2 = client.queryAirlineSrcDest("Different Airline", src, dest);
+    String airlineData2 = client.searchAirlineSrcDest("Different Airline", src, dest);
     assertThat(airlineData2, containsString("Printing all flight information for Different Airline"));
 
-    String airlineData3 = client.queryAirlineSrcDest(airline, "mia", dest);
+    String airlineData3 = client.searchAirlineSrcDest(airline, "mia", dest);
     assertThat(airlineData3, containsString("Printing all flight information for " + airline));
   }
 }

@@ -49,7 +49,7 @@ public class AirlineRestClient extends HttpRequestHelper
         return response.getContent();
     }
 
-    public String queryAirline(String airlineName) throws IOException, ParserException {
+    public String queryAirline(String airlineName) throws IOException, ParserException, RestException {
         Response response = get(this.url, Map.of(PARAM_AIRLINE, airlineName));
         throwExceptionIfNotOkayHttpStatusOtherwiseContinue(response);
         XmlParser xmlParser = new XmlParser(new StringReader(response.getContent()));
@@ -58,7 +58,7 @@ public class AirlineRestClient extends HttpRequestHelper
         return prettyPrinter.dumpAid(airline).toString();
     }
 
-    public String queryAirlineSrcDest(String airlineName, String srcName, String destName) throws IOException, ParserException {
+    public String searchAirlineSrcDest(String airlineName, String srcName, String destName) throws IOException, ParserException, RestException {
         Response response = get(this.url, Map.of(PARAM_AIRLINE, airlineName, PARAM_SRC, srcName, PARAM_DEST, destName));
         throwExceptionIfNotOkayHttpStatusOtherwiseContinue(response);
         XmlParser xmlParser = new XmlParser(new StringReader(response.getContent()));

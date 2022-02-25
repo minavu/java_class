@@ -8,6 +8,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -21,59 +23,67 @@ import static org.junit.jupiter.api.MethodOrderer.MethodName;
  */
 @TestMethodOrder(MethodName.class)
 class Project5IT extends InvokeMainTestCase {
-//    private static final String HOSTNAME = "localhost";
-//    private static final String PORT = System.getProperty("http.port", "8080");
-//
-//    @Test
-//    void test0RemoveAllMappings() throws IOException {
-//      AirlineRestClient client = new AirlineRestClient(HOSTNAME, Integer.parseInt(PORT));
-//      client.removeAllDictionaryEntries();
-//    }
-//
-//    @Test
-//    void test1NoCommandLineArguments() {
-//        MainMethodResult result = invokeMain( Project5.class );
-//        assertThat(result.getExitCode(), equalTo(1));
-//        assertThat(result.getTextWrittenToStandardError(), containsString(Project5.MISSING_ARGS));
-//    }
-//
-//    @Test
-//    void test2EmptyServer() {
-//        MainMethodResult result = invokeMain( Project5.class, HOSTNAME, PORT );
-//        assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
-//        String out = result.getTextWrittenToStandardOut();
-//        assertThat(out, out, containsString(PrettyPrinter.formatWordCount(0)));
-//    }
-//
-//    @Test
-//    void test3NoDefinitionsThrowsAppointmentBookRestException() {
-//        String word = "WORD";
-//        try {
-//            invokeMain(Project5.class, HOSTNAME, PORT, word);
-//            fail("Should have thrown a RestException");
-//
-//        } catch (UncaughtExceptionInMain ex) {
-//            RestException cause = (RestException) ex.getCause();
-//            assertThat(cause.getHttpStatusCode(), equalTo(HttpURLConnection.HTTP_NOT_FOUND));
-//        }
-//    }
+    private static final String HOSTNAME = "localhost";
+    private static final String PORT = System.getProperty("http.port", "8080");
+    String airline = "airline";
+    String flightNumber = "123";
+    String src = "pdx";
+    String departDate = "1/1/2022";
+    String departTime = "7:00";
+    String departAmPm = "am";
+    String dest = "hnl";
+    String arriveDate = "01/02/2022";
+    String arriveTime = "2:59";
+    String arriveAmPm = "pm";
 
-//    @Test
-//    void test4AddDefinition() {
-//        String word = "WORD";
-//        String definition = "DEFINITION";
-//
-//        MainMethodResult result = invokeMain( Project5.class, HOSTNAME, PORT, word, definition );
-//        assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
-//        String out = result.getTextWrittenToStandardOut();
-//        assertThat(out, out, containsString(Messages.definedWordAs(word, definition)));
-//
-//        result = invokeMain( Project5.class, HOSTNAME, PORT, word );
-//        out = result.getTextWrittenToStandardOut();
-//        assertThat(out, out, containsString(PrettyPrinter.formatDictionaryEntry(word, definition)));
-//
-//        result = invokeMain( Project5.class, HOSTNAME, PORT );
-//        out = result.getTextWrittenToStandardOut();
-//        assertThat(out, out, containsString(PrettyPrinter.formatDictionaryEntry(word, definition)));
-//    }
+    String[] readmeOptionOnly = {"-README"};
+    String[] hostPortOnly = {"-host", "-port"};
+    String[] hostPortWithParams = {"-host", HOSTNAME, "-port", PORT};
+    String[] hostPortSearchWithParams = {"-host", HOSTNAME, "-port", PORT, "-search", airline, src, dest};
+
+    @Test
+    void noCommandLineArguments() {
+        MainMethodResult result = invokeMain( Project5.class );
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString(Project5.MISSING_ARGS));
+    }
+
+    @Test
+    void readmeOptionHandled() {
+        MainMethodResult result = invokeMain(Project5.class, readmeOptionOnly);
+        assertThat(result.getExitCode(), equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Developer:      Mina Vu"));
+    }
+
+    @Test
+    void onlyHostOptionProvided() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", "localhost");
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("See below for usage guide"));
+    }
+
+    @Test
+    void onlyPortOptionProvided() {
+        MainMethodResult result = invokeMain(Project5.class, "-port", "8080");
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("See below for usage guide"));
+
+        result = invokeMain(Project5.class, "-port", "localhost");
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("See below for usage guide"));
+    }
+
+    @Test
+    void addNewFlightHandledAndSearchAirlineHandled() {
+        String[] hostPortWithParamsAndPrintNewFlight = {"-host", HOSTNAME, "-port", PORT, "-print", airline, flightNumber, src, departDate, departTime, departAmPm, dest, arriveDate, arriveTime, arriveAmPm};
+        Flight newFlight = new Flight(new ArrayList<>(Arrays.asList(airline, flightNumber, src, departDate, departTime, departAmPm, dest, arriveDate, arriveTime, arriveAmPm)));
+        MainMethodResult result = invokeMain(Project5.class, hostPortWithParamsAndPrintNewFlight);
+        assertThat(result.getExitCode(), equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), containsString(newFlight.toString()));
+
+        result = invokeMain(Project5.class, hostPortSearchWithParams);
+        assertThat(result.getExitCode(), equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Printing all flight information"));
+    }
+
 }

@@ -1,11 +1,11 @@
 package edu.pdx.cs410J.mina8;
 
 import edu.pdx.cs410J.ParserException;
+import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringWriter;
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * The main class that parses the command line and communicates with the
@@ -15,110 +15,60 @@ public class Project5 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
-    public static void main(String... args) {
-        String hostName = null;
-        String portString = null;
-        String word = null;
-        String definition = null;
-
-        for (String arg : args) {
-            if (hostName == null) {
-                hostName = arg;
-
-            } else if ( portString == null) {
-                portString = arg;
-
-            } else if (word == null) {
-                word = arg;
-
-            } else if (definition == null) {
-                definition = arg;
-
-            } else {
-                usage("Extraneous command line argument: " + arg);
-            }
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            printErrorMessageAndUsageGuideAndExitSystem(MISSING_ARGS);
         }
-
-        if (hostName == null) {
-            usage( MISSING_ARGS );
-            return;
-
-        } else if ( portString == null) {
-            usage( "Missing port" );
-            return;
-        }
-
-        int port;
         try {
-            port = Integer.parseInt( portString );
+            OptionsHandler optionsHandler = new OptionsHandler();
+            String[] argsList = optionsHandler.extractAllOptionsAndAssociatedParamsReturnLeftoverArgs(args);
+            optionsHandler.handleOptionREADMEOtherwiseContinue();
+            String host = optionsHandler.handleOptionHost();
+            int port = optionsHandler.handleOptionPort();
+            optionsHandler.handleOptionSearchOtherwiseContinue();
 
-        } catch (NumberFormatException ex) {
-            usage("Port \"" + portString + "\" must be an integer");
-            return;
+            AirlineRestClient client = new AirlineRestClient(host, port);
+            if (argsList.length == 1) {
+                String result = client.queryAirline(argsList[0]);
+                System.out.println(result);
+            } else {
+                String result = client.addNewFlight(argsList);
+                optionsHandler.handleOptionPrintOtherwiseContinue(result);
+            }
+        } catch (IllegalArgumentException | ParserException e) {
+            printErrorMessageAndUsageGuideAndExitSystem(e.getMessage());
+        } catch (IOException e) {
+            printErrorMessageAndUsageGuideAndExitSystem("Error occurred when connecting to server: " + e.getMessage());
+        } catch (HttpRequestHelper.RestException e) {
+            printErrorMessageAndUsageGuideAndExitSystem("RestException occurred: " + e.getMessage());
         }
-
-        AirlineRestClient client = new AirlineRestClient(hostName, port);
-
-        String message;
-//        try {
-//            if (word == null) {
-//                // Print all word/definition pairs
-//                Map<String, String> dictionary = client.getAllDictionaryEntries();
-//                StringWriter sw = new StringWriter();
-//                PrettyPrinter pretty = new PrettyPrinter(sw);
-//                pretty.dump(dictionary);
-//                message = sw.toString();
-//
-//            } else if (definition == null) {
-//                // Print all dictionary entries
-//                message = PrettyPrinter.formatDictionaryEntry(word, client.getDefinition(word));
-//
-//            } else {
-//                // Post the word/definition pair
-//                client.addDictionaryEntry(word, definition);
-//                message = Messages.definedWordAs(word, definition);
-//            }
-
-//        } catch (IOException | ParserException ex ) {
-//            error("While contacting server: " + ex);
-//            return;
-//        }
-
-//        System.out.println(message);
 
         System.exit(0);
     }
 
-    private static void error( String message )
-    {
-        PrintStream err = System.err;
-        err.println("** " + message);
-
-        System.exit(1);
-    }
-
     /**
-     * Prints usage information for this program and exits
-     * @param message An error message to print
+     * This method prints a message to standard error and exits the system with an error code of 1.
+     * @param message -A string containing the message to print to standard error.
      */
-    private static void usage( String message )
-    {
-        PrintStream err = System.err;
-        err.println("** " + message);
-        err.println();
-        err.println("usage: java Project5 host port [word] [definition]");
-        err.println("  host         Host of web server");
-        err.println("  port         Port of web server");
-        err.println("  word         Word in dictionary");
-        err.println("  definition   Definition of word");
-        err.println();
-        err.println("This simple program posts words and their definitions");
-        err.println("to the server.");
-        err.println("If no definition is specified, then the word's definition");
-        err.println("is printed.");
-        err.println("If no word is specified, all dictionary entries are printed");
-        err.println();
-
+    private static void printErrorMessageAndUsageGuideAndExitSystem(String message) {
+        String USAGE_GUIDE =
+                " See below for usage guide. Project 5.\n" +
+                        "usage: java -jar target/airline-client.jar [options] <args>\n" +
+                        "\targs are (in this order):\n" +
+                        "\t\tairline\t\t\tThe name of the airline\n" +
+                        "\t\tflightNumber\tThe flight number\n" +
+                        "\t\tsrc\t\t\t\tThree-letter code of departure airport\n" +
+                        "\t\tdepart\t\t\tDeparture date and time (24-hour time)\n" +
+                        "\t\tdest\t\t\tThree-letter code of arrival airport\n" +
+                        "\t\tarrive\t\t\tArrival date and time (24-hour time)\n" +
+                        "\toptions are (options may appear in any order):\n" +
+                        "\t\t-host hostname\tHost computer on which the server runs\n" +
+                        "\t\t-port port\t\tPort on which the server is listening\n" +
+                        "\t\t-search\t\t\tSearch for flights\n" +
+                        "\t\t-print\t\t\tPrints a description of the new flight\n" +
+                        "\t\t-README\t\t\tPrints a README for this project and exits\n" +
+                        "\tDate and time should be in the format: mm/dd/yyyy hh:mm am/pm";
+        System.err.println(message + USAGE_GUIDE);
         System.exit(1);
     }
 }
