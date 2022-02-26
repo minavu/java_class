@@ -19,7 +19,7 @@ public class Project5 {
      * This main method grabs the command line arguments and parses between options and new flight
      * arguments.  Options are handled and new flight data will be sent to the client to send to
      * the servlet.
-     * @param args
+     * @param args The command line arguments in a string array.
      */
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -31,7 +31,7 @@ public class Project5 {
             optionsHandler.handleOptionREADMEOtherwiseContinue();
             String host = optionsHandler.handleOptionHost();
             int port = optionsHandler.handleOptionPort();
-            optionsHandler.handleOptionSearchOtherwiseContinue();
+            optionsHandler.handleOptionSearchOtherwiseContinue(argsList);
 
             AirlineRestClient client = new AirlineRestClient(host, port);
             if (argsList.length == 1) {
@@ -41,12 +41,10 @@ public class Project5 {
                 String result = client.addNewFlight(argsList);
                 optionsHandler.handleOptionPrintOtherwiseContinue(result);
             }
-        } catch (IllegalArgumentException | ParserException e) {
+        } catch (IllegalArgumentException | ParserException | HttpRequestHelper.RestException e) {
             printErrorMessageAndUsageGuideAndExitSystem(e.getMessage());
         } catch (IOException e) {
-            printErrorMessageAndUsageGuideAndExitSystem("Error occurred when connecting to server: " + e.getMessage());
-        } catch (HttpRequestHelper.RestException e) {
-            printErrorMessageAndUsageGuideAndExitSystem(e.getMessage());
+            printErrorMessageAndUsageGuideAndExitSystem("Error occurred when connecting to server: " + e.getMessage() + ".");
         }
 
         System.exit(0);
@@ -58,7 +56,7 @@ public class Project5 {
      */
     private static void printErrorMessageAndUsageGuideAndExitSystem(String message) {
         String USAGE_GUIDE =
-                " See below for usage guide. Project 5.\n" +
+                "\nSee below for usage guide. Project 5.\n" +
                         "usage: java -jar target/airline-client.jar [options] <args>\n" +
                         "\targs are (in this order):\n" +
                         "\t\tairline\t\t\tThe name of the airline\n" +

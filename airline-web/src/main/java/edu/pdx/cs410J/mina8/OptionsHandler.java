@@ -17,9 +17,7 @@ public class OptionsHandler {
         PRINT,
         HOST,
         PORT,
-        SEARCH_AIRLINE,
-        SEARCH_SRC,
-        SEARCH_DEST;
+        SEARCH;
 
         /**
          * This method takes a string and turns it into an enum constant.
@@ -36,12 +34,8 @@ public class OptionsHandler {
                     return HOST;
                 case "-port":
                     return PORT;
-                case "searchAirline":
-                    return SEARCH_AIRLINE;
-                case "searchSrc":
-                    return SEARCH_SRC;
-                case "searchDest":
-                    return SEARCH_DEST;
+                case "-search":
+                    return SEARCH;
                 default:
                     throw new IllegalArgumentException("Error in options enum. " + string + " is not an option.");
             }
@@ -62,15 +56,16 @@ public class OptionsHandler {
                 switch (args[i]) {
                     case "-README":
                     case "-print":
+                    case "-search":
                         options.put(OptionsEnum.toEnum(args[i]), "");
                         break;
                     case "-host":
                         try {
                             if (args[i + 1].startsWith("-")) {
-                                throw new IllegalArgumentException("You must provide a hostname to the -host option (i.e. localhost).");
+                                throw new IllegalArgumentException();
                             }
                             options.put(OptionsEnum.toEnum(args[i]), args[++i]);
-                        } catch (ArrayIndexOutOfBoundsException e) {
+                        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
                             throw new IllegalArgumentException("You must provide a hostname to the -host option (i.e. localhost).");
                         }
                         break;
@@ -80,15 +75,6 @@ public class OptionsHandler {
                             options.put(OptionsEnum.toEnum(args[i++]), String.valueOf(port));
                         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                             throw new IllegalArgumentException("You must provide a port number to the -port option (i.e. 8080).");
-                        }
-                        break;
-                    case "-search":
-                        try {
-                            options.put(OptionsEnum.SEARCH_AIRLINE, args[++i]);
-                            options.put(OptionsEnum.SEARCH_SRC, args[++i]);
-                            options.put(OptionsEnum.SEARCH_DEST, args[++i]);
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            throw new IllegalArgumentException("You must provide an airline, src, and dest to the -search option.");
                         }
                         break;
                     default:
@@ -156,19 +142,20 @@ public class OptionsHandler {
 
     /**
      * This method executes the search option and exits the program with exit code 0.
+     * @param argsList The command line arguments after extracting all options in a string array.
      * @throws ParserException If an error occurred while parsing the xml data from the servlet.
      * @throws IOException If a connection cannot be established with the servlet.
      * @throws HttpRequestHelper.RestException If an error occurred while searching.
      */
-    public void handleOptionSearchOtherwiseContinue() throws ParserException, IOException, HttpRequestHelper.RestException {
-        if (options.containsKey(OptionsEnum.SEARCH_AIRLINE)) {
+    public void handleOptionSearchOtherwiseContinue(String[] argsList) throws ParserException, IOException, HttpRequestHelper.RestException {
+        if (options.containsKey(OptionsEnum.SEARCH)) {
             String host = options.get(OptionsEnum.HOST);
             int port = Integer.parseInt(options.get(OptionsEnum.PORT));
             AirlineRestClient client = new AirlineRestClient(host, port);
 
-            String airline = options.get(OptionsEnum.SEARCH_AIRLINE);
-            String src = options.get(OptionsEnum.SEARCH_SRC);
-            String dest = options.get(OptionsEnum.SEARCH_DEST);
+            String airline = argsList[0];
+            String src = argsList[1];
+            String dest = argsList[2];
             String result = client.searchAirlineSrcDest(airline, src, dest);
             System.out.println(result);
             System.exit(0);
