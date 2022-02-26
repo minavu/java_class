@@ -50,7 +50,7 @@ class AirlineServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND);
+    verify(response).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
   }
 
   @Test
@@ -242,6 +242,6 @@ class AirlineServletTest {
     PrintWriter printWriter = mock(PrintWriter.class);
     when(response3.getWriter()).thenReturn(printWriter);
     servlet.doGet(request3, response3);
-    verify(response3).sendError(HttpServletResponse.SC_NOT_FOUND);
+    verify(response3).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
   }
 }
