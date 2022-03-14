@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CalculatorActivity extends AppCompatActivity {
 
@@ -19,10 +20,15 @@ public class CalculatorActivity extends AppCompatActivity {
         EditText leftOperand = findViewById(R.id.leftOperand);
         EditText rightOperand = findViewById(R.id.rightOperand);
 
-        String left = leftOperand.getText().toString();
-        String right = rightOperand.getText().toString();
-
-        int sum = Integer.parseInt(left) + Integer.parseInt(right);
+        int left, right;
+        try {
+            left = Integer.parseInt(leftOperand.getText().toString());
+            right = Integer.parseInt(rightOperand.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(CalculatorActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
+        int sum = left + right;
 
         EditText sumResult = findViewById(R.id.sumResult);
         sumResult.setText(String.valueOf(sum));
