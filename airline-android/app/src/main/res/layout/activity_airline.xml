@@ -6,16 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".AirlineActivity">
 
-    <Button
-        android:id="@+id/newFlightButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="newFlightBtnHandler"
-        android:text="@string/newFlightText"
+    <ListView
+        android:id="@+id/airlinesList"
+        android:layout_width="302dp"
+        android:layout_height="447dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.18" />
+        app:layout_constraintVertical_bias="0.633" />
+
+    <TextView
+        android:id="@+id/airlinesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All Airlines"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/airlinesList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.73" />
 </androidx.constraintlayout.widget.ConstraintLayout>
