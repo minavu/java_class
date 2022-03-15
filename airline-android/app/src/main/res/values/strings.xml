@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">Airline-Android</string>
     <string name="launchCalculator">This is a very long string for a button name</string>
-    <string name="helloText">Hello Again Java Teacher!</string>
+    <string name="welcomeText">Welcome to Mina\'s Airline Android App!</string>
     <string name="helpText">Help</string>
+    <string name="airlineText">Airlines</string>
+    <string name="newFlightText">New Flight</string>
+    <string name="createNewFlightText">Create a New Flight</string>
+    <string name="enterAirlineNameText">Enter airline name</string>
+    <string name="enterFlightNumberText">Enter flight number</string>
+    <string name="enterSourceCodeText">Enter source code</string>
+    <string name="enterDepartTimeText">Enter depart time (hh:mm)</string>
+    <string name="enterArriveDate">Enter arrive date (mm/dd/yyyy)</string>
+    <string name="enterDestCode">Enter destination code</string>
+    <string name="enterDepartDate">Enter depart date (mm/dd/yyyy)</string>
+    <string name="enterArriveTime">Enter arrive time (hh:mm)</string>
+    <string name="createFlightText">Create New Flight</string>
 </resources>

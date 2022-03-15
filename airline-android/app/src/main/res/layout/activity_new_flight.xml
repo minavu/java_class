@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".newFlightActivity">
+
+    <LinearLayout
+        android:layout_width="285dp"
+        android:layout_height="669dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/createNewFlightText"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:text="@string/createNewFlightText"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/airlineName"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterAirlineNameText"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/flightNumber"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterFlightNumberText"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/srcCode"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterSourceCodeText"
+            android:inputType="textCapCharacters" />
+
+        <EditText
+            android:id="@+id/departDate"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterDepartDate"
+            android:inputType="date" />
+
+        <EditText
+            android:id="@+id/departTime"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterDepartTimeText"
+            android:inputType="time" />
+
+        <RadioGroup
+            android:id="@+id/departAMPM"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/departAM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="AM" />
+
+            <RadioButton
+                android:id="@+id/departPM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PM" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/destCode"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterDestCode"
+            android:inputType="textCapCharacters" />
+
+        <EditText
+            android:id="@+id/arriveDate"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterArriveDate"
+            android:inputType="date" />
+
+        <EditText
+            android:id="@+id/arriveTime"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="@string/enterArriveTime"
+            android:inputType="time" />
+
+        <RadioGroup
+            android:id="@+id/arriveAMPM"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/arriveAM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="AM" />
+
+            <RadioButton
+                android:id="@+id/arrivePM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PM" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/createButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:onClick="createNewFlight"
+                android:text="@string/createFlightText" />
+
+            <Button
+                android:id="@+id/exitButton"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:backgroundTint="#FF0000"
+                android:onClick="exitCreateNewFlight"
+                android:text="Exit" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
