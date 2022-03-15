@@ -2,4 +2,5 @@
     <string name="app_name">Airline-Android</string>
     <string name="launchCalculator">This is a very long string for a button name</string>
     <string name="helloText">Hello Again Java Teacher!</string>
+    <string name="helpText">Help</string>
 </resources>

@@ -20,4 +20,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, CalculatorActivity.class);
         startActivity(intent);
     }
+
+    public void displayReadmeActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ReadmeActivity.class);
+        startActivity(intent);
+    }
 }
