@@ -21,12 +21,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void displayReadmeActivity(View view) {
+    public void helpBtnHandler(View view) {
         Intent intent = new Intent(MainActivity.this, ReadmeActivity.class);
         startActivity(intent);
     }
 
-    public void displayAirlineActivity(View view) {
+    public void airlinesBtnHandler(View view) {
         Intent intent = new Intent(MainActivity.this, AirlineActivity.class);
         startActivity(intent);
     }

@@ -140,7 +140,7 @@
                 android:id="@+id/createButton"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:onClick="createNewFlight"
+                android:onClick="createNewFlightBtnHandler"
                 android:text="@string/createFlightText" />
 
             <Button
@@ -149,7 +149,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:backgroundTint="#FF0000"
-                android:onClick="exitCreateNewFlight"
+                android:onClick="exitBtnHandler"
                 android:text="Exit" />
         </LinearLayout>
 

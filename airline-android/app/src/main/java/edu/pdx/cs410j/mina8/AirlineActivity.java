@@ -22,7 +22,7 @@ public class AirlineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_airline);
     }
 
-    public void addNewFlightActivity(View view) {
+    public void newFlightBtnHandler(View view) {
         Intent intent = new Intent(this, newFlightActivity.class);
         startActivityForResult(intent, NEW_FLIGHT_REQUEST_CODE);
     }
@@ -47,8 +47,8 @@ public class AirlineActivity extends AppCompatActivity {
                 }
             }
 
-            Toast.makeText(this, flight.toString(), Toast.LENGTH_LONG).show();
-            Toast.makeText(this, String.valueOf(hub.size()), Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, flight.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Size of hub is " + String.valueOf(hub.size()), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "A new flight was not created!", Toast.LENGTH_LONG).show();
         }

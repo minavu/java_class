@@ -24,7 +24,7 @@ public class newFlightActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_flight);
     }
 
-    public void createNewFlight(View view) {
+    public void createNewFlightBtnHandler(View view) {
         EditText airlineName = findViewById(R.id.airlineName);
         EditText flightNumber = findViewById(R.id.flightNumber);
         EditText srcCode = findViewById(R.id.srcCode);
@@ -67,7 +67,7 @@ public class newFlightActivity extends AppCompatActivity {
         }
     }
 
-    public void exitCreateNewFlight(View view) {
+    public void exitBtnHandler(View view) {
         finish();
     }
 }
