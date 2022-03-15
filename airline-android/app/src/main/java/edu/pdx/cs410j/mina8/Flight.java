@@ -10,12 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-/**
- * This is the Flight class for the CS410P/510 airline project.
- * It extends the AbstractFlight class from the instructor's package.
- * Member fields contain information about a flight.
- */
 public class Flight extends AbstractFlight implements Comparable<Flight> {
+  private String airline = "";
   private int flightNumber = 0;
   private String src = "";
   private Date depart = null;
@@ -24,18 +20,8 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
   private static final DateFormat dateParser = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
   private static final DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
-  /**
-   * This is the default constructor for the Flight class and does not take any arguments.
-   * This is necessary for the generic type of classes to work.
-   */
   public Flight() {}
 
-  /**
-   * This is a constructor that takes an array list of strings containing the arguments to create a Flight.
-   * It checks each argument for validity before creating the Flight object.
-   * @param argsList -An array list of strings containing arguments from the command line.
-   * @throws IllegalArgumentException -If any of the arguments does not match the required specification.
-   */
   public Flight(ArrayList<String> argsList) throws IllegalArgumentException {
     try {
       checkArgsForValidityAndAddDataToCorrectFields(argsList);
@@ -44,18 +30,8 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     }
   }
 
-  /**
-   * This method checks the validity of the arguments provided by the user of the program.
-   * The usage specification requires the second argument to be a number,
-   * the third and sixth arguments to be a three-letter code,
-   * and the fourth/fifth and seventh/eighth arguments form valid date/time format.
-   * @param argsList -A list of arguments without any option tags.
-   * @throws IllegalArgumentException -If any of the arguments does not conform to the required format.
-   */
   private void checkArgsForValidityAndAddDataToCorrectFields(ArrayList<String> argsList) throws IllegalArgumentException {
-    if (argsList.size() != 10) {
-      throw new IllegalArgumentException("The number of arguments provided is not correct. Given count is " + argsList.size() + ": " + argsList.toString());
-    }
+    airline = argsList.get(0);
 
     try {
       flightNumber = Integer.parseInt(argsList.get(1));
@@ -113,100 +89,58 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     }
   }
 
-  /**
-   * This method checks a string against a regular expression that conforms to the required date/time format.
-   * @param date -A string to check date/time format.
-   * @return -A boolean indicating the validity of the string.
-   */
   private static boolean validDate(String date) {
     String regex = "^(1[0-2]|0[1-9]|[1-9])/(3[01]|[12][0-9]|0[1-9]|[1-9])/[0-9]{4}$";
     return date.matches(regex);
   }
 
-  /**
-   * This is the accessor method to get the flight number.
-   * @return -An integer that represents the flight number.
-   */
+  public String getAirline() {
+    return airline;
+  }
+
   @Override
   public int getNumber() {
     return flightNumber;
   }
 
-  /**
-   * This is the accessor method to get the source location of the flight.
-   * @return -A string representing the source location.
-   */
   @Override
   public String getSource() {
     return src;
   }
 
-  /**
-   * This method returns the date of departure.
-   * @return A date object of departure.
-   */
   @Override
   public Date getDeparture() {
     return depart;
   }
 
-  /**
-   * This is the accessor method to get the departure date and time of the flight.
-   * @return -A string representing the departure date and time.
-   */
   @Override
   public String getDepartureString() {
     return dateFormatter.format(depart).replace(",", "");
   }
 
-  /**
-   * This is method to return the departure date in the correct format to store in file.
-   * @return A string to store in file.
-   */
   public String getDepartureStringForFile() {
     return dateParser.format(depart);
   }
 
-  /**
-   * This is the accessor method to get the destination of the flight.
-   * @return -A string representing the destination.
-   */
   @Override
   public String getDestination() {
     return dest;
   }
 
-  /**
-   * This is the mehtod to get the arrival date.
-   * @return A date object.
-   */
   @Override
   public Date getArrival() {
     return arrive;
   }
 
-  /**
-   * This is the accessor method to get the arrival date and time of a flight.
-   * @return -A string representing the arrival date and time.
-   */
   @Override
   public String getArrivalString() {
     return dateFormatter.format(arrive).replace(",", "");
   }
 
-  /**
-   * This method returns a string of the arrival date in correct format to store.
-   * @return A string representation.
-   */
   public String getArrivalStringForFile() {
     return dateParser.format(arrive);
   }
 
-  /**
-   * This method overrides the Comparable method so that each flight can be ordered naturally by source and departure date/time.
-   * @param other The other flight to compare to.
-   * @return An integer indicating less than, greater than, or equal to of the two flights.
-   */
   @Override
   public int compareTo(Flight other) {
     if (this.getSource().compareTo(other.getSource()) == 0) {
@@ -215,10 +149,6 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     return this.getSource().compareTo(other.getSource());
   }
 
-  /**
-   * This method returns the duration of the flight in minutes only.
-   * @return A string representing the duration of the flight.
-   */
   public String getFlightDuration() {
     long timeDifferenceInMilliseconds = arrive.getTime() - depart.getTime();
     return TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMilliseconds) + " min";

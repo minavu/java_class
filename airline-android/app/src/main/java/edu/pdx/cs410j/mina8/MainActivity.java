@@ -6,11 +6,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.Collection;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TreeSet;
+
+import edu.pdx.cs410J.ParserException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +29,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        Toast.makeText(this, "LOADED", Toast.LENGTH_SHORT).show();
+//        loadDataFromDisk();
+//        hub.add(new Airline("tester"));
+//
+//        File file = new File(this.getFilesDir(), "hub.txt");
+//        try ( BufferedReader br = new BufferedReader(new FileReader(file)) ) {
+//            String[] parsedData = br.readLine().split("\\|");
+//            Airline airline = new Airline(parsedData[0]);
+//            Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedData)));
+//            airline.addFlight(flight);
+//            hub.add(airline);
+//        } catch (IOException e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
     }
 
     public void launchCalculator(View view) {
@@ -35,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void airlinesBtnHandler(View view) {
-//        Intent intent = new Intent(MainActivity.this, AirlineActivity.class);
-//        startActivity(intent);
-
         Intent intent = new Intent(MainActivity.this, AirlineActivity.class);
         intent.putExtra(AIRLINES_HUB, hub);
         startActivity(intent);
@@ -67,10 +86,37 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            writeDataToDisk();
 //            Toast.makeText(this, flight.toString(), Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Size of hub is " + String.valueOf(hub.size()), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "A new flight was not created!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void writeDataToDisk() {
+        File file = new File(this.getFilesDir(), "hub.txt");
+        try {
+            TextDumper textDumper = new TextDumper(new FileWriter(file));
+            for (Airline a : hub) {
+                textDumper.dump(a);
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadDataFromDisk() {
+
+//        File file = new File(this.getFilesDir(), "hub.txt");
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            Toast.makeText(this, br.readLine(), Toast.LENGTH_SHORT).show();
+////            TextParser textParser = new TextParser(new FileReader(file));
+////            hub.addAll(textParser.parseHub());
+//        } catch (IOException e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
     }
 }
