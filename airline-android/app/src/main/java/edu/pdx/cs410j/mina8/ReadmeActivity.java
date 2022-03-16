@@ -27,9 +27,14 @@ public class ReadmeActivity extends AppCompatActivity {
         StringBuilder stringBuilder = new StringBuilder();
 
         try {
+            stringBuilder.append(bufferedReader.readLine() + "\n");
+            stringBuilder.append(bufferedReader.readLine() + "\n");
+            stringBuilder.append(bufferedReader.readLine() + "\n");
+            stringBuilder.append(bufferedReader.readLine() + "\n");
+            stringBuilder.append(bufferedReader.readLine() + "\n\n");
             while (bufferedReader.ready()) {
                 stringBuilder.append(bufferedReader.readLine());
-                stringBuilder.append("\n");
+                stringBuilder.append("  ");
             }
         } catch (IOException e) {
             Toast.makeText(ReadmeActivity.this, "Cannot read README file", Toast.LENGTH_LONG).show();

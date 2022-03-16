@@ -8,8 +8,9 @@
 
     <ListView
         android:id="@+id/airlinesList"
-        android:layout_width="200dp"
-        android:layout_height="457dp"
+        android:layout_width="166dp"
+        android:layout_height="458dp"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -21,7 +22,7 @@
         android:id="@+id/airlinesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="All Airlines"
+        android:text="@string/all_airlines"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -30,4 +31,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.73" />
+
+    <TextView
+        android:id="@+id/airlinesHelpText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/click_on_an_airline_to_see_its_flights"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/airlinesList" />
 </androidx.constraintlayout.widget.ConstraintLayout>

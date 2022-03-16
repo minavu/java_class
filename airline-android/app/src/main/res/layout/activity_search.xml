@@ -9,8 +9,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="63dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteY="64dp">
+        app:layout_constraintBottom_toTopOf="@+id/flightsList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +28,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Airline"
+                android:text="@string/airline"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -31,7 +36,8 @@
                 android:id="@+id/airlineSpinner"
                 android:layout_width="255dp"
                 android:layout_height="50dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:contentDescription="@string/spinner_to_select_an_airline" />
         </LinearLayout>
 
         <LinearLayout
@@ -45,7 +51,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Source"
+                android:text="@string/source"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -53,7 +59,8 @@
                 android:id="@+id/sourceSpinner"
                 android:layout_width="255dp"
                 android:layout_height="50dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:contentDescription="@string/spinner_to_select_a_source" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,7 +74,7 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Destination"
+                android:text="@string/destination"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -75,7 +82,8 @@
                 android:id="@+id/destSpinner"
                 android:layout_width="255dp"
                 android:layout_height="50dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:contentDescription="@string/spinner_to_select_a_destination" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,21 +94,25 @@
 
             <Button
                 android:id="@+id/clearNowButton"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:backgroundTint="@color/purple_200"
                 android:onClick="clearBtnHandler"
-                android:text="Clear" />
+                android:text="@string/clear"
+                android:textColor="#311B92" />
 
             <Button
                 android:id="@+id/searchNowButton"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="255dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:backgroundTint="#4CAF50"
                 android:onClick="searchBtnHandler"
-                android:text="Search" />
+                android:text="@string/search"
+                android:textColor="#263238" />
         </LinearLayout>
 
     </LinearLayout>

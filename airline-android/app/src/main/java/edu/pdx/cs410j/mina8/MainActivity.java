@@ -35,11 +35,6 @@ public class MainActivity extends AppCompatActivity {
         loadDataFromDisk();
     }
 
-    public void launchCalculator(View view) {
-        Intent intent = new Intent(MainActivity.this, CalculatorActivity.class);
-        startActivity(intent);
-    }
-
     public void helpBtnHandler(View view) {
         Intent intent = new Intent(MainActivity.this, ReadmeActivity.class);
         startActivity(intent);

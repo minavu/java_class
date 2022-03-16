@@ -31,7 +31,9 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterAirlineNameText"
-            android:inputType="textCapWords" />
+            android:inputType="textCapWords"
+            android:textColorHint="#757575"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/flightNumber"
@@ -39,7 +41,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterFlightNumberText"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textColorHint="#757575" />
 
         <EditText
             android:id="@+id/srcCode"
@@ -47,7 +50,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterSourceCodeText"
-            android:inputType="textCapCharacters" />
+            android:inputType="textCapCharacters"
+            android:textColorHint="#757575" />
 
         <EditText
             android:id="@+id/departDate"
@@ -55,7 +59,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterDepartDate"
-            android:inputType="date" />
+            android:inputType="date"
+            android:textColorHint="#757575" />
 
         <EditText
             android:id="@+id/departTime"
@@ -63,7 +68,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterDepartTimeText"
-            android:inputType="time" />
+            android:inputType="time"
+            android:textColorHint="#757575" />
 
         <RadioGroup
             android:id="@+id/departAMPM"
@@ -92,7 +98,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterDestCode"
-            android:inputType="textCapCharacters" />
+            android:inputType="textCapCharacters"
+            android:textColorHint="#757575" />
 
         <EditText
             android:id="@+id/arriveDate"
@@ -100,7 +107,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterArriveDate"
-            android:inputType="date" />
+            android:inputType="date"
+            android:textColorHint="#757575" />
 
         <EditText
             android:id="@+id/arriveTime"
@@ -108,7 +116,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/enterArriveTime"
-            android:inputType="time" />
+            android:inputType="time"
+            android:textColorHint="#757575" />
 
         <RadioGroup
             android:id="@+id/arriveAMPM"

@@ -15,4 +15,15 @@
     <string name="enterDepartDate">Enter depart date (mm/dd/yyyy)</string>
     <string name="enterArriveTime">Enter arrive time (hh:mm)</string>
     <string name="createFlightText">Create New Flight</string>
+    <string name="all_airlines">All Airlines</string>
+    <string name="click_on_an_airline_to_see_its_flights">Click on an airline to see its flights.</string>
+    <string name="airline">Airline</string>
+    <string name="spinner_to_select_an_airline">Spinner to select an airline</string>
+    <string name="source">Source</string>
+    <string name="spinner_to_select_a_source">Spinner to select a source</string>
+    <string name="destination">Destination</string>
+    <string name="spinner_to_select_a_destination">Spinner to select a destination</string>
+    <string name="clear">Clear</string>
+    <string name="search">Search</string>
+    <string name="add_flight">Add Flight</string>
 </resources>
