@@ -31,25 +31,29 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
   }
 
   private void checkArgsForValidityAndAddDataToCorrectFields(ArrayList<String> argsList) throws IllegalArgumentException {
-    airline = argsList.get(0);
+    if (!argsList.get(0).isEmpty()) {
+      airline = argsList.get(0);
+    } else {
+      throw new IllegalArgumentException("The airline name cannot be empty. Given input is " + argsList.get(0));
+    }
 
     try {
       flightNumber = Integer.parseInt(argsList.get(1));
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("The given flight number is not a number. Given arg is " + argsList.get(1));
+      throw new IllegalArgumentException("The given flight number is not a number. Given input is " + argsList.get(1));
     }
 
     if (argsList.get(2).length() != 3) {
-      throw new IllegalArgumentException("The source code must be three letters. Given arg is " + argsList.get(2));
+      throw new IllegalArgumentException("The source code must be three letters. Given input is " + argsList.get(2));
     } else {
       for (int i = 0; i < 3; ++i) {
         if (!Character.isLetter(argsList.get(2).charAt(i))) {
-          throw new IllegalArgumentException("The source code must consist of only letters. Given arg is " + argsList.get(2));
+          throw new IllegalArgumentException("The source code must consist of only letters. Given input is " + argsList.get(2));
         }
       }
       src = argsList.get(2).toUpperCase();
       if (!AirportNames.getNamesMap().containsKey(src)) {
-        throw new IllegalArgumentException("The source code does not correspond to a known airport. Given arg is " + argsList.get(2));
+        throw new IllegalArgumentException("The source code does not correspond to a known airport. Given input is " + argsList.get(2));
       }
     }
 
@@ -63,16 +67,16 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     }
 
     if (argsList.get(6).length() != 3) {
-      throw new IllegalArgumentException("The destination code must be three letters. Given arg is " + argsList.get(6));
+      throw new IllegalArgumentException("The destination code must be three letters. Given input is " + argsList.get(6));
     } else {
       for (int i = 0; i < 3; ++i) {
         if (!Character.isLetter(argsList.get(2).charAt(i))) {
-          throw new IllegalArgumentException("The destination code must consist of only letters. Given arg is " + argsList.get(6));
+          throw new IllegalArgumentException("The destination code must consist of only letters. Given input is " + argsList.get(6));
         }
       }
       dest = argsList.get(6).toUpperCase();
       if (!AirportNames.getNamesMap().containsKey(dest)) {
-        throw new IllegalArgumentException("The destination code does not correspond to a known airport. Given arg is " + argsList.get(6));
+        throw new IllegalArgumentException("The destination code does not correspond to a known airport. Given input is " + argsList.get(6));
       }
     }
 

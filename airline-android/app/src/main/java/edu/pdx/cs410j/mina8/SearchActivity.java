@@ -75,6 +75,12 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
                 });
             }
         }
+
+        if (data.hasExtra(MainActivity.AIRLINE_SEARCH)) {
+            airline = (Airline) data.getSerializableExtra(MainActivity.AIRLINE_SEARCH);
+            airlineSpinner.setSelection(this.airlines.getPosition(airline.getName()));
+            searchBtnHandler(null);
+        }
     }
 
     public String prettyPrintFlight(Flight flight) {
