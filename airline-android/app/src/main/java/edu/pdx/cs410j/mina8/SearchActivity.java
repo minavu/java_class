@@ -167,7 +167,9 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
                         if (a.getName().equalsIgnoreCase(selected)) {
                             airline = a;
                             airline.getFlights().forEach(flight -> {
-                                this.sources.add(flight.getSource());
+                                if (this.sources.getPosition(flight.getSource()) == -1) {
+                                    this.sources.add(flight.getSource());
+                                }
                             });
                             break;
                         }
@@ -187,7 +189,7 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
                 } else {
                     source = selected;
                     airline.getFlights().forEach(flight -> {
-                        if (flight.getSource().equalsIgnoreCase(selected)) {
+                        if (flight.getSource().equalsIgnoreCase(selected) && this.destinations.getPosition(flight.getDestination()) == -1) {
                             this.destinations.add(flight.getDestination());
                         }
                     });
