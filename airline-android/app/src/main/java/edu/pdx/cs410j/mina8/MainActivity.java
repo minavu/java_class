@@ -50,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void searchBtnHandler(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(AIRLINES_HUB, hub);
+        startActivity(intent);
+    }
+
     public void addFlightBtnHandler(View view) {
         Intent intent = new Intent(this, newFlightActivity.class);
         startActivityForResult(intent, NEW_FLIGHT_REQUEST_CODE);

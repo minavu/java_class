@@ -2,12 +2,14 @@ package edu.pdx.cs410j.mina8;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -36,14 +38,11 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-
-
         airlineSpinner = findViewById(R.id.airlineSpinner);
         this.airlines = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
         this.airlines.add("---All airlines---");
         this.airlines.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         airlineSpinner.setAdapter(this.airlines);
-        // Spinner click listener
         airlineSpinner.setOnItemSelectedListener(this);
 
         sourceSpinner = findViewById(R.id.sourceSpinner);
@@ -51,7 +50,6 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
         this.sources.add("---All sources---");
         this.sources.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sourceSpinner.setAdapter(this.sources);
-        // Spinner click listener
         sourceSpinner.setOnItemSelectedListener(this);
 
         destSpinner = findViewById(R.id.destSpinner);
@@ -59,7 +57,6 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
         this.destinations.add("---All destinations---");
         this.destinations.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         destSpinner.setAdapter(this.destinations);
-        // Spinner click listener
         destSpinner.setOnItemSelectedListener(this);
 
 
@@ -74,13 +71,13 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
             for (Airline a : hub) {
                 this.airlines.add(a.getName());
                 a.getFlights().forEach(flight -> {
-                    this.flights.add(prettyPrintFlight(flight).toString());
+                    this.flights.add(prettyPrintFlight(flight));
                 });
             }
         }
     }
 
-    public StringBuilder prettyPrintFlight(Flight flight) {
+    public String prettyPrintFlight(Flight flight) {
         String airline = flight.getAirline();
         String flightNumber = String.valueOf(flight.getNumber());
         String src = flight.getSource();
@@ -92,15 +89,13 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
         String duration = flight.getFlightDuration();
 
         String EMPTY_STRING = "";
-        StringBuilder stringBuilder = new StringBuilder("");
-        stringBuilder.append(String.format("%s Airline\n\n", airline));
-        stringBuilder.append(String.format("%10s%-4s->%4s\n", EMPTY_STRING, src, dest));
-        stringBuilder.append(String.format("%10s%-10s%s\n", EMPTY_STRING, "Flight", flightNumber));
-        stringBuilder.append(String.format("%10s%-10s%s at %s\n", EMPTY_STRING, "Depart", srcName, departure));
-        stringBuilder.append(String.format("%10s%-10s%s at %s\n", EMPTY_STRING, "Arrive", destName, arrival));
-        stringBuilder.append(String.format("%10s%-10s%s\n", EMPTY_STRING, "Duration", duration));
 
-        return stringBuilder;
+        return String.format("%s Airline\n\n", airline) +
+                String.format("%10s%-4s->%4s\n", EMPTY_STRING, src, dest) +
+                String.format("%10s%-10s%s\n", EMPTY_STRING, "Flight", flightNumber) +
+                String.format("%10s%-10s%s at %s\n", EMPTY_STRING, "Depart", srcName, departure) +
+                String.format("%10s%-10s%s at %s\n", EMPTY_STRING, "Arrive", destName, arrival) +
+                String.format("%10s%-10s%s\n", EMPTY_STRING, "Duration", duration);
     }
 
     public void clearBtnHandler(View view) {
@@ -116,29 +111,60 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
     }
 
     public void searchBtnHandler(View view) {
-        Toast.makeText(this, "SEARCH! " + airline.getName() + ", " + source + ", " + destination, Toast.LENGTH_LONG).show();
-
         this.flights.clear();
+
+        if (airline != null && source != null && destination != null) {
+            airline.getFlights().forEach(flight -> {
+                if (flight.getSource().equalsIgnoreCase(source) && flight.getDestination().equalsIgnoreCase(destination)) {
+                    this.flights.add(prettyPrintFlight(flight));
+                }
+            });
+        } else if (airline != null && source != null) {
+            airline.getFlights().forEach(flight -> {
+                if (flight.getSource().equalsIgnoreCase(source)) {
+                    this.flights.add(prettyPrintFlight(flight));
+                }
+            });
+        } else if (airline != null) {
+            airline.getFlights().forEach(flight -> {
+                this.flights.add(prettyPrintFlight(flight));
+            });
+        } else {
+            for (Airline airline : hub) {
+                airline.getFlights().forEach(flight -> {
+                    this.flights.add(prettyPrintFlight(flight));
+                });
+            }
+        }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
         String selected = parent.getSelectedItem().toString();
-        if (selected.contains("All")) {
+        if (selected.contains("All") && airline == null) {
             return;
         }
+
         switch (parent.getId()) {
 
             case R.id.airlineSpinner:
                 clearBtnHandler(view);
                 airlineSpinner.setSelection(index);
-                for (Airline a : hub) {
-                    if (a.getName().equalsIgnoreCase(selected)) {
-                        airline = a;
-                        airline.getFlights().forEach(flight -> {
-                            this.sources.add(flight.getSource());
-                        });
-                        break;
+
+                if (selected.contains("All")) {
+                    airline = null;
+                    source = null;
+                    destination = null;
+                } else {
+                    for (Airline a : hub) {
+                        if (a.getName().equalsIgnoreCase(selected)) {
+                            airline = a;
+                            airline.getFlights().forEach(flight -> {
+                                this.sources.add(flight.getSource());
+                            });
+                            break;
+                        }
                     }
                 }
                 break;
@@ -148,17 +174,27 @@ public class SearchActivity extends AppCompatActivity implements OnItemSelectedL
                 this.destinations.clear();
                 this.destinations.add("---All destinations---");
                 destSpinner.setSelection(0);
-                source = selected;
-                airline.getFlights().forEach(flight -> {
-                    if (flight.getSource().equalsIgnoreCase(selected)) {
-                        this.destinations.add(flight.getDestination());
-                    }
-                });
+
+                if (selected.contains("All")) {
+                    source = null;
+                    destination = null;
+                } else {
+                    source = selected;
+                    airline.getFlights().forEach(flight -> {
+                        if (flight.getSource().equalsIgnoreCase(selected)) {
+                            this.destinations.add(flight.getDestination());
+                        }
+                    });
+                }
                 break;
 
 
             case R.id.destSpinner:
-                destination = selected;
+                if (selected.contains("All")) {
+                    destination = null;
+                } else {
+                    destination = selected;
+                }
                 break;
 
 

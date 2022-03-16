@@ -53,6 +53,7 @@
         android:id="@+id/searchButton"
         android:layout_width="170dp"
         android:layout_height="60dp"
+        android:onClick="searchBtnHandler"
         android:text="Search"
         app:icon="@android:drawable/ic_menu_search"
         app:layout_constraintBottom_toBottomOf="parent"
