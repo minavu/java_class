@@ -21,7 +21,8 @@ import edu.pdx.cs410J.ParserException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int NEW_FLIGHT_REQUEST_CODE = 1;
+    protected static final int NEW_FLIGHT_REQUEST_CODE = 1;
+    protected static final String AIRLINE_SEARCH = "Airline Search";
     protected static final String AIRLINES_HUB = "Airlines Hub";
     private final TreeSet<Airline> hub = new TreeSet<>();
 
@@ -30,20 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Toast.makeText(this, "LOADED", Toast.LENGTH_SHORT).show();
-//        loadDataFromDisk();
-//        hub.add(new Airline("tester"));
-//
-//        File file = new File(this.getFilesDir(), "hub.txt");
-//        try ( BufferedReader br = new BufferedReader(new FileReader(file)) ) {
-//            String[] parsedData = br.readLine().split("\\|");
-//            Airline airline = new Airline(parsedData[0]);
-//            Flight flight = new Flight(new ArrayList<>(Arrays.asList(parsedData)));
-//            airline.addFlight(flight);
-//            hub.add(airline);
-//        } catch (IOException e) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
+        loadDataFromDisk();
     }
 
     public void launchCalculator(View view) {
@@ -88,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             writeDataToDisk();
-//            Toast.makeText(this, flight.toString(), Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Size of hub is " + String.valueOf(hub.size()), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "A new flight was not created!", Toast.LENGTH_LONG).show();
@@ -99,24 +86,19 @@ public class MainActivity extends AppCompatActivity {
         File file = new File(this.getFilesDir(), "hub.txt");
         try {
             TextDumper textDumper = new TextDumper(new FileWriter(file));
-            for (Airline a : hub) {
-                textDumper.dump(a);
-            }
+            textDumper.dumpHub(hub);
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void loadDataFromDisk() {
-
-//        File file = new File(this.getFilesDir(), "hub.txt");
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(file));
-//            Toast.makeText(this, br.readLine(), Toast.LENGTH_SHORT).show();
-////            TextParser textParser = new TextParser(new FileReader(file));
-////            hub.addAll(textParser.parseHub());
-//        } catch (IOException e) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
+        File file = new File(this.getFilesDir(), "hub.txt");
+        try {
+            TextParser textParser = new TextParser(new FileReader(file));
+            hub.addAll(textParser.parseHub());
+        } catch (IOException | ParserException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

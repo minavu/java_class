@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 public class AirlineActivity extends AppCompatActivity {
+    private TreeSet<Airline> hub;
     private ArrayAdapter<Airline> airlines;
 
     @Override
@@ -29,10 +30,17 @@ public class AirlineActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.airlinesList);
         listView.setAdapter(this.airlines);
+        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Airline airline = this.airlines.getItem(i);
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra(MainActivity.AIRLINES_HUB, hub);
+            intent.putExtra(MainActivity.AIRLINE_SEARCH, airline);
+            startActivity(intent);
+        });
 
         Intent data = getIntent();
         if (data.hasExtra(MainActivity.AIRLINES_HUB)) {
-            TreeSet<Airline> hub = (TreeSet<Airline>) data.getSerializableExtra(MainActivity.AIRLINES_HUB);
+            hub = (TreeSet<Airline>) data.getSerializableExtra(MainActivity.AIRLINES_HUB);
             for (Airline a : hub) {
                 this.airlines.add(a);
             }

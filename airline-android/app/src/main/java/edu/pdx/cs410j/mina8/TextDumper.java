@@ -32,4 +32,22 @@ public class TextDumper implements AirlineDumper<Airline> {
       pw.flush();
     }
   }
+
+  public void dumpHub(TreeSet<Airline> hub) {
+    try ( PrintWriter pw = new PrintWriter(this.writer) ) {
+      for (Airline airline : hub) {
+        Collection<Flight> flights = airline.getFlights();
+        flights.forEach((flight) ->
+                pw.println(flight.getAirline() + DELIMITER +
+                        flight.getNumber() + DELIMITER +
+                        flight.getSource() + DELIMITER +
+                        flight.getDepartureStringForFile().replace(" ", DELIMITER) + DELIMITER +
+                        flight.getDestination() + DELIMITER +
+                        flight.getArrivalStringForFile().replace(" ", DELIMITER))
+        );
+      }
+
+      pw.flush();
+    }
+  }
 }

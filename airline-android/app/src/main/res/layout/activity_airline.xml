@@ -8,8 +8,8 @@
 
     <ListView
         android:id="@+id/airlinesList"
-        android:layout_width="302dp"
-        android:layout_height="447dp"
+        android:layout_width="200dp"
+        android:layout_height="457dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
